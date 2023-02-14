@@ -29,13 +29,13 @@ public class PlatoUseCase implements IPlatoServicePort {
     public Platos updatePlato(Platos platoUpdated) {
         Platos platoToUpdate = platoPersistencePort.getPlato(platoUpdated.getId());
         //No puede cambiar el estado de activo
-        if(!platoToUpdate.getActivo().equals(platoUpdated.getActivo()))
+        if(!platoToUpdate.getActivo().equals(platoUpdated.getActivo()) && platoUpdated.getActivo()!=null)
             throw new ForbiddenUpdate();
         //No puede cambiar la categoria
-        if(!platoToUpdate.getIdCategoria().equals(platoUpdated.getIdCategoria()))
+        if(!platoToUpdate.getIdCategoria().equals(platoUpdated.getIdCategoria()) && platoUpdated.getIdCategoria() !=null)
             throw new ForbiddenUpdate();
         //No puede cambiar el restaurante
-        if(!platoToUpdate.getIdRestaurante().equals(platoUpdated.getIdRestaurante()))
+        if(!platoToUpdate.getIdRestaurante().equals(platoUpdated.getIdRestaurante()) && platoUpdated.getIdRestaurante()!=null)
             throw new ForbiddenUpdate();
         //Solo actualizamos la descripcion si no es nulo
         if(platoUpdated.getDescripcion() != null)
