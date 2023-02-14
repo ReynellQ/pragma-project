@@ -16,7 +16,6 @@ public class PersonaController {
 
     @PostMapping("/savePropietario")
     public ResponseEntity<Void> savePropietario(@RequestBody PersonaRegister personaRegister){
-        System.out.println(personaRegister.getId());
         personaHandler.savePropietario(personaRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

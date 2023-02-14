@@ -8,6 +8,7 @@ import com.pragma.userservice.domain.api.IPersonaServicePort;
 import com.pragma.userservice.domain.model.Persona;
 import com.pragma.userservice.domain.model.Roles;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,19 +19,18 @@ import javax.transaction.Transactional;
 public class PersonaHandler implements IPersonaHandler{
     private final IPersonaServicePort iPersonaServicePort;
     private final PersonaDTOMapper personaDTOMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public PersonaDTO getPersona(Long id) {
         Persona p = iPersonaServicePort.getPersona(id);
-        Roles r = iPersonaServicePort.getRolPersona(id);
-        return personaDTOMapper.toDTO(p, r);
+        return personaDTOMapper.toDTO(p);
     }
 
     @Override
     public PersonaDTO authPersona(PersonaLogin personaLogin) {
         Persona p = iPersonaServicePort.authPersona(personaLogin.getEmail(), personaLogin.getPassword());
-        Roles r = iPersonaServicePort.getRolPersona(p.getId());
-        return personaDTOMapper.toDTO(p, r);
+        return personaDTOMapper.toDTO(p);
     }
 
     @Override
@@ -43,6 +43,9 @@ public class PersonaHandler implements IPersonaHandler{
         PersonaDTO newPersona = personaDTOMapper.toRegister(personaRegister);
         Persona p = personaDTOMapper.toPersona(newPersona);
         p.setIdRol(2);
+        String contraseña = p.getClave();
+        //Encriptar contraseña
+        p.setClave(passwordEncoder.encode(p.getClave()));
         iPersonaServicePort.savePropietario(p);
     }
 }

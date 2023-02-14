@@ -7,7 +7,7 @@ public class PersonaDTO {
     private String celular;
     private String correo;
     private String clave;
-    private RolesDTO rol;
+    private Integer rol;
 
     public Long getId() {
         return id;
@@ -57,11 +57,11 @@ public class PersonaDTO {
         this.clave = clave;
     }
 
-    public RolesDTO getRol() {
+    public Integer getRol() {
         return rol;
     }
 
-    public void setRol(RolesDTO rol) {
+    public void setRol(Integer rol) {
         this.rol = rol;
     }
 }

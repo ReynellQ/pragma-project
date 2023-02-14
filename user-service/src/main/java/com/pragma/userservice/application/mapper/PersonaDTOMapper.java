@@ -9,17 +9,13 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = {RolesDTOMapper.class}
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface PersonaDTOMapper {
     @Mappings({
-            @Mapping(target = "id", source = "personaModel.id"),
-            @Mapping(target = "nombre", source = "personaModel.nombre"),
-            @Mapping(target = "rol.nombre", source = "rolesModel.nombre"),
-            @Mapping(target = "rol.descripcion", source = "rolesModel.descripcion")
+            @Mapping(target = "rol", source = "personaModel.idRol"),
     })
-    PersonaDTO toDTO(Persona personaModel, Roles rolesModel);
+    PersonaDTO toDTO(Persona personaModel);
 
     PersonaDTO toRegister(PersonaRegister newPersona);
     @InheritInverseConfiguration(name = "toDTO")
