@@ -3,7 +3,12 @@ package com.pragma.foodcourtservice.application.handler;
 import com.pragma.foodcourtservice.application.dto.RestauranteDTO;
 import com.pragma.foodcourtservice.application.mapper.RestauranteDTOMapper;
 import com.pragma.foodcourtservice.domain.api.IRestauranteServicePort;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
+@Service
+@Transactional
 public class RestauranteHandler implements IRestauranteHandler{
     private final IRestauranteServicePort restauranteServicePort;
     private final RestauranteDTOMapper restauranteDTO;

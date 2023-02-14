@@ -1,14 +1,14 @@
-package com.pragma.foodcourtservice.domain.model;
+package com.pragma.foodcourtservice.application.dto;
 
 
-public class Persona {
+public class PersonaDTO {
     private Long id;
     private String nombre;
     private String apellido;
     private String celular;
     private String correo;
     private String clave;
-    private Integer idRol;
+    private Integer rol;
 
     public Long getId() {
         return id;
@@ -58,11 +58,11 @@ public class Persona {
         this.clave = clave;
     }
 
-    public Integer getIdRol() {
-        return idRol;
+    public Integer getRol() {
+        return rol;
     }
 
-    public void setIdRol(Integer idRol) {
-        this.idRol = idRol;
+    public void setRol(Integer rol) {
+        this.rol = rol;
     }
 }

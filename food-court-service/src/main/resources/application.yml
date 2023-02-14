@@ -7,6 +7,15 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
+  jpa:
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: create
+              create-target: create.sql
 
 
 

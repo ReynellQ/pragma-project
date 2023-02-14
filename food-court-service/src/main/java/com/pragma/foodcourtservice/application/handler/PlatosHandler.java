@@ -4,7 +4,12 @@ import com.pragma.foodcourtservice.application.dto.PlatosSaveDTO;
 import com.pragma.foodcourtservice.application.dto.PlatosUpdateDTO;
 import com.pragma.foodcourtservice.application.mapper.PlatosDTOMapper;
 import com.pragma.foodcourtservice.domain.api.IPlatoServicePort;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
+@Service
+@Transactional
 public class PlatosHandler implements IPlatosHandler{
     private final IPlatoServicePort platoServicePort;
     private final PlatosDTOMapper platosDTOMapper;
