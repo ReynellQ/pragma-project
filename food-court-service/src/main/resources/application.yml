@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/plazoleta
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+
+
+
+appDescription: "Plazoleta API"
+appVersion: "1.0.0"
