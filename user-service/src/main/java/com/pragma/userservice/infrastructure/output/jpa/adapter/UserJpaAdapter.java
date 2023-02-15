@@ -2,7 +2,7 @@ package com.pragma.userservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
-import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExists;
+import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
 import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
 import com.pragma.userservice.infrastructure.output.jpa.entity.UserEntity;
 import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
@@ -55,7 +55,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
             throw new UserWithIDAlreadyExistsException();
         personaEntity = personaRepository.findByEmail(userModel.getEmail());
         if(personaEntity.isPresent())
-            throw new UserWithEmailAlreadyExists();
+            throw new UserWithEmailAlreadyExistsException();
         UserEntity pe = userEntityMapper.toEntity(userModel);
         pe.setId(userModel.getId());
         personaRepository.save(pe);

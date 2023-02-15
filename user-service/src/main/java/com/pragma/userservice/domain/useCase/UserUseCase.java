@@ -3,7 +3,7 @@ package com.pragma.userservice.domain.useCase;
 import com.pragma.userservice.domain.api.IAuth;
 import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.api.IUserServicePort;
-import com.pragma.userservice.domain.exception.BadDataException;
+import com.pragma.userservice.domain.exception.IncorrectDataException;
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
@@ -55,16 +55,16 @@ public class UserUseCase implements IUserServicePort {
      * Saves an owner in the application, checking first their data. It checks the email and the phone. Throws an
      * exception if the data doesn't pass the validation.
      * @param userModel the user to the saved.
-     * @throws BadDataException
+     * @throws IncorrectDataException
      */
     @Override
     public void saveOwner(User userModel) {
         //Verificar correo
         if(!personaChecker.emailChecker(userModel.getEmail()))
-            throw new BadDataException();
+            throw new IncorrectDataException();
         //Verificar número de telefono
         if(!personaChecker.phoneChecker(userModel.getPhone()))
-            throw new BadDataException();
+            throw new IncorrectDataException();
         //Encriptar contraseña
         userModel.setPassword(auth.encryptPassword(userModel.getPassword()));
         personaPersistencePort.saveUser(userModel);
