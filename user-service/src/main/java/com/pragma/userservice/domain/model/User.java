@@ -13,6 +13,19 @@ public class User {
     private String password;
     private Integer idRole;
 
+    public User() {
+    }
+
+    public User(Long id, String name, String lastname, String phone, String email, String password, Integer idRole) {
+        this.id = id;
+        this.name = name;
+        this.lastname = lastname;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.idRole = idRole;
+    }
+
     /**
      * Gets the id of the user
      * @return a Long value representing the id.
