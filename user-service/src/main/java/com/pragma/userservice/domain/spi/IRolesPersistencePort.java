@@ -1,7 +1,7 @@
 package com.pragma.userservice.domain.spi;
 
-import com.pragma.userservice.domain.model.Roles;
+import com.pragma.userservice.domain.model.Role;
 
 public interface IRolesPersistencePort {
-    Roles getRol(Integer id);
+    Role getRol(Integer id);
 }
