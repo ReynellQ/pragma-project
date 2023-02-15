@@ -4,6 +4,7 @@ import com.pragma.foodcourtservice.application.dto.PlatosSaveDTO;
 import com.pragma.foodcourtservice.application.dto.PlatosUpdateDTO;
 import com.pragma.foodcourtservice.application.mapper.PlatosDTOMapper;
 import com.pragma.foodcourtservice.domain.api.IPlatoServicePort;
+import com.pragma.foodcourtservice.domain.model.Platos;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,7 +22,9 @@ public class PlatosHandler implements IPlatosHandler{
 
     @Override
     public void savePlato(PlatosSaveDTO plato) {
-        platoServicePort.savePlato(platosDTOMapper.toPlatoFromSave(plato));
+        Platos p = platosDTOMapper.toPlatoFromSave(plato);
+        p.setActivo(true);
+        platoServicePort.savePlato(p);
     }
 
     @Override
