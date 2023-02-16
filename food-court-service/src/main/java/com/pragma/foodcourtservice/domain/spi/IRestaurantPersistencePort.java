@@ -11,4 +11,11 @@ public interface IRestaurantPersistencePort {
      * @param restaurant the restaurant to be saved.
      */
     void saveRestaurant(Restaurant restaurant);
+
+    /**
+     * Get a restaurant with the provided id.
+     * @param id the restaurant's id
+     * @return a restaurant with the id provided.
+     */
+    Restaurant getRestaurant(Long id);
 }

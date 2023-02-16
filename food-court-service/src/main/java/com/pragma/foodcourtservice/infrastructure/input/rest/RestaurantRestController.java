@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantDTO;
+import com.pragma.foodcourtservice.application.dto.RestaurantDto;
 import com.pragma.foodcourtservice.application.handler.IRestaurantHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class RestaurantRestController {
         this.handler = handler;
     }
     @PostMapping("/save")
-    public ResponseEntity<Void> saveRestaurant(@RequestBody RestaurantDTO restaurantDTO){
+    public ResponseEntity<Void> saveRestaurant(@RequestBody RestaurantDto restaurantDTO){
         handler.saveRestaurant(restaurantDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

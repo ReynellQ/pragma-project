@@ -1,20 +1,20 @@
-package com.pragma.foodcourtservice.infrastructure.thirdparty;
+package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
 import com.pragma.foodcourtservice.application.dto.UserDto;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import com.pragma.foodcourtservice.infrastructure.exception.UserDoesntExistsException;
-import org.springframework.web.client.RestTemplate;
+
 /**
  * The implementation of the IUserMicroServiceClientPort interface. Defines the adapter of the SPI needed to
  * communicate with the User microservice. Implemented with Feign Client and Eureka Discover.
  */
 public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPort {
-    private final RestTemplate userServiceConnection;
+    private final UserFeignClientRest userServiceConnection;
     private final UserDtoMapper userDtoMapper;
 
-    public UserMicroServiceClientAdapter(RestTemplate userServiceConnection, UserDtoMapper userDtoMapper) {
+    public UserMicroServiceClientAdapter(UserFeignClientRest userServiceConnection, UserDtoMapper userDtoMapper) {
         this.userServiceConnection = userServiceConnection;
         this.userDtoMapper = userDtoMapper;
     }
@@ -28,7 +28,7 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
     public User getPersona(Long id) {
         User response;
         try{
-            UserDto userDto = userServiceConnection.getForObject("http://localhost:8080/user/"+id, UserDto.class);
+            UserDto userDto = userServiceConnection.getUser(id);
             response = userDtoMapper.toUser(userDto);
         }catch(Exception ex){
             throw new UserDoesntExistsException();

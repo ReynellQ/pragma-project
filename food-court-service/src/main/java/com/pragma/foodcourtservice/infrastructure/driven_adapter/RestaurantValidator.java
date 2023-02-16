@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.infrastructure.thirdparty;
+package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
 import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
 import com.pragma.foodcourtservice.domain.model.User;

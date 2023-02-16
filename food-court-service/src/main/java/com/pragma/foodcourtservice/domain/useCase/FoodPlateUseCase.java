@@ -7,16 +7,19 @@ import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
 import com.pragma.foodcourtservice.domain.exception.RestaurantDoesntExistsException;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
+import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 
 /**
  * Class FoodPlateUseCase that implements the interface IFoodPlateServicePort, and defines the business logic that be
  * used by the API.
  */
 public class FoodPlateUseCase implements IFoodPlateServicePort {
+    private final IRestaurantPersistencePort restaurantPersistencePort;
     private final IFoodPlatePersistencePort platoPersistencePort;
     private final IFoodPlateValidator platoValidator;
 
-    public FoodPlateUseCase(IFoodPlatePersistencePort platoPersistencePort, IFoodPlateValidator platoValidator) {
+    public FoodPlateUseCase(IRestaurantPersistencePort restaurantPersistencePort, IFoodPlatePersistencePort platoPersistencePort, IFoodPlateValidator platoValidator) {
+        this.restaurantPersistencePort = restaurantPersistencePort;
         this.platoPersistencePort = platoPersistencePort;
         this.platoValidator = platoValidator;
     }
@@ -28,8 +31,9 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      */
     @Override
     public void savePlato(FoodPlate foodPlate) {
-        if(!platoValidator.validatesRestaurant(foodPlate.getIdRestaurant()))
-                throw new RestaurantDoesntExistsException();
+        restaurantPersistencePort.getRestaurant(
+                foodPlate.getId()   //Search the restaurant and throws an exception if it doesn't exist
+        );
         if(!platoValidator.validatesPrice(foodPlate.getPrice()))
             throw new IncorrectDataException();
         platoPersistencePort.saveFoodPlate(foodPlate);

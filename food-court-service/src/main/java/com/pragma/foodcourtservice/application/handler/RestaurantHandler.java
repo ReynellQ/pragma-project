@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantDTO;
-import com.pragma.foodcourtservice.application.mapper.RestaurantDTOMapper;
+import com.pragma.foodcourtservice.application.dto.RestaurantDto;
+import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,9 @@ import javax.transaction.Transactional;
 @Transactional
 public class RestaurantHandler implements IRestaurantHandler {
     private final IRestaurantServicePort restaurantServicePort;
-    private final RestaurantDTOMapper restaurantDtoMapper;
+    private final RestaurantDtoMapper restaurantDtoMapper;
 
-    public RestaurantHandler(IRestaurantServicePort restaurantServicePort, RestaurantDTOMapper restaurantDtoMapper) {
+    public RestaurantHandler(IRestaurantServicePort restaurantServicePort, RestaurantDtoMapper restaurantDtoMapper) {
         this.restaurantServicePort = restaurantServicePort;
         this.restaurantDtoMapper = restaurantDtoMapper;
     }
@@ -29,7 +29,7 @@ public class RestaurantHandler implements IRestaurantHandler {
      * @param restaurant the DTO with the data of the owner to register.
      */
     @Override
-    public void saveRestaurant(RestaurantDTO restaurant) {
+    public void saveRestaurant(RestaurantDto restaurant) {
         restaurantServicePort.saveRestaurant(restaurantDtoMapper.toRestaurant(restaurant));
     }
 }

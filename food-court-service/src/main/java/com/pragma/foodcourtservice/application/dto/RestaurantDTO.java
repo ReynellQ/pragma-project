@@ -3,7 +3,7 @@ package com.pragma.foodcourtservice.application.dto;
 /**
  * A DTO for User. It's the output of the API for Food Court.
  */
-public class RestaurantDTO {
+public class RestaurantDto {
     private String name;
     private String address;
     private Long idOwner;

@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public interface RestauranteEntityMapper {
+public interface RestaurantEntityMapper {
     RestaurantEntity toEntity(Restaurant restaurant);
     Restaurant toRestaurante(RestaurantEntity personaEntity);
 

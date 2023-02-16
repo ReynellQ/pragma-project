@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.application.mapper;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantDTO;
+import com.pragma.foodcourtservice.application.dto.RestaurantDto;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import org.mapstruct.*;
 
@@ -14,9 +14,9 @@ import org.mapstruct.*;
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public interface RestaurantDTOMapper {
+public interface RestaurantDtoMapper {
 
-    RestaurantDTO toDTO(Restaurant restaurantModel);
+    RestaurantDto toDTO(Restaurant restaurantModel);
     @InheritInverseConfiguration(name = "toDTO")
-    Restaurant toRestaurant(RestaurantDTO dto);
+    Restaurant toRestaurant(RestaurantDto dto);
 }
