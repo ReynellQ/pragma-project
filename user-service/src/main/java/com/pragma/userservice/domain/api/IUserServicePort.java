@@ -4,7 +4,7 @@ import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.model.Role;
 
 /**
- * Interface IPersonaServicePort that defines the port of the user service and exposes the methods to the API.
+ * Interface IUserServicePort that defines the port of the user service and exposes the methods to the API.
  */
 public interface IUserServicePort {
     /**

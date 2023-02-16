@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.output.jpa.mapper;
 
-import com.pragma.foodcourtservice.domain.model.Restaurantes;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantesEntity;
+import com.pragma.foodcourtservice.domain.model.Restaurant;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface RestauranteEntityMapper {
-    RestaurantesEntity toEntity(Restaurantes restaurantes);
-    Restaurantes toRestaurante(RestaurantesEntity personaEntity);
+    RestaurantEntity toEntity(Restaurant restaurant);
+    Restaurant toRestaurante(RestaurantEntity personaEntity);
 
 }

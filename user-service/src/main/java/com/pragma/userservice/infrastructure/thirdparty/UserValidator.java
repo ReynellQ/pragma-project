@@ -25,7 +25,7 @@ public class UserValidator implements IUserValidator {
         return matcher.matches();
     }
     /**
-     * Checks if the string phone is a valid email.
+     * Checks if the string phone is a valid phone.
      * The criteria are:
      * - No more than 13 characters.
      * - If the first character if a '+', the remaining characters have to be all numeric. In other case all the
@@ -48,7 +48,7 @@ public class UserValidator implements IUserValidator {
     /**
      * Checks if all characters of a String are numeric.
      * @param str
-     * @return
+     * @return true if all characters are digits, false in other case.
      */
     private boolean allNumeric(String str){
         for(char c : str.toCharArray()){

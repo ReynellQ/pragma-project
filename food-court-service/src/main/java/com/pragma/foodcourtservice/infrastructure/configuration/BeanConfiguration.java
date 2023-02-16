@@ -1,48 +1,53 @@
 package com.pragma.foodcourtservice.infrastructure.configuration;
 
-import com.pragma.foodcourtservice.application.mapper.PlatosDTOMapper;
-import com.pragma.foodcourtservice.application.mapper.RestauranteDTOMapper;
-import com.pragma.foodcourtservice.domain.api.IPlatoServicePort;
-import com.pragma.foodcourtservice.domain.api.IPlatoValidator;
-import com.pragma.foodcourtservice.domain.api.IRestauranteServicePort;
-import com.pragma.foodcourtservice.domain.api.IRestauranteValidator;
-import com.pragma.foodcourtservice.domain.spi.IPlatoPersistencePort;
-import com.pragma.foodcourtservice.domain.spi.IRestaurantePersistencePort;
-import com.pragma.foodcourtservice.domain.useCase.PlatoUseCase;
-import com.pragma.foodcourtservice.domain.useCase.RestauranteUseCase;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.PlatoJpaAdapter;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestauranteJpaAdapter;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.PlatoEntityMapper;
+import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
+import com.pragma.foodcourtservice.application.mapper.RestaurantDTOMapper;
+import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
+import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
+import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
+import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
+import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
+import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
+import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
+import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
+import com.pragma.foodcourtservice.domain.useCase.FoodPlateUseCase;
+import com.pragma.foodcourtservice.domain.useCase.RestaurantUseCase;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.FoodPlateJpaAdapter;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestaurantJpaAdapter;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.FoodPlateEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestauranteEntityMapper;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IPlatoRepository;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestauranteRepository;
-import com.pragma.foodcourtservice.infrastructure.thirdparty.PlatoValidator;
-import com.pragma.foodcourtservice.infrastructure.thirdparty.RestauranteValidator;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IFoodPlateRepository;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
+import com.pragma.foodcourtservice.infrastructure.thirdparty.UserMicroServiceClientAdapter;
+import com.pragma.foodcourtservice.infrastructure.thirdparty.FoodPlateValidator;
+import com.pragma.foodcourtservice.infrastructure.thirdparty.RestaurantValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class BeanConfiguration {
-    private final PlatosDTOMapper platosDTOMapper;
+    private final FoodPlateDtoMapper foodPlateDTOMapper;
 
-    private final RestauranteDTOMapper restauranteDTOMapper;
+    private final RestaurantDTOMapper restaurantDTOMapper;
 
     private final RestauranteEntityMapper restauranteEntityMapper;
-    private final PlatoEntityMapper platoEntityMapper;
-    private final IRestauranteRepository restauranteRepository;
-    private final IPlatoRepository platoRepository;
+    private final FoodPlateEntityMapper foodPlateEntityMapper;
+    private final IRestaurantRepository restauranteRepository;
+    private final IFoodPlateRepository platoRepository;
+    private final UserDtoMapper userDtoMapper;
 
 
-    public BeanConfiguration(PlatosDTOMapper platosDTOMapper, RestauranteDTOMapper restauranteDTOMapper,
-                             RestauranteEntityMapper restauranteEntityMapper, PlatoEntityMapper platoEntityMapper,
-                             IRestauranteRepository restauranteRepository, IPlatoRepository platoRepository) {
-        this.platosDTOMapper = platosDTOMapper;
-        this.restauranteDTOMapper = restauranteDTOMapper;
+    public BeanConfiguration(FoodPlateDtoMapper foodPlateDTOMapper, RestaurantDTOMapper restaurantDTOMapper,
+                             RestauranteEntityMapper restauranteEntityMapper, FoodPlateEntityMapper foodPlateEntityMapper,
+                             IRestaurantRepository restauranteRepository, IFoodPlateRepository platoRepository, UserDtoMapper userDtoMapper) {
+        this.foodPlateDTOMapper = foodPlateDTOMapper;
+        this.restaurantDTOMapper = restaurantDTOMapper;
         this.restauranteEntityMapper = restauranteEntityMapper;
-        this.platoEntityMapper = platoEntityMapper;
+        this.foodPlateEntityMapper = foodPlateEntityMapper;
         this.restauranteRepository = restauranteRepository;
         this.platoRepository = platoRepository;
+        this.userDtoMapper = userDtoMapper;
     }
 
     @Bean
@@ -50,28 +55,32 @@ public class BeanConfiguration {
         return new RestTemplate();
     }
     @Bean
-    public IRestauranteValidator restauranteValidator(){
-        return new RestauranteValidator(connectionToUserService());
+    public IRestaurantValidator restauranteValidator(){
+        return new RestaurantValidator();
     }
     @Bean
-    public IPlatoValidator platoValidator(){
-        return new PlatoValidator(restauranteRepository);
+    public IFoodPlateValidator platoValidator(){
+        return new FoodPlateValidator(restauranteRepository);
     }
     @Bean
-    public IRestaurantePersistencePort restaurantePersistencePort(){
-        return new RestauranteJpaAdapter(restauranteRepository, restauranteEntityMapper);
+    public IRestaurantPersistencePort restaurantePersistencePort(){
+        return new RestaurantJpaAdapter(restauranteRepository, restauranteEntityMapper);
     }
     @Bean
-    public IRestauranteServicePort restauranteServicePort(){
-        return new RestauranteUseCase(restaurantePersistencePort(), restauranteValidator());
+    public IUserMicroServiceClientPort personaClientPort(){
+        return new UserMicroServiceClientAdapter(connectionToUserService(), userDtoMapper);
     }
     @Bean
-    public IPlatoPersistencePort platoPersistencePort(){
-        return new PlatoJpaAdapter(platoRepository, platoEntityMapper);
+    public IRestaurantServicePort restauranteServicePort(){
+        return new RestaurantUseCase(restaurantePersistencePort(), restauranteValidator(), personaClientPort());
     }
     @Bean
-    public IPlatoServicePort platoServicePort(){
-        return new PlatoUseCase(platoPersistencePort(), platoValidator());
+    public IFoodPlatePersistencePort platoPersistencePort(){
+        return new FoodPlateJpaAdapter(platoRepository, foodPlateEntityMapper);
+    }
+    @Bean
+    public IFoodPlateServicePort platoServicePort(){
+        return new FoodPlateUseCase(platoPersistencePort(), platoValidator());
     }
 
 
