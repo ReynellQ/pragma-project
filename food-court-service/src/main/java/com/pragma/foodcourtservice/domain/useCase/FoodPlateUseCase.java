@@ -4,6 +4,7 @@ import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
 import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
+import com.pragma.foodcourtservice.domain.exception.RestaurantDoesntExistsException;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 
@@ -28,7 +29,7 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     @Override
     public void savePlato(FoodPlate foodPlate) {
         if(!platoValidator.validatesRestaurant(foodPlate.getIdRestaurant()))
-            throw new IncorrectDataException();
+                throw new RestaurantDoesntExistsException();
         if(!platoValidator.validatesPrice(foodPlate.getPrice()))
             throw new IncorrectDataException();
         platoPersistencePort.saveFoodPlate(foodPlate);
@@ -38,25 +39,28 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      * and only update this if the data is not null.
      * @param foodPlate the user to be updated.
      * @throws ForbiddenUpdateException if it's submitted different data as the specified.
+     * @throws IncorrectDataException if the submitted data is invalid.
      */
     @Override
     public FoodPlate updatePlato(FoodPlate foodPlate) {
-        FoodPlate platoToUpdate = platoPersistencePort.getFoodPlate(foodPlate.getId());
+        FoodPlate foodPlateToUpdate = platoPersistencePort.getFoodPlate(foodPlate.getId());
         //No puede cambiar el estado de activo
-        if(!platoToUpdate.getActive().equals(foodPlate.getActive()) && foodPlate.getActive()!=null)
+        if(!foodPlateToUpdate.getActive().equals(foodPlate.getActive()) && foodPlate.getActive()!=null)
             throw new ForbiddenUpdateException();
         //No puede cambiar la categoria
-        if(!platoToUpdate.getIdCategory().equals(foodPlate.getIdCategory()) && foodPlate.getIdCategory() !=null)
+        if(!foodPlateToUpdate.getIdCategory().equals(foodPlate.getIdCategory()) && foodPlate.getIdCategory() !=null)
             throw new ForbiddenUpdateException();
         //No puede cambiar el restaurante
-        if(!platoToUpdate.getIdRestaurant().equals(foodPlate.getIdRestaurant()) && foodPlate.getIdRestaurant()!=null)
+        if(!foodPlateToUpdate.getIdRestaurant().equals(foodPlate.getIdRestaurant()) && foodPlate.getIdRestaurant()!=null)
             throw new ForbiddenUpdateException();
         //Solo actualizamos la descripcion si no es nulo
         if(foodPlate.getDescription() != null)
-            platoToUpdate.setDescription(foodPlate.getDescription());
+            foodPlateToUpdate.setDescription(foodPlate.getDescription());
         //Solo actualizamos el precio si no es nulo
         if(foodPlate.getPrice() != null)
-            platoToUpdate.setPrice(foodPlate.getPrice());
-        return platoPersistencePort.updateFoodPlate(platoToUpdate);
+            foodPlateToUpdate.setPrice(foodPlate.getPrice());
+        if(!platoValidator.validatesPrice(foodPlateToUpdate.getPrice()))
+            throw new IncorrectDataException();
+        return platoPersistencePort.updateFoodPlate(foodPlateToUpdate);
     }
 }

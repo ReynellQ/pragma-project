@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/plate/")
+@RequestMapping("/food_plate/")
 public class FoodPlateRestController {
     private final FoodPlateHandler handler;
 
