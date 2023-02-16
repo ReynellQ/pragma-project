@@ -12,7 +12,6 @@ import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExist
 import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class UserServiceApplicationTests {
+class IUserServiceTests {
 
 	IUserServicePort userServicePort;
 	IUserPersistencePort persistencePort;
 	IUserValidator userValidator;
 	IAuth auth;
 	/**
-	 * Set up the userServicePort and their dependences in mocks, in order to unit test UserUseCase
+	 * Set up the userServicePort and their dependencies in mocks, in order to unit test UserUseCase
 	 */
 	@BeforeEach
 	void setUp(){
@@ -64,10 +63,14 @@ class UserServiceApplicationTests {
 		};
 		doAnswer(answer).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_002);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort).saveUser(UserData.USER_001);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort).saveUser(UserData.USER_002);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort).saveUser(UserData.NON_INSERTED_USER_003);
-		doThrow( new UserWithEmailAlreadyExistsException()).when(persistencePort).saveUser(UserData.NON_INSERTED_USER_004);
+		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+				.saveUser(UserData.USER_001);
+		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+				.saveUser(UserData.USER_002);
+		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+				.saveUser(UserData.NON_INSERTED_USER_003);
+		doThrow( new UserWithEmailAlreadyExistsException()).when(persistencePort)
+				.saveUser(UserData.NON_INSERTED_USER_004);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_005);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_006);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_007);
@@ -116,8 +119,10 @@ class UserServiceApplicationTests {
 		when(userValidator.phoneChecker(u1.getPhone())).thenReturn(true); //The phone is valid
 		when(userValidator.emailChecker(u2.getEmail())).thenReturn(true); //The email is valid
 		when(userValidator.phoneChecker(u2.getPhone())).thenReturn(true); //The phone is valid
-		assertThrows(UserWithIDAlreadyExistsException.class, ()->userServicePort.saveOwner(u1)); //Insert the user, but throws an exception
-		assertThrows(UserWithEmailAlreadyExistsException.class, ()->userServicePort.saveOwner(u2)); //Insert the user, but throws an exception
+		assertThrows(UserWithIDAlreadyExistsException.class,
+				()->userServicePort.saveOwner(u1)); //Insert the user, but throws an exception
+		assertThrows(UserWithEmailAlreadyExistsException.class,
+				()->userServicePort.saveOwner(u2)); //Insert the user, but throws an exception
 	}
 
 	/**

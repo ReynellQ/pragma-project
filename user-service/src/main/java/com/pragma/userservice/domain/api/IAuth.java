@@ -10,4 +10,10 @@ public interface IAuth {
      * @return the password encrypted.
      */
     String encryptPassword(String rawPassword);
+    /**
+     * Compare a raw password and an encrypted password.
+     * @param rawPassword the password to encrypt.
+     * @return true if the raw password is the same that the encrypted password.
+     */
+    boolean comparePasswords(String rawPassword, String encryptedPassword);
 }
