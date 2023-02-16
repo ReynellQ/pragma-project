@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 public class UserJpaAdapter implements IUserPersistencePort {
-    private final IUserRepository personaRepository;
+    private final IUserRepository userRepository;
     private final UserEntityMapper userEntityMapper;
     /**
      * Gets a user that has the id provided. Search in the JPA repository and map the entity User to the User domain
@@ -26,7 +26,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public User getUser(Long id) {
-        Optional<UserEntity> personaEntity = personaRepository.findById(id);
+        Optional<UserEntity> personaEntity = userRepository.findById(id);
         if(personaEntity.isEmpty())
             throw new UserDoesntExistsException();
         return userEntityMapper.toPersona(personaEntity.get());
@@ -39,7 +39,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public User getUserByEmail(String email) {
-        Optional<UserEntity> personaEntity = personaRepository.findByEmail(email);
+        Optional<UserEntity> personaEntity = userRepository.findByEmail(email);
         if(personaEntity.isEmpty())
             throw new UserDoesntExistsException();
         return userEntityMapper.toPersona(personaEntity.get());
@@ -50,14 +50,14 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public void saveUser(User userModel) {
-        Optional<UserEntity> personaEntity = personaRepository.findById(userModel.getId());
-        if(personaEntity.isPresent())
+        Optional<UserEntity> userEntity = userRepository.findById(userModel.getId());
+        if(userEntity.isPresent())
             throw new UserWithIDAlreadyExistsException();
-        personaEntity = personaRepository.findByEmail(userModel.getEmail());
-        if(personaEntity.isPresent())
+        userEntity = userRepository.findByEmail(userModel.getEmail());
+        if(userEntity.isPresent())
             throw new UserWithEmailAlreadyExistsException();
         UserEntity pe = userEntityMapper.toEntity(userModel);
         pe.setId(userModel.getId());
-        personaRepository.save(pe);
+        userRepository.save(pe);
     }
 }

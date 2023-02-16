@@ -50,16 +50,9 @@ class IUserServiceTests {
 		when(persistencePort.getUser(1l)).thenReturn(UserData.USER_001);
 		when(persistencePort.getUser(2l)).thenReturn(UserData.USER_002);
 		when(persistencePort.getUser(3l)).thenThrow(new UserDoesntExistsException());
-		Answer<Void> answer = new Answer<>() {
-			/**
-			 * @param invocation the invocation on the mock.
-			 * @throws Throwable the throwable to be thrown
-			 */
-			@Override
-			public Void answer(InvocationOnMock invocation) throws Throwable {
-				when(persistencePort.getUser(4l)).thenReturn(UserData.NON_INSERTED_USER_002);
-				return null;
-			}
+		Answer<Void> answer = invocation -> {
+			when(persistencePort.getUser(4l)).thenReturn(UserData.NON_INSERTED_USER_002);
+			return null;
 		};
 		doAnswer(answer).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_002);
