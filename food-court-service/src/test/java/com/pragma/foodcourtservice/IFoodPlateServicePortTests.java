@@ -103,11 +103,11 @@ public class IFoodPlateServicePortTests {
 
         //Works fine, only the description and price has changed and are valid.
         test.setDescription("LALALALALALALA");
-        test.setPrice(213124l);
+        test.setPrice(FoodPlateData.VALID_FOOD_PLATE.getPrice());
         assertDoesNotThrow( () -> foodPlateServicePort.updatePlato(test));
 
         //Fails, The price isn't valid.
-        test.setPrice(-213124l);
+        test.setPrice(FoodPlateData.INVALID_PRICE_FOOD_PLATE.getPrice());
         assertThrows(IncorrectDataException.class,
                 () -> foodPlateServicePort.updatePlato(test));
 
