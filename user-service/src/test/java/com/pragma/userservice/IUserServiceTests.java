@@ -4,7 +4,9 @@ import com.pragma.userservice.domain.api.IAuth;
 import com.pragma.userservice.domain.api.IUserServicePort;
 import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
+import com.pragma.userservice.domain.model.Role;
 import com.pragma.userservice.domain.model.User;
+import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
 import com.pragma.userservice.domain.useCase.UserUseCase;
 import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class IUserServiceTests {
+	IRolesPersistencePort rolesPersistencePort;
 
 	IUserServicePort userServicePort;
 	IUserPersistencePort persistencePort;
@@ -33,9 +36,11 @@ class IUserServiceTests {
 		persistencePort = mock(IUserPersistencePort.class);
 		userValidator = mock(IUserValidator.class);
 		auth = mock(IAuth.class);
+		rolesPersistencePort = mock(IRolesPersistencePort.class);
 		userServicePort = new UserUseCase(persistencePort, rolesPersistencePort, userValidator, auth);
 		//Mock data
 		setUpPersistencePortMock();
+		when(rolesPersistencePort.getRol(2)).thenReturn( new Role(2, "PROP", "Propietario"));
 	}
 	/**
 	 * Mock the returns of userValidator when the methods are called.

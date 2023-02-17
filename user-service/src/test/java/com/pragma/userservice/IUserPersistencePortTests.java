@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import java.util.Optional;
 
+import static com.pragma.userservice.Utils.cloneUser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -53,7 +54,7 @@ public class IUserPersistencePortTests {
      */
     @Test
     void saveAUser(){
-        User u1 = UserData.NON_INSERTED_USER_001;
+        User u1 = cloneUser(UserData.NON_INSERTED_USER_001);
         u1.setIdRole(2); //At this point the idRole has been set.
         UserEntity userRepo = new UserEntity(3l, "Walter", "White", "123",
                 "walterwhite@gmail.com", "password", 2);

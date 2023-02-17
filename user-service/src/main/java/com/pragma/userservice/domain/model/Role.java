@@ -9,6 +9,15 @@ public class Role {
     private String name;
     private String description;
 
+    public Role() {
+    }
+
+    public Role(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
     /**
      * Gets the id of the role.
      * @return an Integer containing the id of the role.

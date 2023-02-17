@@ -1,6 +1,6 @@
 package com.pragma.userservice.application.mapper;
 
-import com.pragma.userservice.application.dto.RolesDTO;
+import com.pragma.userservice.application.dto.RoleDto;
 import com.pragma.userservice.domain.model.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,5 +11,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface RolesDTOMapper {
-    RolesDTO toDTO(Role roleModel);
+    RoleDto toDTO(Role roleModel);
 }
