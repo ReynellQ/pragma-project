@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "user-service"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/usuarios
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+
+
+
+appDescription: "Usuarios API"
+appVersion: "1.0.0"
