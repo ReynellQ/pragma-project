@@ -32,7 +32,7 @@ public class RestaurantUseCase implements IRestaurantServicePort {
      */
     @Override
     public void saveRestaurant(Restaurant restaurant) {
-        User owner = userClientPort.getPersona(restaurant.getIdOwner());
+        User owner = userClientPort.getUser(restaurant.getIdOwner());
         if(!restaurantValidator.validateOwner(owner))
             throw new NotAnOwnerException();
         if(!restaurantValidator.validatePhone(restaurant.getPhone()))

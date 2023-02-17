@@ -11,5 +11,5 @@ public interface IUserMicroServiceClientPort {
      * @param id the id of the user.
      * @return the User with that id.
      */
-    User getPersona(Long id);
+    User getUser(Long id);
 }

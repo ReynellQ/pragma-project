@@ -25,7 +25,7 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
      * @throws UserDoesntExistsException if the user doesn't be in the user microservice.
      */
     @Override
-    public User getPersona(Long id) {
+    public User getUser(Long id) {
         User response;
         try{
             UserDto userDto = userServiceConnection.getUser(id);

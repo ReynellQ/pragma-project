@@ -13,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.Mockito.mock;
 
+/**
+ * Not implemented.
+ */
 @SpringBootTest
 public class IRestaurantPersistencePortTests {
     RestaurantEntityMapper restaurantEntityMapper;
@@ -33,5 +36,6 @@ public class IRestaurantPersistencePortTests {
     @Test
     void saveARestaurant(){
         Restaurant r1 = RestaurantData.NON_INSERTED_RESTAURANT;
+        throw new RuntimeException();
     }
 }

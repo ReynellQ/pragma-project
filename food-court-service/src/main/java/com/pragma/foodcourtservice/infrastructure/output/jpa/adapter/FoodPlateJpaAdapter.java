@@ -8,7 +8,10 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.FoodPlateEnt
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IFoodPlateRepository;
 
 import java.util.Optional;
-
+/**
+ * Class adapter that implements the methods to communicate with the Food plate entity on persistence layer and the Food
+ * plate model in the domain layer. It uses the JpaRepository and a mapper to map FoodPlateEntity to FoodPlate.
+ */
 public class FoodPlateJpaAdapter implements IFoodPlatePersistencePort {
     private final IFoodPlateRepository platoRepository;
     private final FoodPlateEntityMapper foodPlateEntityMapper;

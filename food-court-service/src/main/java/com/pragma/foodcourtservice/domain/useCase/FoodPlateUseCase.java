@@ -4,8 +4,8 @@ import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
 import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
-import com.pragma.foodcourtservice.domain.exception.RestaurantDoesntExistsException;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
+import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 
@@ -15,11 +15,13 @@ import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
  */
 public class FoodPlateUseCase implements IFoodPlateServicePort {
     private final IRestaurantPersistencePort restaurantPersistencePort;
+    private final ICategoryPersistencePort categoryPersistencePort;
     private final IFoodPlatePersistencePort platoPersistencePort;
     private final IFoodPlateValidator platoValidator;
 
-    public FoodPlateUseCase(IRestaurantPersistencePort restaurantPersistencePort, IFoodPlatePersistencePort platoPersistencePort, IFoodPlateValidator platoValidator) {
+    public FoodPlateUseCase(IRestaurantPersistencePort restaurantPersistencePort, ICategoryPersistencePort categoryPersistencePort, IFoodPlatePersistencePort platoPersistencePort, IFoodPlateValidator platoValidator) {
         this.restaurantPersistencePort = restaurantPersistencePort;
+        this.categoryPersistencePort = categoryPersistencePort;
         this.platoPersistencePort = platoPersistencePort;
         this.platoValidator = platoValidator;
     }
@@ -32,7 +34,10 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     @Override
     public void savePlato(FoodPlate foodPlate) {
         restaurantPersistencePort.getRestaurant(
-                foodPlate.getId()   //Search the restaurant and throws an exception if it doesn't exist
+                foodPlate.getIdRestaurant()   //Search the restaurant and throws an exception if it doesn't exist
+        );
+        categoryPersistencePort.getCategory(
+                foodPlate.getIdCategory()   //Search the category and throws an exception if it doesn't exist
         );
         if(!platoValidator.validatesPrice(foodPlate.getPrice()))
             throw new IncorrectDataException();

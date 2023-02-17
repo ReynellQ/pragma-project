@@ -40,9 +40,9 @@ public class IRestaurantServiceTests {
     }
 
     private void setUpClient() {
-        when(userMicroServiceClientPort.getPersona(1l)).thenReturn(RestaurantData.OWNER);
-        when(userMicroServiceClientPort.getPersona(2l)).thenReturn(RestaurantData.NOT_A_OWNER);
-        when(userMicroServiceClientPort.getPersona(3l)).thenThrow(new UserDoesntExistsException());
+        when(userMicroServiceClientPort.getUser(1l)).thenReturn(RestaurantData.OWNER);
+        when(userMicroServiceClientPort.getUser(2l)).thenReturn(RestaurantData.NOT_A_OWNER);
+        when(userMicroServiceClientPort.getUser(3l)).thenThrow(new UserDoesntExistsException());
     }
 
     private void setUpMockValidation() {

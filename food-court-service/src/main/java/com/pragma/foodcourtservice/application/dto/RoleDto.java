@@ -1,6 +1,6 @@
-package com.pragma.userservice.application.dto;
+package com.pragma.foodcourtservice.application.dto;
 
-public class RolesDTO {
+public class RoleDto {
     private Integer id;
     private String name;
     private String description;

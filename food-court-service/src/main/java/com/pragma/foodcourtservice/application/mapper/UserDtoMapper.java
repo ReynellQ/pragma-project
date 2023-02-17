@@ -1,8 +1,11 @@
 package com.pragma.foodcourtservice.application.mapper;
 
+
 import com.pragma.foodcourtservice.application.dto.UserDto;
 import com.pragma.foodcourtservice.domain.model.User;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * Mapping interface to map:
@@ -16,7 +19,8 @@ import org.mapstruct.*;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface UserDtoMapper {
-    UserDto toDTO(User userModel);
-    @InheritInverseConfiguration(name = "toDTO")
+
+
+    @Mapping(source = "role.id", target = "idRole")
     User toUser(UserDto dto);
 }

@@ -33,7 +33,7 @@ public class RestaurantValidator implements IRestaurantValidator {
             return false;
         }
         if(phone.charAt(0) == '+')
-            return validatePhone(phone.substring(1));
+            return allNumeric(phone.substring(1));
         return allNumeric(phone);
     }
 
