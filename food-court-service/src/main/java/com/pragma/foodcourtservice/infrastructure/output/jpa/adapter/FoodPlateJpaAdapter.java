@@ -2,7 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
-import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateDoesntExists;
+import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.FoodPlateEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.FoodPlateEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IFoodPlateRepository;
@@ -45,13 +45,13 @@ public class FoodPlateJpaAdapter implements IFoodPlatePersistencePort {
      * Gets a food plate from the persistence layer given its id.
      * @param id the food plate's id to be searched.
      * @return The food plate obtained.
-     * @throws FoodPlateDoesntExists if isn't a food plate with the id specified.
+     * @throws FoodPlateNotFoundException if isn't a food plate with the id specified.
      */
     @Override
     public FoodPlate getFoodPlate(Long id) {
         Optional<FoodPlateEntity> entityOptional = platoRepository.findById(id);
         if(entityOptional.isEmpty())
-            throw new FoodPlateDoesntExists();
+            throw new FoodPlateNotFoundException();
         return foodPlateEntityMapper.toFoodPlate(entityOptional.get());
     }
 }

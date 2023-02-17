@@ -9,9 +9,9 @@ import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
 import com.pragma.userservice.domain.useCase.UserUseCase;
-import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
+import com.pragma.userservice.infrastructure.exception.UserNotFoundException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForEmailException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForIdException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -53,20 +53,20 @@ class IUserServiceTests {
 		//Inserted data
 		when(persistencePort.getUser(1l)).thenReturn(UserData.USER_001);
 		when(persistencePort.getUser(2l)).thenReturn(UserData.USER_002);
-		when(persistencePort.getUser(3l)).thenThrow(new UserDoesntExistsException());
+		when(persistencePort.getUser(3l)).thenThrow(new UserNotFoundException());
 		Answer<Void> answer = invocation -> {
 			when(persistencePort.getUser(4l)).thenReturn(UserData.NON_INSERTED_USER_002);
 			return null;
 		};
 		doAnswer(answer).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_002);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+		doThrow( new UserConflictForIdException()).when(persistencePort)
 				.saveUser(UserData.USER_001);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+		doThrow( new UserConflictForIdException()).when(persistencePort)
 				.saveUser(UserData.USER_002);
-		doThrow( new UserWithIDAlreadyExistsException()).when(persistencePort)
+		doThrow( new UserConflictForIdException()).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_003);
-		doThrow( new UserWithEmailAlreadyExistsException()).when(persistencePort)
+		doThrow( new UserConflictForEmailException()).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_004);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_005);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_006);
@@ -86,7 +86,7 @@ class IUserServiceTests {
 		User u1 = UserData.NON_INSERTED_USER_001;
 		Long id = u1.getId();
 		//If the user isn't saved, cannot be obtained and throws the UserDoesntExistsException.
-		assertThrows(UserDoesntExistsException.class, () ->userServicePort.getUser(id));
+		assertThrows(UserNotFoundException.class, () ->userServicePort.getUser(id));
 	}
 
 	/**
@@ -116,9 +116,9 @@ class IUserServiceTests {
 		when(userValidator.phoneChecker(u1.getPhone())).thenReturn(true); //The phone is valid
 		when(userValidator.emailChecker(u2.getEmail())).thenReturn(true); //The email is valid
 		when(userValidator.phoneChecker(u2.getPhone())).thenReturn(true); //The phone is valid
-		assertThrows(UserWithIDAlreadyExistsException.class,
+		assertThrows(UserConflictForIdException.class,
 				()->userServicePort.saveUser(u1)); //Insert the user, but throws an exception
-		assertThrows(UserWithEmailAlreadyExistsException.class,
+		assertThrows(UserConflictForEmailException.class,
 				()->userServicePort.saveUser(u2)); //Insert the user, but throws an exception
 	}
 

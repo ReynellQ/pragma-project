@@ -4,7 +4,7 @@ import com.pragma.foodcourtservice.application.dto.UserDto;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
-import com.pragma.foodcourtservice.infrastructure.exception.UserDoesntExistsException;
+import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 
 /**
  * The implementation of the IUserMicroServiceClientPort interface. Defines the adapter of the SPI needed to
@@ -22,7 +22,7 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
      * Gets a user with the provided id.
      * @param id the id of the user.
      * @return the User with that id.
-     * @throws UserDoesntExistsException if the user doesn't be in the user microservice.
+     * @throws UserNotFoundException if the user doesn't be in the user microservice.
      */
     @Override
     public User getUser(Long id) {
@@ -31,7 +31,7 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
             UserDto userDto = userServiceConnection.getUser(id);
             response = userDtoMapper.toUser(userDto);
         }catch(Exception ex){
-            throw new UserDoesntExistsException();
+            throw new UserNotFoundException();
         }
         return response;
     }

@@ -2,7 +2,7 @@ package com.pragma.foodcourtservice.application.dto;
 /**
  * A DTO to register a food plate.
  */
-public class FoodPlateRegisterDTO {
+public class FoodPlateRegisterDto {
     private String name;
     private Long idCategory;
     private String description;

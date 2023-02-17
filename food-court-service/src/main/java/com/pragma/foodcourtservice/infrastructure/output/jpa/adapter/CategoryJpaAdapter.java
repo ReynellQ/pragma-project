@@ -2,7 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.foodcourtservice.domain.model.Category;
 import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
-import com.pragma.foodcourtservice.infrastructure.exception.CategoryDoesntExistException;
+import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.CategoryEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.ICategoryRepository;
@@ -24,13 +24,13 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
      * Gets a category from the persistence layer given its id.
      * @param id the category's id to be searched.
      * @return The category obtained.
-     * @throws CategoryDoesntExistException if the category with the provided id doesn't exist.
+     * @throws CategoryNotFoundException if the category with the provided id doesn't exist.
      */
     @Override
     public Category getCategory(Long id) {
         Optional<CategoryEntity> categoryOptional = categoryRepository.findById(id);
         if(categoryOptional.isEmpty()){
-            throw new CategoryDoesntExistException();
+            throw new CategoryNotFoundException();
         }
         return categoryEntityMapper.toCategory(categoryOptional.get());
     }

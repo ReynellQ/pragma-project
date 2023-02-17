@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
-import com.pragma.foodcourtservice.domain.exception.RestaurantDoesntExistsException;
+import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEntity;
@@ -36,13 +36,13 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
      *
      * @param id the restaurant's id
      * @return a restaurant with the id provided.
-     * @throws RestaurantDoesntExistsException if doesn't exist a restaurant with the provided id.
+     * @throws RestaurantNotFoundException if doesn't exist a restaurant with the provided id.
      */
     @Override
     public Restaurant getRestaurant(Long id) {
         Optional<RestaurantEntity> restaurantEntity = restaurantRepository.findById(id);
         if(restaurantEntity.isEmpty())
-            throw new RestaurantDoesntExistsException();
+            throw new RestaurantNotFoundException();
         return restaurantEntityMapper.toRestaurante(restaurantEntity.get());
     }
 }
