@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDTO;
+import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
 import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
@@ -30,7 +30,7 @@ public class FoodPlateHandler implements IFoodPlateHandler {
      * @param foodPlate the DTO with the data of the food plate to register.
      */
     @Override
-    public void saveFoodPlate(FoodPlateRegisterDTO foodPlate) {
+    public void saveFoodPlate(FoodPlateRegisterDto foodPlate) {
         FoodPlate p = foodPlateDtoMapper.toPlatoFromSave(foodPlate);
         p.setActive(true);
         platoServicePort.savePlato(p);

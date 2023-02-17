@@ -4,13 +4,13 @@ import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
 import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
-import com.pragma.foodcourtservice.domain.exception.RestaurantDoesntExistsException;
+import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.useCase.FoodPlateUseCase;
-import com.pragma.foodcourtservice.infrastructure.exception.CategoryDoesntExistException;
+import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,12 +43,12 @@ public class IFoodPlateServicePortTests {
                 .thenReturn(RestaurantData.RESTAURANT_001);
         when(restaurantPersistencePort
                 .getRestaurant(RestaurantData.NON_INSERTED_RESTAURANT.getId()))
-                .thenThrow(new RestaurantDoesntExistsException());
+                .thenThrow(new RestaurantNotFoundException());
         //Mock category persistence port
         when(categoryPersistencePort.getCategory(CategoryData.CATEGORY_001.getId()))
                 .thenReturn(CategoryData.CATEGORY_001);
         when(categoryPersistencePort.getCategory(CategoryData.NON_INSERTED_CATEGORY.getId()))
-                .thenThrow(new CategoryDoesntExistException());
+                .thenThrow(new CategoryNotFoundException());
         //Mock foodPlateValidator
         when(foodPlateValidator.validatesPrice(FoodPlateData.VALID_FOOD_PLATE.getPrice())).thenReturn(true);
         when(foodPlateValidator
@@ -70,10 +70,10 @@ public class IFoodPlateServicePortTests {
         assertThrows(IncorrectDataException.class,
                 ()-> foodPlateServicePort.savePlato(FoodPlateData.INVALID_PRICE_FOOD_PLATE));
         //The food plate won't save because the restaurant doesn't exist.
-        assertThrows(RestaurantDoesntExistsException.class,
+        assertThrows(RestaurantNotFoundException.class,
                 ()-> foodPlateServicePort.savePlato(FoodPlateData.INVALID_RESTAURANT_FOOD_PLATE));
         //The food plate won't save because the category doesn't exist.
-        assertThrows(CategoryDoesntExistException.class,
+        assertThrows(CategoryNotFoundException.class,
                 ()-> foodPlateServicePort.savePlato(FoodPlateData.INVALID_CATEGORY_FOOD_PLATE));
     }
     /**

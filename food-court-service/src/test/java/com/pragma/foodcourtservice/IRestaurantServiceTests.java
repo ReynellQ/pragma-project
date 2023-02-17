@@ -8,7 +8,7 @@ import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import com.pragma.foodcourtservice.domain.useCase.RestaurantUseCase;
-import com.pragma.foodcourtservice.infrastructure.exception.UserDoesntExistsException;
+import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +42,7 @@ public class IRestaurantServiceTests {
     private void setUpClient() {
         when(userMicroServiceClientPort.getUser(1l)).thenReturn(RestaurantData.OWNER);
         when(userMicroServiceClientPort.getUser(2l)).thenReturn(RestaurantData.NOT_A_OWNER);
-        when(userMicroServiceClientPort.getUser(3l)).thenThrow(new UserDoesntExistsException());
+        when(userMicroServiceClientPort.getUser(3l)).thenThrow(new UserNotFoundException());
     }
 
     private void setUpMockValidation() {
@@ -74,7 +74,7 @@ public class IRestaurantServiceTests {
         );
         //Has a bad owner and bad data.
         Restaurant r = RestaurantData.NON_VALID_RESTAURANT;
-        assertThrows(UserDoesntExistsException.class,
+        assertThrows(UserNotFoundException.class,
                 () -> restaurantServicePort.saveRestaurant(r)
         );
         //Modifying the idOwner to an existing user, but not an owner.

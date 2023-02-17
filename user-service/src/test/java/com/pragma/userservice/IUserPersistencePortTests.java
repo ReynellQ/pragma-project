@@ -1,22 +1,17 @@
 package com.pragma.userservice;
 
-import com.pragma.userservice.domain.api.IAuth;
-import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
-import com.pragma.userservice.domain.useCase.UserUseCase;
-import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForEmailException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForIdException;
 import com.pragma.userservice.infrastructure.output.jpa.adapter.UserJpaAdapter;
 import com.pragma.userservice.infrastructure.output.jpa.entity.UserEntity;
 import com.pragma.userservice.infrastructure.output.jpa.mapper.UserEntityMapper;
 import com.pragma.userservice.infrastructure.output.jpa.repository.IUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import java.util.Optional;
 
@@ -72,11 +67,11 @@ public class IUserPersistencePortTests {
                 .save(userRepo);
 
         assertDoesNotThrow(()->persistencePort.saveUser(u1)); //Insert the user
-        assertThrows(UserWithIDAlreadyExistsException.class,
+        assertThrows(UserConflictForIdException.class,
                 ()->persistencePort.saveUser(u1)); //Cannot insert the user because was previously inserted.
         //Even if the id's change, the email is the same and cannot be saved.
         u1.setId(2839123213l);
-        assertThrows(UserWithEmailAlreadyExistsException.class,
+        assertThrows(UserConflictForEmailException.class,
                 ()->persistencePort.saveUser(u1)); //Cannot insert the user because was previously inserted.
 
         //Changing both, technically is not the same user.

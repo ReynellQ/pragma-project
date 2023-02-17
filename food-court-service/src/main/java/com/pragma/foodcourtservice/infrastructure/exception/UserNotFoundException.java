@@ -1,4 +1,4 @@
 package com.pragma.foodcourtservice.infrastructure.exception;
 
-public class FoodPlateDoesntExists extends RuntimeException{
+public class UserNotFoundException extends RuntimeException {
 }

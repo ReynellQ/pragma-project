@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDTO;
+import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
 import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
 
 /**
@@ -11,7 +11,7 @@ public interface IFoodPlateHandler {
      * Saves the data of a food plate in the application.
      * @param foodPlate the DTO with the data of the food plate to register.
      */
-    void saveFoodPlate(FoodPlateRegisterDTO foodPlate);
+    void saveFoodPlate(FoodPlateRegisterDto foodPlate);
     /**
      * Updates and saves the data of a food plate in the application.
      * @param foodPlate the DTO with the data of the food plate to update.

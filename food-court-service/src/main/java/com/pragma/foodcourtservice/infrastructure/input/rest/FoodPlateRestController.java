@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDTO;
+import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
 import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.application.handler.FoodPlateHandler;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class FoodPlateRestController {
         this.handler = handler;
     }
     @PostMapping("/save")
-    public ResponseEntity<Void> saveFoodPlate(@RequestBody FoodPlateRegisterDTO foodPlateRegisterDTO){
+    public ResponseEntity<Void> saveFoodPlate(@RequestBody FoodPlateRegisterDto foodPlateRegisterDTO){
         handler.saveFoodPlate(foodPlateRegisterDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

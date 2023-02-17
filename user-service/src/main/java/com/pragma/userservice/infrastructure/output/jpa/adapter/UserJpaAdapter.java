@@ -2,10 +2,10 @@ package com.pragma.userservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
-import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForEmailException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForIdException;
 import com.pragma.userservice.infrastructure.output.jpa.entity.UserEntity;
-import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
+import com.pragma.userservice.infrastructure.exception.UserNotFoundException;
 import com.pragma.userservice.infrastructure.output.jpa.mapper.UserEntityMapper;
 import com.pragma.userservice.infrastructure.output.jpa.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public User getUser(Long id) {
         Optional<UserEntity> personaEntity = userRepository.findById(id);
         if(personaEntity.isEmpty())
-            throw new UserDoesntExistsException();
+            throw new UserNotFoundException();
         return userEntityMapper.toPersona(personaEntity.get());
     }
     /**
@@ -41,7 +41,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public User getUserByEmail(String email) {
         Optional<UserEntity> personaEntity = userRepository.findByEmail(email);
         if(personaEntity.isEmpty())
-            throw new UserDoesntExistsException();
+            throw new UserNotFoundException();
         return userEntityMapper.toPersona(personaEntity.get());
     }
     /**
@@ -52,10 +52,10 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public void saveUser(User userModel) {
         Optional<UserEntity> userEntity = userRepository.findById(userModel.getId());
         if(userEntity.isPresent())
-            throw new UserWithIDAlreadyExistsException();
+            throw new UserConflictForIdException();
         userEntity = userRepository.findByEmail(userModel.getEmail());
         if(userEntity.isPresent())
-            throw new UserWithEmailAlreadyExistsException();
+            throw new UserConflictForEmailException();
         UserEntity pe = userEntityMapper.toEntity(userModel);
         pe.setId(userModel.getId());
         userRepository.save(pe);

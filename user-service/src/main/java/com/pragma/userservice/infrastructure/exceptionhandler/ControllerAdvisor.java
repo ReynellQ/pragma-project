@@ -3,9 +3,9 @@ package com.pragma.userservice.infrastructure.exceptionhandler;
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
 import com.pragma.userservice.infrastructure.exception.InvalidRoleException;
-import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
-import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
+import com.pragma.userservice.infrastructure.exception.UserNotFoundException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForEmailException;
+import com.pragma.userservice.infrastructure.exception.UserConflictForIdException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,11 +19,11 @@ public class ControllerAdvisor {
     private static final String MESSAGE = "message";
 
     private static final Map<Class, ApiRestExceptionResponse> messages = Map.ofEntries(
-            Map.entry(UserDoesntExistsException.class,
+            Map.entry(UserNotFoundException.class,
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The users doesn't exists.")),
-            Map.entry(UserWithEmailAlreadyExistsException.class,
+            Map.entry(UserConflictForEmailException.class,
                     new ApiRestExceptionResponse(HttpStatus.CONFLICT, "A user with this email already exists.")),
-            Map.entry(UserWithIDAlreadyExistsException.class,
+            Map.entry(UserConflictForIdException.class,
                     new ApiRestExceptionResponse(HttpStatus.CONFLICT, "A user with this id already exists.")),
             Map.entry(IncorrectDataException.class,
                     new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")),
