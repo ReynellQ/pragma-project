@@ -2,6 +2,7 @@ package com.pragma.userservice.infrastructure.exceptionhandler;
 
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
+import com.pragma.userservice.infrastructure.exception.InvalidRoleException;
 import com.pragma.userservice.infrastructure.exception.UserDoesntExistsException;
 import com.pragma.userservice.infrastructure.exception.UserWithEmailAlreadyExistsException;
 import com.pragma.userservice.infrastructure.exception.UserWithIDAlreadyExistsException;
@@ -17,9 +18,7 @@ import java.util.Map;
 public class ControllerAdvisor {
     private static final String MESSAGE = "message";
 
-    private static Map<Class, ApiRestExceptionResponse> messages = Map.ofEntries(
-            Map.entry(UserDoesntExistsException.class,
-                    new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The users doesn't exists.")),
+    private static final Map<Class, ApiRestExceptionResponse> messages = Map.ofEntries(
             Map.entry(UserDoesntExistsException.class,
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The users doesn't exists.")),
             Map.entry(UserWithEmailAlreadyExistsException.class,
@@ -29,11 +28,14 @@ public class ControllerAdvisor {
             Map.entry(IncorrectDataException.class,
                     new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")),
             Map.entry(IncorrectCredentialsException.class,
-                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "Cannot login."))
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "Cannot login.")),
+            Map.entry(InvalidRoleException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The role assigned is invalid."))
     );
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleApiException(Exception exception){
+        System.out.println(exception.getClass());
         ApiRestExceptionResponse api = messages.get(exception.getClass());
         return ResponseEntity.status(api.status)
                 .body(Collections.singletonMap(MESSAGE, api.message));

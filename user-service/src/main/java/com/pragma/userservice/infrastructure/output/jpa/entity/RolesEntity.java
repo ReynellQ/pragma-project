@@ -1,9 +1,7 @@
 package com.pragma.userservice.infrastructure.output.jpa.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,8 +14,8 @@ import javax.persistence.Table;
 public class RolesEntity {
     @Id
     private Integer id;
-    private String nombre;
-    private String descripcion;
+    private String name;
+    private String description;
 
     public Integer getId() {
         return id;
@@ -27,19 +25,19 @@ public class RolesEntity {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String nombre) {
+        this.name = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String descripcion) {
+        this.description = descripcion;
     }
 }

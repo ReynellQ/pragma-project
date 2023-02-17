@@ -1,5 +1,7 @@
 package com.pragma.userservice.application.dto;
 
+import com.pragma.userservice.domain.model.Role;
+
 /**
  * A DTO for User. It's the output of the API for User.
  */
@@ -10,7 +12,7 @@ public class UserDto {
     private String phone;
     private String email;
     private String password;
-    private Integer idRole;
+    private RolesDTO role;
     /**
      * Gets the id of the user
      * @return a Long value representing the id.
@@ -108,18 +110,18 @@ public class UserDto {
     }
 
     /**
-     * Gets the user's role's id, that is numeric and mapped from the database.
-     * @return an Integer containing the role.
+     * Gets the user's role.
+     * @return a Role value containing the role.
      */
-    public Integer getIdRole() {
-        return idRole;
+    public RolesDTO getRole() {
+        return role;
     }
 
     /**
-     * Sets the role's id of the user.
-     * @param idRole the role's id of the user.
+     * Sets the role of the user.
+     * @param role the role's id of the user.
      */
-    public void setIdRole(Integer idRole) {
-        this.idRole = idRole;
+    public void setRole(RolesDTO role) {
+        this.role = role;
     }
 }

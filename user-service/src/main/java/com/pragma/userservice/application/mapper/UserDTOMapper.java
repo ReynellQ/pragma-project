@@ -2,6 +2,7 @@ package com.pragma.userservice.application.mapper;
 
 import com.pragma.userservice.application.dto.UserDto;
 import com.pragma.userservice.application.dto.UserRegister;
+import com.pragma.userservice.domain.model.Role;
 import com.pragma.userservice.domain.model.User;
 import org.mapstruct.*;
 
@@ -14,14 +15,16 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {RolesDTOMapper.class}
 )
 public interface UserDTOMapper {
-    UserDto toDTO(User userModel);
-    @Mappings({
-            @Mapping(target = "idRole", source = "idRole"),
-    })
-    UserDto toRegister(UserRegister newPersona, Integer idRole);
-    @InheritInverseConfiguration(name = "toDTO")
+    @Mapping(source = "userModel.id", target = "id")
+    @Mapping(source = "userModel.name", target = "name")
+    @Mapping(source = "role", target = "role")
+    UserDto toDTO(User userModel, Role role);
+
+    User toRegister(UserRegister newPersona);
+
     User toUser(UserDto dto);
 }

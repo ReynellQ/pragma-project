@@ -1,26 +1,31 @@
 package com.pragma.userservice.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 public class RolesDTO {
-    private String nombre;
-    private String descripcion;
+    private Integer id;
+    private String name;
+    private String description;
 
-    public String getNombre() {
-        return nombre;
+    public Integer getId() {
+        return id;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getName() {
+        return name;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

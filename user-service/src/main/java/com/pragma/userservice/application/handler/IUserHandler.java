@@ -17,8 +17,8 @@ public interface IUserHandler {
     UserDto authUser(UserLoginDto userLoginDto);
     void saveUser(UserDto personaModel);
     /**
-     * Saves the data of an owner in the application.
-     * @param userRegister the DTO with the data of the owner to register.
+     * Saves the data of a user in the application.
+     * @param userRegister the DTO with the data of the user to register.
      */
-    void saveOwner(UserRegister userRegister);
+    void saveUser(UserRegister userRegister);
 }

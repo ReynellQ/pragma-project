@@ -5,7 +5,9 @@ import com.pragma.userservice.application.dto.UserLoginDto;
 import com.pragma.userservice.application.dto.UserRegister;
 import com.pragma.userservice.application.mapper.UserDTOMapper;
 import com.pragma.userservice.domain.api.IUserServicePort;
+import com.pragma.userservice.domain.model.Role;
 import com.pragma.userservice.domain.model.User;
+import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class UserHandler implements IUserHandler {
     private final IUserServicePort iUserServicePort;
+    private final IRolesPersistencePort rolesPersistencePort;
     private final UserDTOMapper userDTOMapper;
 
     /**
@@ -30,18 +33,21 @@ public class UserHandler implements IUserHandler {
     @Override
     public UserDto getUser(Long id) {
         User p = iUserServicePort.getUser(id);
-        return userDTOMapper.toDTO(p);
+        Role r = rolesPersistencePort.getRol(p.getIdRole());
+        UserDto dto = userDTOMapper.toDTO(p, r);
+        return dto;
     }
 
     @Override
     public UserDto authUser(UserLoginDto userLoginDto) {
         User p = iUserServicePort.authUser(userLoginDto.getEmail(), userLoginDto.getPassword());
-        return userDTOMapper.toDTO(p);
+        Role r = rolesPersistencePort.getRol(p.getIdRole());
+        return userDTOMapper.toDTO(p, r);
     }
 
     @Override
     public void saveUser(UserDto userDto) {
-        iUserServicePort.saveOwner(userDTOMapper.toUser(userDto));
+        iUserServicePort.saveUser(userDTOMapper.toUser(userDto));
     }
 
     /**
@@ -50,9 +56,8 @@ public class UserHandler implements IUserHandler {
      * @param userRegister the DTO with the data of the owner to register.
      */
     @Override
-    public void saveOwner(UserRegister userRegister) {
-        UserDto newPersona = userDTOMapper.toRegister(userRegister, 2);
-        User p = userDTOMapper.toUser(newPersona);
-        iUserServicePort.saveOwner(p);
+    public void saveUser(UserRegister userRegister) {
+        User newUser = userDTOMapper.toRegister(userRegister);
+        iUserServicePort.saveUser(newUser);
     }
 }
