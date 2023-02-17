@@ -6,6 +6,7 @@ import com.pragma.userservice.domain.api.IUserServicePort;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.model.User;
+import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
 
 /**
@@ -14,12 +15,14 @@ import com.pragma.userservice.domain.spi.IUserPersistencePort;
  */
 public class UserUseCase implements IUserServicePort {
     private final IUserPersistencePort personaPersistencePort;
+    private final IRolesPersistencePort rolesPersistencePort;
     private final IUserValidator personaChecker;
     private final IAuth auth;
 
     public UserUseCase(IUserPersistencePort personaPersistencePort,
-                       IUserValidator personaChecker, IAuth auth){
+                       IRolesPersistencePort rolesPersistencePort, IUserValidator personaChecker, IAuth auth){
         this.personaPersistencePort = personaPersistencePort;
+        this.rolesPersistencePort = rolesPersistencePort;
         this.personaChecker = personaChecker;
         this.auth = auth;
     }
@@ -58,14 +61,16 @@ public class UserUseCase implements IUserServicePort {
      * @throws IncorrectDataException
      */
     @Override
-    public void saveOwner(User userModel) {
+    public void saveUser(User userModel) {
+        //Verificar rol
+        rolesPersistencePort.getRol(userModel.getIdRole());
         //Verificar correo
         if(!personaChecker.emailChecker(userModel.getEmail()))
             throw new IncorrectDataException();
         //Verificar número de telefono
         if(!personaChecker.phoneChecker(userModel.getPhone()))
             throw new IncorrectDataException();
-        //Encriptar contraseña
+        //Encriptar contraseña antes de guardar en el puerto de persistencia
         userModel.setPassword(auth.encryptPassword(userModel.getPassword()));
         personaPersistencePort.saveUser(userModel);
     }

@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     private final IUserHandler personaHandler;
 
-    @PostMapping("/saveOwner")
-    public ResponseEntity<Void> savePropietario(@RequestBody UserRegister userRegister){
-        personaHandler.saveOwner(userRegister);
+    @PostMapping("/save")
+    public ResponseEntity<Void> saveUser(@RequestBody UserRegister userRegister){
+        personaHandler.saveUser(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getPersona(@PathVariable(name = "id") Long id){
+    public ResponseEntity<UserDto> getUser(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(personaHandler.getUser(id));
     }
 }

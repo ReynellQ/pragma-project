@@ -10,6 +10,7 @@ public class UserRegister {
     private String phone;
     private String email;
     private String password;
+    private Integer idRole;
 
     /**
      * Gets the id of the user
@@ -105,6 +106,21 @@ public class UserRegister {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Gets the user's role's id, that is numeric and mapped from the database.
+     * @return an Integer containing the role.
+     */
+    public Integer getIdRole() {
+        return idRole;
+    }
+    /**
+     * Sets the role's id of the user.
+     * @param idRole the role's id of the user.
+     */
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
     }
 
 

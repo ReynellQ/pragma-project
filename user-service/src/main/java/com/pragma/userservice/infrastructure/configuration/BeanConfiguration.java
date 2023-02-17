@@ -3,10 +3,14 @@ package com.pragma.userservice.infrastructure.configuration;
 import com.pragma.userservice.domain.api.IAuth;
 import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.api.IUserServicePort;
+import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
 import com.pragma.userservice.domain.useCase.UserUseCase;
+import com.pragma.userservice.infrastructure.output.jpa.adapter.RoleJpaAdapter;
 import com.pragma.userservice.infrastructure.output.jpa.adapter.UserJpaAdapter;
+import com.pragma.userservice.infrastructure.output.jpa.mapper.RolesEntityMapper;
 import com.pragma.userservice.infrastructure.output.jpa.mapper.UserEntityMapper;
+import com.pragma.userservice.infrastructure.output.jpa.repository.IRolesRepository;
 import com.pragma.userservice.infrastructure.output.jpa.repository.IUserRepository;
 import com.pragma.userservice.infrastructure.thirdparty.AuthService;
 import com.pragma.userservice.infrastructure.thirdparty.UserValidator;
@@ -23,7 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class BeanConfiguration {
     private final IUserRepository personaRepository;
+    private final IRolesRepository rolesRepository;
     private final UserEntityMapper userEntityMapper;
+    private final RolesEntityMapper rolesEntityMapper;
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -43,7 +49,11 @@ public class BeanConfiguration {
     }
     @Bean
     public IUserServicePort personaServicePort(){
-        return new UserUseCase(personaPersistencePort(), personaChecker(), authService());
+        return new UserUseCase(personaPersistencePort(), rolesPersistencePort(), personaChecker(), authService());
+    }
+    @Bean
+    IRolesPersistencePort rolesPersistencePort(){
+        return new RoleJpaAdapter(rolesRepository, rolesEntityMapper);
     }
 
 

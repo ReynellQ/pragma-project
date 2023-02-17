@@ -1,10 +1,9 @@
 package com.pragma.userservice.domain.api;
 
 import com.pragma.userservice.domain.model.User;
-import com.pragma.userservice.domain.model.Role;
 
 /**
- * Interface IPersonaServicePort that defines the port of the user service and exposes the methods to the API.
+ * Interface IUserServicePort that defines the port of the user service and exposes the methods to the API.
  */
 public interface IUserServicePort {
     /**
@@ -26,5 +25,5 @@ public interface IUserServicePort {
      * Saves an owner in the application.
      * @param userModel the user to the saved.
      */
-    void saveOwner(User userModel);
+    void saveUser(User userModel);
 }
