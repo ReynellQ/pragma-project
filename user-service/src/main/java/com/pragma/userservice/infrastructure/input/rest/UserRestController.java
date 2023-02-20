@@ -4,6 +4,7 @@ import com.pragma.userservice.application.dto.UserDto;
 import com.pragma.userservice.application.dto.UserRegister;
 import com.pragma.userservice.application.handler.IUserHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class UserRestController {
     private final IUserHandler personaHandler;
 
     @PostMapping("/save")
-    public ResponseEntity<Void> saveUser(@RequestBody UserRegister userRegister){
+    public ResponseEntity<Void> saveUser( @RequestBody UserRegister userRegister){
         personaHandler.saveUser(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

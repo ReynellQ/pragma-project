@@ -2,10 +2,7 @@ package com.pragma.userservice.infrastructure.exceptionhandler;
 
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
-import com.pragma.userservice.infrastructure.exception.InvalidRoleException;
-import com.pragma.userservice.infrastructure.exception.UserNotFoundException;
-import com.pragma.userservice.infrastructure.exception.UserConflictForEmailException;
-import com.pragma.userservice.infrastructure.exception.UserConflictForIdException;
+import com.pragma.userservice.infrastructure.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,9 +25,12 @@ public class ControllerAdvisor {
             Map.entry(IncorrectDataException.class,
                     new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")),
             Map.entry(IncorrectCredentialsException.class,
-                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "Cannot login.")),
+                    new ApiRestExceptionResponse(HttpStatus.UNAUTHORIZED, "Cannot login.")),
             Map.entry(InvalidRoleException.class,
-                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The role assigned is invalid."))
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The role assigned is invalid.")),
+            Map.entry(ForbiddenCreationException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The current user doesn't have " +
+                            "permissions to create this new user."))
     );
 
     @ExceptionHandler(Exception.class)
