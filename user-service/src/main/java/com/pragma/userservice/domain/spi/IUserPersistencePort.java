@@ -11,7 +11,7 @@ public interface IUserPersistencePort {
      * @param id the id of the user searched.
      * @return the User with the id provided.
      */
-    User getUser(Long id);
+    User getUserByPersonalId(Long id);
     /**
      * Gets a user that has the email provided. It's assumed that aren't more the one user with the same email.
      * @param email the email of the user to search.

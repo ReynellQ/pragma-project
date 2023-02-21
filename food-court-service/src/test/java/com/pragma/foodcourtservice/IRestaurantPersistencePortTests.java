@@ -1,6 +1,5 @@
 package com.pragma.foodcourtservice;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantDto;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestaurantJpaAdapter;

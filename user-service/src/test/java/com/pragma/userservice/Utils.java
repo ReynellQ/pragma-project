@@ -10,7 +10,7 @@ public class Utils {
      * @return
      */
     public static User cloneUser(User u){
-        return new User(u.getId(), u.getName(), u.getLastname(), u.getPhone(), u.getEmail(), u.getPassword(),
+        return new User(u.getId(), u.getPersonalId(), u.getName(), u.getLastname(), u.getPhone(), u.getEmail(), u.getPassword(),
                 u.getIdRole());
     }
 }

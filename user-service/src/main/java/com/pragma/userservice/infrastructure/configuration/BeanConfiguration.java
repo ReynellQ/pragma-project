@@ -53,8 +53,12 @@ public class BeanConfiguration {
         return new UserJpaAdapter(userRepository, userEntityMapper);
     }
     @Bean
+    public IRolesPersistencePort rolesPersistencePort(){
+        return new RoleJpaAdapter(rolesRepository, rolesEntityMapper);
+    }
+    @Bean
     public UserDetailsService userDetailsService(){
-        return new UserDetailsServiceImpl(userPersistencePort());
+        return new UserDetailsServiceImpl(userPersistencePort(), rolesPersistencePort());
     }
     @Bean
     public IAuth authService() {
@@ -66,10 +70,7 @@ public class BeanConfiguration {
         return new UserUseCase(userPersistencePort(), rolesPersistencePort(), userValidator(), authService());
     }
 
-    @Bean
-    public IRolesPersistencePort rolesPersistencePort(){
-        return new RoleJpaAdapter(rolesRepository, rolesEntityMapper);
-    }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

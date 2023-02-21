@@ -1,9 +1,8 @@
-package com.pragma.userservice.infrastructure.configuration;
+package com.pragma.foodcourtservice.infrastructure.configuration;
 
-import com.pragma.userservice.domain.model.Role;
-import com.pragma.userservice.domain.model.User;
-import com.pragma.userservice.domain.spi.IRolesPersistencePort;
-import com.pragma.userservice.domain.spi.IUserPersistencePort;
+import com.pragma.foodcourtservice.domain.model.Role;
+import com.pragma.foodcourtservice.domain.model.User;
+import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,12 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final IUserPersistencePort userPersistencePort;
-    private final IRolesPersistencePort rolesPersistencePort;
+    private final IUserMicroServiceClientPort userClientPort;
 
-    public UserDetailsServiceImpl(IUserPersistencePort userPersistencePort, IRolesPersistencePort rolesPersistencePort) {
-        this.userPersistencePort = userPersistencePort;
-        this.rolesPersistencePort = rolesPersistencePort;
+    public UserDetailsServiceImpl(IUserMicroServiceClientPort userClientPort) {
+        this.userClientPort = userClientPort;
     }
 
     /**
@@ -33,8 +30,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userPersistencePort.getUserByEmail(username);
-        Role role = rolesPersistencePort.getRol(user.getIdRole());
+        User user = userClientPort.getUserByEmail(username);
+        Role role = userClientPort.getRolesUser(user.getPersonalId());
         return new UserDetailsImpl(user, role);
     }
 }

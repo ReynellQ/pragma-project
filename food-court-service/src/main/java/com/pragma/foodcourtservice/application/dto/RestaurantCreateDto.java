@@ -3,10 +3,9 @@ package com.pragma.foodcourtservice.application.dto;
 /**
  * A DTO for User. It's the output of the API for Food Court.
  */
-public class RestaurantDto {
+public class RestaurantCreateDto {
     private String name;
     private String address;
-    private Long idOwner;
     private String phone;
     private String urlLogo;
     private Long nit;
@@ -38,20 +37,6 @@ public class RestaurantDto {
      */
     public void setAddress(String address) {
         this.address = address;
-    }
-    /**
-     * Gets the owner's id of the restaurant
-     * @return a Long value representing the id.
-     */
-    public Long getIdOwner() {
-        return idOwner;
-    }
-    /**
-     * Sets the owner's id of the restaurant
-     * @param idOwner the owner's id of the restaurant.
-     */
-    public void setIdOwner(Long idOwner) {
-        this.idOwner = idOwner;
     }
     /**
      * Gets the phone of the restaurant

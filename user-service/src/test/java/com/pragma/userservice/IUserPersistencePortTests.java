@@ -51,7 +51,7 @@ public class IUserPersistencePortTests {
     void saveAUser(){
         User u1 = cloneUser(UserData.NON_INSERTED_USER_001);
         u1.setIdRole(2); //At this point the idRole has been set.
-        UserEntity userRepo = new UserEntity(3l, "Walter", "White", "123",
+        UserEntity userRepo = new UserEntity(3l,3l, "Walter", "White", "123",
                 "walterwhite@gmail.com", "password", 2);
         when(userEntityMapper.toEntity(u1)).thenReturn(userRepo);
         when(userRepository.findById(u1.getId())).thenReturn(Optional.empty()); //This user isn't inserted previously.

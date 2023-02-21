@@ -1,10 +1,6 @@
 package com.pragma.userservice;
 
 import com.pragma.userservice.domain.api.IAuth;
-import com.pragma.userservice.domain.api.IUserValidator;
-import com.pragma.userservice.domain.spi.IUserPersistencePort;
-import com.pragma.userservice.domain.useCase.UserUseCase;
-import com.pragma.userservice.infrastructure.thirdparty.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +18,7 @@ public class IAuthTests {
     @BeforeEach
     void setUp(){
         encoder = new BCryptPasswordEncoder();
-        auth = new AuthService(encoder);
+        //auth = new AuthService(encoder, jwtService, authenticationManager, userDetailsService);
     }
 
     /**

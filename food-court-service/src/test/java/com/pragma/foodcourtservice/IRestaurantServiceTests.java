@@ -40,13 +40,16 @@ public class IRestaurantServiceTests {
     }
 
     private void setUpClient() {
-        when(userMicroServiceClientPort.getUser(1l)).thenReturn(RestaurantData.OWNER);
-        when(userMicroServiceClientPort.getUser(2l)).thenReturn(RestaurantData.NOT_A_OWNER);
-        when(userMicroServiceClientPort.getUser(3l)).thenThrow(new UserNotFoundException());
+        when(userMicroServiceClientPort.getUserByEmail(RestaurantData.OWNER_001.getEmail()))
+                .thenReturn(RestaurantData.OWNER_001);
+        when(userMicroServiceClientPort.getUserByEmail(RestaurantData.NOT_A_OWNER.getEmail()))
+                .thenReturn(RestaurantData.NOT_A_OWNER);
+        when(userMicroServiceClientPort.getUserByEmail(UserData.NON_INSERTED_USER_001.getEmail()))
+                .thenThrow(new UserNotFoundException());
     }
 
     private void setUpMockValidation() {
-        when(restaurantValidator.validateOwner(RestaurantData.OWNER)).thenReturn(true);
+        when(restaurantValidator.validateOwner(RestaurantData.OWNER_001)).thenReturn(true);
         when(restaurantValidator.validateOwner(RestaurantData.NOT_A_OWNER)).thenReturn(false);
         when(restaurantValidator.validateName(RestaurantData.NON_INSERTED_RESTAURANT.getName()))
                 .thenReturn(true);
@@ -70,22 +73,22 @@ public class IRestaurantServiceTests {
     @Test
     void saveARestaurant() {
         assertDoesNotThrow( //Saves correctly
-                ()->restaurantServicePort.saveRestaurant(RestaurantData.NON_INSERTED_RESTAURANT)
+                ()->restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(),
+                        RestaurantData.NON_INSERTED_RESTAURANT)
         );
         //Has a bad owner and bad data.
         Restaurant r = RestaurantData.NON_VALID_RESTAURANT;
         assertThrows(UserNotFoundException.class,
-                () -> restaurantServicePort.saveRestaurant(r)
+                () -> restaurantServicePort.saveRestaurant(UserData.NON_INSERTED_USER_001.getEmail(),
+                        r)
         );
-        //Modifying the idOwner to an existing user, but not an owner.
-        r.setIdOwner(2l);
+        //Modifying the email to an existing user, but not an owner.
         assertThrows(NotAnOwnerException.class, //Throws the exception for not being a owner
-                () -> restaurantServicePort.saveRestaurant(r)
+                () -> restaurantServicePort.saveRestaurant(RestaurantData.NOT_A_OWNER.getEmail(),r)
         );
         //Modifying the idOwner to a real owner
-        r.setIdOwner(1l);
         assertThrows(IncorrectDataException.class,
-                () -> restaurantServicePort.saveRestaurant(r)
+                () -> restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(), r)
         );
     }
 }

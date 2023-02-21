@@ -11,8 +11,10 @@ public class RestaurantData {
             10000L);
     public static final Restaurant NON_VALID_RESTAURANT = new Restaurant(3l, "1321421323", "direccion rara", 3L, "232314232131242", "logo url",
             10000L);
-    public static final User OWNER = new User(1l, "Lalo", "Salamanca", "123",
+    public static final User OWNER_001 = new User(1l,1l, "Lalo", "Salamanca", "123",
             "lalo@gmail.com", "password", 2);
-    public static final User NOT_A_OWNER = new User(2l, "Lalei", "Salamanca", "123",
+    public static final User OWNER_002 = new User(10l,1l, "Lalo", "Salamanca", "123",
+            "lalo2@gmail.com", "password", 2);
+    public static final User NOT_A_OWNER = new User(2l, 2l, "Lalei", "Salamanca", "123",
             "lalei@gmail.com", "password", 3);
 }

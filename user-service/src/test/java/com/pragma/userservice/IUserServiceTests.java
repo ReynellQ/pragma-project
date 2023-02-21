@@ -51,11 +51,11 @@ class IUserServiceTests {
 	 */
 	private void setUpPersistencePortMock() {
 		//Inserted data
-		when(persistencePort.getUser(1l)).thenReturn(UserData.USER_001);
-		when(persistencePort.getUser(2l)).thenReturn(UserData.USER_002);
-		when(persistencePort.getUser(3l)).thenThrow(new UserNotFoundException());
+		when(persistencePort.getUserByPersonalId(1l)).thenReturn(UserData.USER_001);
+		when(persistencePort.getUserByPersonalId(2l)).thenReturn(UserData.USER_002);
+		when(persistencePort.getUserByPersonalId(3l)).thenThrow(new UserNotFoundException());
 		Answer<Void> answer = invocation -> {
-			when(persistencePort.getUser(4l)).thenReturn(UserData.NON_INSERTED_USER_002);
+			when(persistencePort.getUserByPersonalId(4l)).thenReturn(UserData.NON_INSERTED_USER_002);
 			return null;
 		};
 		doAnswer(answer).when(persistencePort)
@@ -78,7 +78,7 @@ class IUserServiceTests {
 		User u1 = UserData.USER_001;
 		Long id = u1.getId();
 		//If the user is saved, can be obtained
-		assertTrue(userServicePort.getUser(id).getId() == u1.getId());
+		assertTrue(userServicePort.getUserByPersonalId(id).getId() == u1.getId());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ class IUserServiceTests {
 		User u1 = UserData.NON_INSERTED_USER_001;
 		Long id = u1.getId();
 		//If the user isn't saved, cannot be obtained and throws the UserDoesntExistsException.
-		assertThrows(UserNotFoundException.class, () ->userServicePort.getUser(id));
+		assertThrows(UserNotFoundException.class, () ->userServicePort.getUserByPersonalId(id));
 	}
 
 	/**
@@ -100,7 +100,7 @@ class IUserServiceTests {
 		when(userValidator.phoneChecker(u1.getPhone())).thenReturn(true); //The phone is valid
 		assertDoesNotThrow(()->userServicePort.saveUser(u1)); //Insert the user
 		//If it's saved, it can be obtained vía getUser(id)
-		assertTrue(userServicePort.getUser(u1.getId()).getId() == u1.getId());
+		assertTrue(userServicePort.getUserByPersonalId(u1.getId()).getId() == u1.getId());
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
 import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
+import com.pragma.foodcourtservice.domain.model.ROLES;
 import com.pragma.foodcourtservice.domain.model.User;
 
 /**
@@ -15,7 +16,7 @@ public class RestaurantValidator implements IRestaurantValidator {
      */
     @Override
     public boolean validateOwner(User owner) {
-        return owner.getIdRole() == 2;
+        return owner.getIdRole() == ROLES.OWNER.id;
     }
     /**
      * Checks if the string phone is a valid phone.

@@ -7,12 +7,21 @@ import com.pragma.foodcourtservice.domain.model.FoodPlate;
 public interface IFoodPlateServicePort {
     /**
      * Saves a food plate in the application.
+     * @param email the email of the creator.
      * @param foodPlate the user to be saved.
      */
-    void savePlato(FoodPlate foodPlate);
+    void saveFoodPlate(String email, FoodPlate foodPlate);
     /**
      * Updates a food plate in the application.
+     * @param email the email of the updater.
      * @param foodPlate the user to be updated.
      */
-    FoodPlate updatePlato(FoodPlate foodPlate);
+    FoodPlate updateFoodPlate(String email, FoodPlate foodPlate);
+
+    /**
+     * Changed the state of a food plate, to the state of the food plate submitted.
+     * TODO TESTING
+     * @param foodPlate the food plate
+     */
+    void changeStateFoodPlate(FoodPlate foodPlate);
 }

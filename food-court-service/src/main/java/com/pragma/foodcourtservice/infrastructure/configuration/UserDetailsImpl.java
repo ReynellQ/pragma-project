@@ -1,7 +1,7 @@
-package com.pragma.userservice.infrastructure.configuration;
+package com.pragma.foodcourtservice.infrastructure.configuration;
 
-import com.pragma.userservice.domain.model.Role;
-import com.pragma.userservice.domain.model.User;
+import com.pragma.foodcourtservice.domain.model.Role;
+import com.pragma.foodcourtservice.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +27,7 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        System.out.println(r.getName());
-        authorities.add(new SimpleGrantedAuthority(r.getName()+""));
+        authorities.add(new SimpleGrantedAuthority(u.getIdRole()+""));
         return authorities;
     }
     public String getRole(){

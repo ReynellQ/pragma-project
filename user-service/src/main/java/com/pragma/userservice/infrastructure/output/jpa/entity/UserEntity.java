@@ -23,7 +23,6 @@ public class UserEntity {
     private String lastname;
     private String phone;
     private String email;
-    @Column(name = "pass_word")
     private String password;
     @Column(name = "id_role")
     private Integer idRole;
