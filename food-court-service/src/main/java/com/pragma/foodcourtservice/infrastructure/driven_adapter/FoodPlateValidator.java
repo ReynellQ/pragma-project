@@ -2,13 +2,12 @@ package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FoodPlateValidator implements IFoodPlateValidator {
     private final IRestaurantRepository restaurantRepository;
 
-    public FoodPlateValidator(IRestaurantRepository restaurantRepository) {
-        this.restaurantRepository = restaurantRepository;
-    }
 
     /**
      * Validates the price of the food plate. The price has to be positive.

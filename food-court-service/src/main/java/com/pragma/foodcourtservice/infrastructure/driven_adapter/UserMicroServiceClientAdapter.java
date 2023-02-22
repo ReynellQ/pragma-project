@@ -7,21 +7,18 @@ import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The implementation of the IUserMicroServiceClientPort interface. Defines the adapter of the SPI needed to
  * communicate with the User microservice. Implemented with Feign Client and Eureka Discover.
  */
+@RequiredArgsConstructor
 public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPort {
     private final UserFeignClientRest userServiceConnection;
     private final UserDtoMapper userDtoMapper;
     private final RolesDTOMapper rolesDTOMapper;
 
-    public UserMicroServiceClientAdapter(UserFeignClientRest userServiceConnection, UserDtoMapper userDtoMapper, RolesDTOMapper rolesDTOMapper) {
-        this.userServiceConnection = userServiceConnection;
-        this.userDtoMapper = userDtoMapper;
-        this.rolesDTOMapper = rolesDTOMapper;
-    }
     /**
      * Gets a user with the provided id.
      * @param personalId the id of the user.

@@ -1,6 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.configuration.jwt;
 
 import com.pragma.foodcourtservice.infrastructure.driven_adapter.AuthRequestInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,16 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final AuthRequestInterceptor authRequestInterceptor;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, AuthRequestInterceptor authRequestInterceptor) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.authRequestInterceptor = authRequestInterceptor;
-    }
 
     /**
      * Same contract as for {@code doFilter}, but guaranteed to be

@@ -5,7 +5,10 @@ import lombok.*;
 /**
  * A DTO to register a User, containing the needed data. It's the input of the API for register.
  */
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserRegister {
     private Long personalId;
     private String name;
