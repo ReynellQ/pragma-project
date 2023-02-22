@@ -27,6 +27,22 @@ public class UserRestController {
         userHandler.saveOwner(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
+    @PostMapping("/save/employee")
+    public ResponseEntity<Void> saveEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
+                                             @RequestBody UserRegister userRegister){
+        jwt = jwt.substring(7);
+        if(!jwtService.extractRole(jwt).equals("OWNER")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        userHandler.saveEmployee(userRegister);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> saveEmployee(@RequestBody UserRegister userRegister){
+        userHandler.saveClient(userRegister);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<UserDto> getUserByPersonalId(@PathVariable(name = "id") Long id){
@@ -38,15 +54,6 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.getUserByEmail(email));
     }
 
-    @PostMapping("/save/employee")
-    public ResponseEntity<Void> saveEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                             @RequestBody UserRegister userRegister){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        userHandler.saveOwner(userRegister);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
+
 
 }
