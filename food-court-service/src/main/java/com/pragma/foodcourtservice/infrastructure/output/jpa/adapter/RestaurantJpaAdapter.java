@@ -10,6 +10,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEm
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantEmployeeRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,21 +20,13 @@ import java.util.stream.Collectors;
  * Adapter of the restaurant persistence port that implements the RestaurantPersistencePort.
  * Uses the Spring Jpa technology.
  */
+@RequiredArgsConstructor
 public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     private final IRestaurantRepository restaurantRepository;
     private final IRestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantEntityMapper restaurantEntityMapper;
     private final RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
 
-    public RestaurantJpaAdapter(IRestaurantRepository restaurantRepository,
-                                IRestaurantEmployeeRepository restaurantEmployeeRepository,
-                                RestaurantEntityMapper restaurantEntityMapper,
-                                RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper) {
-        this.restaurantRepository = restaurantRepository;
-        this.restaurantEmployeeRepository = restaurantEmployeeRepository;
-        this.restaurantEntityMapper = restaurantEntityMapper;
-        this.restaurantEmployeeEntityMapper = restaurantEmployeeEntityMapper;
-    }
     /**
      * Saves a restaurant in the persistence layer. Saves in the JPA repository
      * @param restaurant the user to the saved.

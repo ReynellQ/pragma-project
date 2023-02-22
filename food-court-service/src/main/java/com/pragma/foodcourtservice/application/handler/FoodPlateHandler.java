@@ -6,6 +6,7 @@ import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,15 +18,11 @@ import javax.transaction.Transactional;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class FoodPlateHandler implements IFoodPlateHandler {
     private final IFoodPlateServicePort platoServicePort;
     private final FoodPlateDtoMapper foodPlateDtoMapper;
 
-
-    public FoodPlateHandler(IFoodPlateServicePort platoServicePort, FoodPlateDtoMapper foodPlateDtoMapper) {
-        this.platoServicePort = platoServicePort;
-        this.foodPlateDtoMapper = foodPlateDtoMapper;
-    }
     /**
      * Saves the data of a food plate in the application. Map the data of the register DTO to a food plate and calls the
      * service in charge of save the food plate.

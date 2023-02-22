@@ -4,20 +4,18 @@ import com.pragma.userservice.domain.model.Role;
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final IUserPersistencePort userPersistencePort;
     private final IRolesPersistencePort rolesPersistencePort;
 
-    public UserDetailsServiceImpl(IUserPersistencePort userPersistencePort, IRolesPersistencePort rolesPersistencePort) {
-        this.userPersistencePort = userPersistencePort;
-        this.rolesPersistencePort = rolesPersistencePort;
-    }
 
     /**
      * Locates the user based on the username. In the actual implementation, the search

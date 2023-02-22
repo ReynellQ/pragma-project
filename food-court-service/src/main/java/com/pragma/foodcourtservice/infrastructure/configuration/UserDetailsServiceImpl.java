@@ -3,18 +3,17 @@ package com.pragma.foodcourtservice.infrastructure.configuration;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final IUserMicroServiceClientPort userClientPort;
 
-    public UserDetailsServiceImpl(IUserMicroServiceClientPort userClientPort) {
-        this.userClientPort = userClientPort;
-    }
 
     /**
      * Locates the user based on the username. In the actual implementation, the search

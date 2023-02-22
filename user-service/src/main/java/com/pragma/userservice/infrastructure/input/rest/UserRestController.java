@@ -39,7 +39,7 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> saveEmployee(@RequestBody UserRegister userRegister){
+    public ResponseEntity<Void> saveClient(@RequestBody UserRegister userRegister){
         userHandler.saveClient(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

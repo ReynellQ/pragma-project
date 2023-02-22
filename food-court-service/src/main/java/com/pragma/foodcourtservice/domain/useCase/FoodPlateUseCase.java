@@ -14,11 +14,13 @@ import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Class FoodPlateUseCase that implements the interface IFoodPlateServicePort, and defines the business logic that be
  * used by the API.
  */
+@RequiredArgsConstructor
 public class FoodPlateUseCase implements IFoodPlateServicePort {
     private final IRestaurantPersistencePort restaurantPersistencePort;
     private final ICategoryPersistencePort categoryPersistencePort;
@@ -26,16 +28,6 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     private final IFoodPlateValidator platoValidator;
     private final IUserMicroServiceClientPort userClientPort;
 
-    public FoodPlateUseCase(IRestaurantPersistencePort restaurantPersistencePort,
-                            ICategoryPersistencePort categoryPersistencePort,
-                            IFoodPlatePersistencePort platoPersistencePort, IFoodPlateValidator platoValidator,
-                            IUserMicroServiceClientPort userClientPort) {
-        this.restaurantPersistencePort = restaurantPersistencePort;
-        this.categoryPersistencePort = categoryPersistencePort;
-        this.platoPersistencePort = platoPersistencePort;
-        this.platoValidator = platoValidator;
-        this.userClientPort = userClientPort;
-    }
     /**
      * Saves a food plate in the application. Validates if the id of the restaurant belongs to an existing restaurant
      * and if the price of the food plate is valid, if the user exists and is an owner, and if the user is the owner

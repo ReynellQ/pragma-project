@@ -8,24 +8,19 @@ import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Class UserUseCase that implements the interface IUserServicePort, and defines the business logic that be used by the
  * API.
  */
+@RequiredArgsConstructor
 public class UserUseCase implements IUserServicePort {
     private final IUserPersistencePort personaPersistencePort;
     private final IRolesPersistencePort rolesPersistencePort;
     private final IUserValidator personaChecker;
     private final IAuth auth;
 
-    public UserUseCase(IUserPersistencePort personaPersistencePort,
-                       IRolesPersistencePort rolesPersistencePort, IUserValidator personaChecker, IAuth auth){
-        this.personaPersistencePort = personaPersistencePort;
-        this.rolesPersistencePort = rolesPersistencePort;
-        this.personaChecker = personaChecker;
-        this.auth = auth;
-    }
     /**
      * Gets a user that has the id provided, searching it in the persistence layer.
      * @param personalId the id of the user searched.

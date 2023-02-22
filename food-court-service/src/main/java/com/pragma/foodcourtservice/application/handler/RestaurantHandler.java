@@ -7,6 +7,7 @@ import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RestaurantEmployeeDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
 import com.pragma.foodcourtservice.domain.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,17 +21,12 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RestaurantHandler implements IRestaurantHandler {
     private final IRestaurantServicePort restaurantServicePort;
     private final RestaurantDtoMapper restaurantDtoMapper;
     private final RestaurantEmployeeDtoMapper restaurantEmployeeDtoMapper;
 
-    public RestaurantHandler(IRestaurantServicePort restaurantServicePort, RestaurantDtoMapper restaurantDtoMapper,
-                             RestaurantEmployeeDtoMapper restaurantEmployeeDtoMapper) {
-        this.restaurantServicePort = restaurantServicePort;
-        this.restaurantDtoMapper = restaurantDtoMapper;
-        this.restaurantEmployeeDtoMapper = restaurantEmployeeDtoMapper;
-    }
 
     /**
      * Saves the data of a restaurant in the application. Map the data of the restaurant to register and calls the

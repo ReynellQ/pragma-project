@@ -4,6 +4,7 @@ import com.pragma.userservice.domain.api.IAuth;
 import com.pragma.userservice.infrastructure.configuration.jwt.JwtService;
 import com.pragma.userservice.infrastructure.configuration.UserDetailsImpl;
 import com.pragma.userservice.infrastructure.configuration.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,19 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 /**
  * Implementation of the interface IAuth with modules of Spring Security.
  */
+@RequiredArgsConstructor
 public class AuthService implements IAuth {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public AuthService(PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authManager,
-                       UserDetailsServiceImpl userDetailsService) {
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authManager = authManager;
-        this.userDetailsService = userDetailsService;
-    }
 
     /**
      * Encrypt a raw password and returns it. It uses the "bcrypt" algorithm provided by Spring Security.

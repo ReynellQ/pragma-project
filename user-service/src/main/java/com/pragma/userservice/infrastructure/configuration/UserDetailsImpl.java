@@ -2,6 +2,7 @@ package com.pragma.userservice.infrastructure.configuration;
 
 import com.pragma.userservice.domain.model.Role;
 import com.pragma.userservice.domain.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     private final User u;
     private final Role r;
-
-    public UserDetailsImpl(User u, Role r) {
-        this.u = u;
-        this.r = r;
-    }
 
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.
