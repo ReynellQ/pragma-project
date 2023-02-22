@@ -1,9 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateDto;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.*;
 import com.pragma.foodcourtservice.application.handler.FoodPlateHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
 import org.springframework.http.HttpHeaders;
@@ -46,21 +43,27 @@ public class FoodPlateRestController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    /**
-     * TODO Protect this endpoint
-     * @param foodPlateChangeState
-     * @return
-     */
     @PostMapping("/changeState")
-    public ResponseEntity<Void> changeStateFoodPlate(@RequestBody FoodPlateChangeState foodPlateChangeState){
-        handler.changeStateFoodPlate(foodPlateChangeState);
+    public ResponseEntity<Void> changeStateFoodPlate(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
+                                                     @RequestBody FoodPlateChangeState foodPlateChangeState){
+        jwt = jwt.substring(7);
+        if(!verifyRole(jwt, "OWNER")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        String email = jwtService.extractUsername(jwt);
+        handler.changeStateFoodPlate(email, foodPlateChangeState);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @GetMapping("/list/{restaurant}")
-    public ResponseEntity<List<FoodPlateDto>> listFoodPlatesOfRestaurantToClient(@PathVariable Long restaurant){
-        return ResponseEntity.ok().body(List.of());
+    @GetMapping("/list/{restaurant}/{page}/{number}")
+    public ResponseEntity<List<FoodPlateDto>> listFoodPlatesOfRestaurantToClient(
+            @PathVariable Long restaurant,
+            @PathVariable int page,
+            @PathVariable int number,
+            @RequestBody CategoryList categoryList){
+        return ResponseEntity.ok().body(handler.listTheFoodPlatesByCategory(restaurant, categoryList, page, number));
     }
+
 
     private boolean verifyRole(String jwt, String expectedRole){
         return jwtService.extractRole(jwt).equals(expectedRole);

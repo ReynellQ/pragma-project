@@ -168,4 +168,8 @@ class FoodPlateUseCaseTest {
     @Test
     void changeStateFoodPlate() {
     }
+
+    @Test
+    void listTheFoodPlatesByCategory() {
+    }
 }

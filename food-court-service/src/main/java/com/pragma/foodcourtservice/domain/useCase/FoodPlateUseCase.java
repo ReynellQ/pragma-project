@@ -16,6 +16,8 @@ import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 /**
  * Class FoodPlateUseCase that implements the interface IFoodPlateServicePort, and defines the business logic that be
  * used by the API.
@@ -24,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class FoodPlateUseCase implements IFoodPlateServicePort {
     private final IRestaurantPersistencePort restaurantPersistencePort;
     private final ICategoryPersistencePort categoryPersistencePort;
-    private final IFoodPlatePersistencePort platoPersistencePort;
-    private final IFoodPlateValidator platoValidator;
+    private final IFoodPlatePersistencePort foodPlatePersistencePort;
+    private final IFoodPlateValidator foodPlateValidator;
     private final IUserMicroServiceClientPort userClientPort;
 
     /**
@@ -37,25 +39,13 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      */
     @Override
     public void saveFoodPlate(String email, FoodPlate foodPlate) {
-        //Add business logic
-        User user = userClientPort.getUserByEmail(email);
-        //Verifies if is an owner
-        if(user.getIdRole() != ROLES.OWNER.id){
-            throw new NotAnOwnerException();
-        }
-
-        Restaurant r = restaurantPersistencePort.getRestaurant(
-                foodPlate.getIdRestaurant()   //Search the restaurant and throws an exception if it doesn't exist
-        );
-        if(r.getIdOwner() != user.getId()){ //The current user isn't the owner of this restaurant
-            throw new NotAllowedRestaurantException();
-        }
+        verifyingOwnersAuthenticity(email, foodPlate.getIdRestaurant());
         categoryPersistencePort.getCategory(
                 foodPlate.getIdCategory()   //Search the category and throws an exception if it doesn't exist
         );
-        if(!platoValidator.validatesPrice(foodPlate.getPrice()))
+        if(!foodPlateValidator.validatesPrice(foodPlate.getPrice()))
             throw new IncorrectDataException();
-        platoPersistencePort.saveFoodPlate(foodPlate);
+        foodPlatePersistencePort.saveFoodPlate(foodPlate);
     }
     /**
      * Updates a food plate in the application. Validates if the only submitted data is the description and the price,
@@ -66,23 +56,8 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      */
     @Override
     public FoodPlate updateFoodPlate(String email, FoodPlate foodPlate) {
-        FoodPlate foodPlateToUpdate = platoPersistencePort.getFoodPlate(foodPlate.getId());
-
-        //Add business logic
-        User user = userClientPort.getUserByEmail(email);
-        //Verifies if is an owner
-        if(user.getIdRole() != ROLES.OWNER.id){
-            throw new NotAnOwnerException();
-        }
-
-        Restaurant r = restaurantPersistencePort.getRestaurant(
-                foodPlateToUpdate.getIdRestaurant()   //Search the restaurant and throws an exception if it doesn't exist
-        );
-        if(r.getIdOwner() != user.getId()){ //The current user isn't the owner of this restaurant
-            throw new NotAllowedRestaurantException();
-        }
-
-
+        FoodPlate foodPlateToUpdate = foodPlatePersistencePort.getFoodPlate(foodPlate.getId());
+        verifyingOwnersAuthenticity(email, foodPlateToUpdate.getIdRestaurant());
         //No puede cambiar el estado de activo
         if(!foodPlateToUpdate.getActive().equals(foodPlate.getActive()) && foodPlate.getActive()!=null)
             throw new ForbiddenUpdateException();
@@ -98,9 +73,9 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
         //Solo actualizamos el precio si no es nulo
         if(foodPlate.getPrice() != null)
             foodPlateToUpdate.setPrice(foodPlate.getPrice());
-        if(!platoValidator.validatesPrice(foodPlateToUpdate.getPrice()))
+        if(!foodPlateValidator.validatesPrice(foodPlateToUpdate.getPrice()))
             throw new IncorrectDataException();
-        return platoPersistencePort.updateFoodPlate(foodPlateToUpdate);
+        return foodPlatePersistencePort.updateFoodPlate(foodPlateToUpdate);
     }
 
     /**
@@ -109,9 +84,39 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      * @param foodPlate the food plate
      */
     @Override
-    public void changeStateFoodPlate(FoodPlate foodPlate) {
-        FoodPlate foodPlateToUpdate = platoPersistencePort.getFoodPlate(foodPlate.getId());
+    public void changeStateFoodPlate(String email, FoodPlate foodPlate) {
+        FoodPlate foodPlateToUpdate = foodPlatePersistencePort.getFoodPlate(foodPlate.getId());
+        verifyingOwnersAuthenticity(email, foodPlateToUpdate.getIdRestaurant());
         foodPlateToUpdate.setActive(foodPlate.getActive());
-        platoPersistencePort.updateFoodPlate(foodPlateToUpdate);
+        foodPlatePersistencePort.updateFoodPlate(foodPlateToUpdate);
+    }
+
+    /**
+     * List all the food plates of a restaurant that have one of the submitted categories. If the list of categories
+     * is empty, provide from all categories.
+     * @param idRestaurant the id of the restaurant.
+     * @param categories the list of the category's ids.
+     * @param page the number of the page.
+     * @param number the number of food plates displayed in the current page.
+     *
+     * @return a list with the food plates.
+     */
+    @Override
+    public List<FoodPlate> listTheFoodPlatesByCategory(Long idRestaurant, List<Long> categories, int page, int number) {
+        return foodPlatePersistencePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number);
+    }
+
+    private void verifyingOwnersAuthenticity(String email, Long idRestaurant){
+        User user = userClientPort.getUserByEmail(email);
+        //Verifies if is an owner
+        if(user.getIdRole() != ROLES.OWNER.id){
+            throw new NotAnOwnerException();
+        }
+        Restaurant r = restaurantPersistencePort.getRestaurant(
+                idRestaurant   //Search the restaurant and throws an exception if it doesn't exist
+        );
+        if(r.getIdOwner() != user.getId()){ //The current user isn't the owner of this restaurant
+            throw new NotAllowedRestaurantException();
+        }
     }
 }
