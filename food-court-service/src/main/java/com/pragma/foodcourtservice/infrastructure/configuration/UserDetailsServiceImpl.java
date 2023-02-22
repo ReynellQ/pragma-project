@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.configuration;
 
+import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final IUserMicroServiceClientPort userClientPort;
-
+    private final IPersistentLoggedUser persistentLoggedUser;
 
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -31,6 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userClientPort.getUserByEmail(username);
         Role role = userClientPort.getRolesUser(user.getPersonalId());
+        persistentLoggedUser.setLoggedUser(user);
+        persistentLoggedUser.setRoleOfLoggedUser(role);
         return new UserDetailsImpl(user, role);
     }
 }
