@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.application.dto;
+package com.pragma.foodcourtservice.application.dto.users;
 
 public class RoleDto {
     private Integer id;

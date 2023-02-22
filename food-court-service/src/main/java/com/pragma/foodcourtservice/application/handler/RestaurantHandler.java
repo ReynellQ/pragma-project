@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantClientResponse;
-import com.pragma.foodcourtservice.application.dto.RestaurantCreateDto;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantClientResponse;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDto;
 import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
 import org.springframework.stereotype.Service;

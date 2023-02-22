@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantClientResponse;
-import com.pragma.foodcourtservice.application.dto.RestaurantCreateDto;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantClientResponse;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDto;
 import com.pragma.foodcourtservice.application.handler.IRestaurantHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
 import org.springframework.http.HttpHeaders;

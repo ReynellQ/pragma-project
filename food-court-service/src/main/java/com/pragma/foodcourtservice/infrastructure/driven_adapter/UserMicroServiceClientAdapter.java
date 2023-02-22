@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
-import com.pragma.foodcourtservice.application.dto.UserDto;
+import com.pragma.foodcourtservice.application.dto.users.UserDto;
 import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.Role;

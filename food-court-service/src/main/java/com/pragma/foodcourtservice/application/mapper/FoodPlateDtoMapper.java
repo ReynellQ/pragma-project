@@ -1,8 +1,8 @@
 package com.pragma.foodcourtservice.application.mapper;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

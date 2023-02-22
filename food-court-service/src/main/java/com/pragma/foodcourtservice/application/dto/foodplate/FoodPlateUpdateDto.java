@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.application.dto;
+package com.pragma.foodcourtservice.application.dto.foodplate;
 
 /**
  * A DTO to update a food plate.

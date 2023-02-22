@@ -1,9 +1,9 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.FoodPlateDto;
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.application.handler.FoodPlateHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.application.dto;
+package com.pragma.foodcourtservice.application.dto.foodplate;
 
 public class FoodPlateChangeState {
     private Long id;
