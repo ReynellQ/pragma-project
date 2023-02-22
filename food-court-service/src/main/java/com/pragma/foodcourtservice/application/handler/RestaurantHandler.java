@@ -2,8 +2,11 @@ package com.pragma.foodcourtservice.application.handler;
 
 import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantClientResponse;
 import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDto;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantEmployeeDto;
 import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
+import com.pragma.foodcourtservice.application.mapper.RestaurantEmployeeDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
+import com.pragma.foodcourtservice.domain.model.User;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,10 +23,13 @@ import java.util.stream.Collectors;
 public class RestaurantHandler implements IRestaurantHandler {
     private final IRestaurantServicePort restaurantServicePort;
     private final RestaurantDtoMapper restaurantDtoMapper;
+    private final RestaurantEmployeeDtoMapper restaurantEmployeeDtoMapper;
 
-    public RestaurantHandler(IRestaurantServicePort restaurantServicePort, RestaurantDtoMapper restaurantDtoMapper) {
+    public RestaurantHandler(IRestaurantServicePort restaurantServicePort, RestaurantDtoMapper restaurantDtoMapper,
+                             RestaurantEmployeeDtoMapper restaurantEmployeeDtoMapper) {
         this.restaurantServicePort = restaurantServicePort;
         this.restaurantDtoMapper = restaurantDtoMapper;
+        this.restaurantEmployeeDtoMapper = restaurantEmployeeDtoMapper;
     }
 
     /**
@@ -32,8 +38,8 @@ public class RestaurantHandler implements IRestaurantHandler {
      * @param restaurant the DTO with the data of the owner to register.
      */
     @Override
-    public void saveRestaurant(String email, RestaurantCreateDto restaurant) {
-        restaurantServicePort.saveRestaurant(email, restaurantDtoMapper.toRestaurant(restaurant));
+    public void saveRestaurant(String emailCreator, RestaurantCreateDto restaurant) {
+        restaurantServicePort.saveRestaurant(emailCreator, restaurantDtoMapper.toRestaurant(restaurant));
     }
 
     /**
@@ -50,5 +56,17 @@ public class RestaurantHandler implements IRestaurantHandler {
                 .stream()
                 .map( (restaurant -> restaurantDtoMapper.toClientResponse(restaurant)))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Saves the data of a restaurant's employee in the application. Maps the user data, the restaurant ID and
+     * delegates the service port the saving and linking to the restaurant.
+     *
+     * @param restaurantEmployeeDto the data of the employee
+     */
+    @Override
+    public void saveAnEmployeeOfARestaurant(String emailCreator, RestaurantEmployeeDto restaurantEmployeeDto) {
+        User user = restaurantEmployeeDtoMapper.toUser(restaurantEmployeeDto);
+        restaurantServicePort.saveAnEmployeeOfARestaurant(emailCreator, user, restaurantEmployeeDto.getIdRestaurant());
     }
 }

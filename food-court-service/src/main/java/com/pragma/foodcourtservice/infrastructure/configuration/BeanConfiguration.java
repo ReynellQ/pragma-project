@@ -20,9 +20,11 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.FoodPlateJp
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestaurantJpaAdapter;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.FoodPlateEntityMapper;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEmployeeEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.ICategoryRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IFoodPlateRepository;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantEmployeeRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +42,7 @@ public class BeanConfiguration {
 
     private final RestaurantDtoMapper restaurantDTOMapper;
     private final RolesDTOMapper rolesDTOMapper;
-
+    private final IRestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantEntityMapper restaurantEntityMapper;
     private final FoodPlateEntityMapper foodPlateEntityMapper;
     private final CategoryEntityMapper categoryEntityMapper;
@@ -50,14 +52,16 @@ public class BeanConfiguration {
     private final UserDtoMapper userDtoMapper;
     private final UserFeignClientRest userFeignClientRest;
     private final AuthenticationConfiguration authConfiguration;
+    private final RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
 
 
     public BeanConfiguration(FoodPlateDtoMapper foodPlateDTOMapper, RestaurantDtoMapper restaurantDTOMapper,
-                             RolesDTOMapper rolesDTOMapper, RestaurantEntityMapper restaurantEntityMapper, FoodPlateEntityMapper foodPlateEntityMapper,
-                             CategoryEntityMapper categoryEntityMapper, IRestaurantRepository restaurantRepository, IFoodPlateRepository foodPlateRepository, ICategoryRepository categoryRepository, UserDtoMapper userDtoMapper, UserFeignClientRest userFeignClientRest, AuthenticationConfiguration authConfiguration) {
+                             RolesDTOMapper rolesDTOMapper, IRestaurantEmployeeRepository restaurantEmployeeRepository, RestaurantEntityMapper restaurantEntityMapper, FoodPlateEntityMapper foodPlateEntityMapper,
+                             CategoryEntityMapper categoryEntityMapper, IRestaurantRepository restaurantRepository, IFoodPlateRepository foodPlateRepository, ICategoryRepository categoryRepository, UserDtoMapper userDtoMapper, UserFeignClientRest userFeignClientRest, AuthenticationConfiguration authConfiguration, RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper) {
         this.foodPlateDTOMapper = foodPlateDTOMapper;
         this.restaurantDTOMapper = restaurantDTOMapper;
         this.rolesDTOMapper = rolesDTOMapper;
+        this.restaurantEmployeeRepository = restaurantEmployeeRepository;
         this.restaurantEntityMapper = restaurantEntityMapper;
         this.foodPlateEntityMapper = foodPlateEntityMapper;
         this.categoryEntityMapper = categoryEntityMapper;
@@ -67,6 +71,7 @@ public class BeanConfiguration {
         this.userDtoMapper = userDtoMapper;
         this.userFeignClientRest = userFeignClientRest;
         this.authConfiguration = authConfiguration;
+        this.restaurantEmployeeEntityMapper = restaurantEmployeeEntityMapper;
     }
 
 
@@ -80,7 +85,7 @@ public class BeanConfiguration {
     }
     @Bean
     public IRestaurantPersistencePort restaurantPersistencePort(){
-        return new RestaurantJpaAdapter(restaurantRepository, restaurantEntityMapper);
+        return new RestaurantJpaAdapter(restaurantRepository, restaurantEmployeeRepository, restaurantEntityMapper, restaurantEmployeeEntityMapper);
     }
     @Bean
     public IUserMicroServiceClientPort userClientPort(){

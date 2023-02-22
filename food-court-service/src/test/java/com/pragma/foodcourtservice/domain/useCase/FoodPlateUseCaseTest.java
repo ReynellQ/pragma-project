@@ -1,5 +1,8 @@
-package com.pragma.foodcourtservice;
+package com.pragma.foodcourtservice.domain.useCase;
 
+import com.pragma.foodcourtservice.CategoryData;
+import com.pragma.foodcourtservice.FoodPlateData;
+import com.pragma.foodcourtservice.RestaurantData;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
 import com.pragma.foodcourtservice.domain.exception.*;
@@ -8,21 +11,15 @@ import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
-import com.pragma.foodcourtservice.domain.useCase.FoodPlateUseCase;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Not implemented.
- */
-@SpringBootTest
-public class IFoodPlateServicePortTests {
+class FoodPlateUseCaseTest {
     IRestaurantPersistencePort restaurantPersistencePort;
     ICategoryPersistencePort categoryPersistencePort;
     IFoodPlatePersistencePort foodPlatePersistencePort;
@@ -95,7 +92,7 @@ public class IFoodPlateServicePortTests {
      * with the extraction of the JWT, so it's not implemented here.
      */
     @Test
-    void saveAFoodPlate(){
+    void saveFoodPlate() {
         //The food plate has to save correctly.
         assertDoesNotThrow(()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_001.getEmail(),
                 FoodPlateData.VALID_FOOD_PLATE));
@@ -132,7 +129,7 @@ public class IFoodPlateServicePortTests {
      * - Saves the food plate correctly.
      */
     @Test
-    void updateAFoodPlate(){
+    void updateFoodPlate() {
         FoodPlate test = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
         //Ensures that the new object (test) has the same ID as FOOD_PLATE_001
         assertTrue(FoodPlateData.FOOD_PLATE_001.getId() == test.getId());
@@ -163,8 +160,12 @@ public class IFoodPlateServicePortTests {
         //Fails, the price is OK but the idRestaurant changed.
         test.setPrice(FoodPlateData.FOOD_PLATE_001.getPrice());
         test.setIdRestaurant(RestaurantData.NON_INSERTED_RESTAURANT.getId());
-        assertThrows(RestaurantNotFoundException.class,
+        assertThrows(ForbiddenUpdateException.class,
                 () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
                         test));
+    }
+
+    @Test
+    void changeStateFoodPlate() {
     }
 }

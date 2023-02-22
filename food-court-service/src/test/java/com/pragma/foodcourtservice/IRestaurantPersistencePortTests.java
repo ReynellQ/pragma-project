@@ -3,8 +3,10 @@ package com.pragma.foodcourtservice;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestaurantJpaAdapter;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEmployeeEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapperImpl;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantEmployeeRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +22,16 @@ public class IRestaurantPersistencePortTests {
     RestaurantEntityMapper restaurantEntityMapper;
     IRestaurantRepository restaurantRepository;
     IRestaurantPersistencePort restaurantPersistencePort;
+    IRestaurantEmployeeRepository restaurantEmployeeRepository;
+    RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
 
     @BeforeEach
     void setUp(){
         restaurantEntityMapper = new RestaurantEntityMapperImpl();
         restaurantRepository = mock(IRestaurantRepository.class);
-        restaurantPersistencePort = new RestaurantJpaAdapter(restaurantRepository, restaurantEntityMapper);
+        restaurantEmployeeEntityMapper = mock(RestaurantEmployeeEntityMapper.class);
+        restaurantPersistencePort = new RestaurantJpaAdapter(restaurantRepository, restaurantEmployeeRepository,
+                restaurantEntityMapper, restaurantEmployeeEntityMapper);
     }
 
     /**
