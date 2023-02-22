@@ -6,6 +6,7 @@ package com.pragma.userservice.domain.model;
  */
 public class User {
     private Long id;
+    private Long personalId;
     private String name;
     private String lastname;
     private String phone;
@@ -16,8 +17,9 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String lastname, String phone, String email, String password, Integer idRole) {
+    public User(Long id, Long personalId, String name, String lastname, String phone, String email, String password, Integer idRole) {
         this.id = id;
+        this.personalId = personalId;
         this.name = name;
         this.lastname = lastname;
         this.phone = phone;
@@ -136,5 +138,21 @@ public class User {
      */
     public void setIdRole(Integer idRole) {
         this.idRole = idRole;
+    }
+
+    /**
+     * Gets the personal ID of the user.
+     * @return a Long representing the personal ID.
+     */
+    public Long getPersonalId() {
+        return personalId;
+    }
+
+    /**
+     * Sets the personal ID of the user.
+     * @param personalId the personal ID.
+     */
+    public void setPersonalId(Long personalId) {
+        this.personalId = personalId;
     }
 }

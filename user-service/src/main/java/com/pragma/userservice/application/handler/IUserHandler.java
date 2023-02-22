@@ -1,5 +1,6 @@
 package com.pragma.userservice.application.handler;
 
+import com.pragma.userservice.application.dto.AuthResponse;
 import com.pragma.userservice.application.dto.UserDto;
 import com.pragma.userservice.application.dto.UserLoginDto;
 import com.pragma.userservice.application.dto.UserRegister;
@@ -13,12 +14,23 @@ public interface IUserHandler {
      * @param id the id of the user searched.
      * @return the UserDTO with the User's data with the id provided.
      */
-    UserDto getUser(Long id);
-    UserDto authUser(UserLoginDto userLoginDto);
-    void saveUser(UserDto personaModel);
+    UserDto getUserByPersonalId(Long id);
+    /**
+     * Gets a userDTO that has the email provided to expose to API.
+     * @param email the email of the user searched.
+     * @return the UserDTO with the User's data with the id provided.
+     */
+    UserDto getUserByEmail(String email);
+
+    /**
+     * Receives the credentials of a user to authenticate in the application.
+     * @param userLoginDto the information to the user to be authenticated.
+     * @return the AuthResponse with the auth data in a JWT.
+     */
+    AuthResponse authUser(UserLoginDto userLoginDto);
     /**
      * Saves the data of a user in the application.
      * @param userRegister the DTO with the data of the user to register.
      */
-    void saveUser(UserRegister userRegister);
+    void saveOwner(UserRegister userRegister);
 }

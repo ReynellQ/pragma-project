@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.application.mapper;
 
+import com.pragma.foodcourtservice.application.dto.FoodPlateChangeState;
 import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
 import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
@@ -11,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
  *
  * - FoodPlateRegisterDTO to FoodPlate
  * - FoodPlateUpdateDto to FoodPlate
+ * - FoodPlateChangeState to FoodPlate
  */
 @Mapper(
         componentModel = "spring",
@@ -20,4 +22,5 @@ import org.mapstruct.ReportingPolicy;
 public interface FoodPlateDtoMapper {
     FoodPlate toPlatoFromSave(FoodPlateRegisterDto foodPlateRegisterDTO);
     FoodPlate toPlatoFromUpdate(FoodPlateUpdateDto foodPlateUpdateDTO);
+    FoodPlate toChangeState(FoodPlateChangeState foodPlateChangeState);
 }

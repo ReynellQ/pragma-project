@@ -23,8 +23,8 @@ public interface UserDTOMapper {
     @Mapping(source = "userModel.name", target = "name")
     @Mapping(source = "role", target = "role")
     UserDto toDTO(User userModel, Role role);
-
-    User toRegister(UserRegister newPersona);
+    @Mapping(source = "idRole", target = "idRole")
+    User toRegister(UserRegister newPersona, Integer idRole);
 
     User toUser(UserDto dto);
 }

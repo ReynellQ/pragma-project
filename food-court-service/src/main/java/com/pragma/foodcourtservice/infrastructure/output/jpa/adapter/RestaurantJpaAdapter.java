@@ -7,7 +7,9 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEn
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Adapter of the restaurant persistence port that implements the RestaurantPersistencePort.
@@ -44,5 +46,21 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
         if(restaurantEntity.isEmpty())
             throw new RestaurantNotFoundException();
         return restaurantEntityMapper.toRestaurante(restaurantEntity.get());
+    }
+
+    /**
+         * TODO TESTING
+     * List an amount of restaurants corresponding to the <code>numberOfRestaurants</code>, sorted alphabetically, and
+     * displaying the number of page provided.
+     *
+     * @param numberOfRestaurant the number of restaurants displayed in the current page.
+     * @param page               the number of the page.
+     * @return the list of restaurants.
+     */
+    @Override
+    public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurant) {
+        return restaurantRepository.findAllSortedByNameAndPaginated(page*numberOfRestaurant, numberOfRestaurant)
+                .stream().map( (entity) -> restaurantEntityMapper.toRestaurante(entity))
+                .collect(Collectors.toList());
     }
 }

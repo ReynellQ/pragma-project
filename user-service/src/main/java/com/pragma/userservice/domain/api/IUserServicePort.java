@@ -8,10 +8,17 @@ import com.pragma.userservice.domain.model.User;
 public interface IUserServicePort {
     /**
      * Gets a user that has the id provided.
-     * @param id the id of the user searched.
+     * @param personalId the id of the user searched.
      * @return the User with the id provided.
      */
-    User getUser(Long id);
+    User getUserByPersonalId(Long personalId);
+
+    /**
+     * Gets a user that has the email provided.
+     * @param email the email of the user searched.
+     * @return the User with the email provided.
+     */
+    User getUserByEmail(String email);
 
     /**
      * Authenticates a user with the email and password provided and return that user.
@@ -19,7 +26,7 @@ public interface IUserServicePort {
      * @param password the password of the user.
      * @return the User to be authenticated.
      */
-    User authUser(String email, String password);
+    String authUser(String email, String password);
 
     /**
      * Saves an owner in the application.

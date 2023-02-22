@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.application.mapper;
 
-
 import com.pragma.foodcourtservice.application.dto.UserDto;
+import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,11 +16,15 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(
         componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {RolesDTOMapper.class}
 )
 public interface UserDtoMapper {
+    @Mapping(source = "userModel.id", target = "id")
+    @Mapping(source = "userModel.name", target = "name")
+    @Mapping(source = "role", target = "role")
+    UserDto toDTO(User userModel, Role role);
 
-
-    @Mapping(source = "role.id", target = "idRole")
+    @Mapping(source = "dto.role.id", target = "idRole")
     User toUser(UserDto dto);
 }

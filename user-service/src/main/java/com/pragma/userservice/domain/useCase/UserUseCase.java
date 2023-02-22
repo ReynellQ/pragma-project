@@ -28,30 +28,41 @@ public class UserUseCase implements IUserServicePort {
     }
     /**
      * Gets a user that has the id provided, searching it in the persistence layer.
-     * @param id the id of the user searched.
+     * @param personalId the id of the user searched.
      * @return the User with the id provided.
      */
     @Override
-    public User getUser(Long id) {
-        return personaPersistencePort.getUser(id);
+    public User getUserByPersonalId(Long personalId) {
+        return personaPersistencePort.getUserByPersonalId(personalId);
+    }
+
+    /**
+     * Gets a user that has the email provided.
+     *
+     * @param email the email of the user searched.
+     * @return the User with the email provided.
+     */
+    @Override
+    public User getUserByEmail(String email) {
+        return personaPersistencePort.getUserByEmail(email);
     }
 
 
     /**
+     * ! RE-DOCUMENT THIS CODE
      * Authenticates a user with the email and password provided, comparing with the user in the persistence layer that
      * has the password ciphered, and return that user if the credentials match. Throws an exception if the credentials
      * doesn't match with some user on the database.
      * @param email the email of the user.
      * @param password the password of the user.
      * @return the User to be authenticated.
-     * @throws IncorrectCredentialsException
+     * @throws IncorrectCredentialsException if the credentials are not valid to log in the application
      */
     @Override
-    public User authUser(String email, String password) {
+    public String authUser(String email, String password) {
         User p = personaPersistencePort.getUserByEmail(email);
-        if(!p.getPassword().equals(password))
-            throw new IncorrectCredentialsException();
-        return p;
+
+        return auth.authenticateUser(email, password);
     }
 
     /**

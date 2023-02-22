@@ -16,4 +16,10 @@ public interface IAuth {
      * @return true if the raw password is the same that the encrypted password.
      */
     boolean comparePasswords(String rawPassword, String encryptedPassword);
+
+    /**
+     * Authenticates a user and returns the JWT to use the application.
+     * @return
+     */
+    String authenticateUser(String email, String password);
 }

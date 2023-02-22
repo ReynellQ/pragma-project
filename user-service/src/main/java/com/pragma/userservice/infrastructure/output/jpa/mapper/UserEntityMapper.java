@@ -16,6 +16,6 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface UserEntityMapper {
     UserEntity toEntity(User user);
-    User toPersona(UserEntity userEntity);
+    User toUser(UserEntity userEntity);
 
 }

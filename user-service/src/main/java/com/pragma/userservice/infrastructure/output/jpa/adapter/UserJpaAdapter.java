@@ -25,11 +25,11 @@ public class UserJpaAdapter implements IUserPersistencePort {
      * @return the User with the id provided.
      */
     @Override
-    public User getUser(Long id) {
-        Optional<UserEntity> personaEntity = userRepository.findById(id);
+    public User getUserByPersonalId(Long id) {
+        Optional<UserEntity> personaEntity = userRepository.findByPersonalId(id);
         if(personaEntity.isEmpty())
             throw new UserNotFoundException();
-        return userEntityMapper.toPersona(personaEntity.get());
+        return userEntityMapper.toUser(personaEntity.get());
     }
     /**
      * Gets a user that has the email provided. It's assumed that aren't more the one user with the same email.
@@ -39,10 +39,10 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public User getUserByEmail(String email) {
-        Optional<UserEntity> personaEntity = userRepository.findByEmail(email);
-        if(personaEntity.isEmpty())
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+        if(userEntity.isEmpty())
             throw new UserNotFoundException();
-        return userEntityMapper.toPersona(personaEntity.get());
+        return userEntityMapper.toUser(userEntity.get());
     }
     /**
      * Saves a user in the persistence layer. Saves in the JPA repository
@@ -50,14 +50,13 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public void saveUser(User userModel) {
-        Optional<UserEntity> userEntity = userRepository.findById(userModel.getId());
+        Optional<UserEntity> userEntity = userRepository.findByPersonalId(userModel.getId());
         if(userEntity.isPresent())
             throw new UserConflictForIdException();
         userEntity = userRepository.findByEmail(userModel.getEmail());
         if(userEntity.isPresent())
             throw new UserConflictForEmailException();
         UserEntity pe = userEntityMapper.toEntity(userModel);
-        pe.setId(userModel.getId());
         userRepository.save(pe);
     }
 }

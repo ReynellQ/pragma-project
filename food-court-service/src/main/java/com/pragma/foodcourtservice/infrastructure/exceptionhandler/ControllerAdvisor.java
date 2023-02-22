@@ -1,6 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
+import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
 import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
 import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
@@ -32,7 +33,10 @@ public class ControllerAdvisor {
             Map.entry(UserNotFoundException.class,
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The users doesn't exists.")),
             Map.entry(CategoryNotFoundException.class,
-                    new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The category doesn't exists."))
+                    new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The category doesn't exists.")),
+            Map.entry(NotAllowedRestaurantException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The current user is not allowed to " +
+                            "insert data referent to this restaurant."))
     );
 
     @ExceptionHandler(Exception.class)

@@ -6,6 +6,7 @@ package com.pragma.foodcourtservice.domain.model;
  */
 public class User {
     private Long id;
+    private Long personalId;
     private String name;
     private String lastname;
     private String phone;
@@ -16,8 +17,10 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String lastname, String phone, String email, String password, Integer idRole) {
+    public User(Long id, Long personalId, String name, String lastname, String phone, String email, String password,
+                Integer idRole) {
         this.id = id;
+        this.personalId = personalId;
         this.name = name;
         this.lastname = lastname;
         this.phone = phone;
@@ -31,16 +34,16 @@ public class User {
      * @return a Long value representing the id.
      */
 
-    public Long getId() {
-        return id;
+    public Long getPersonalId() {
+        return personalId;
     }
 
     /**
      * Sets the id of the user
-     * @param id the id of the user.
+     * @param personalId the id of the user.
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setPersonalId(Long personalId) {
+        this.personalId = personalId;
     }
 
     /**
@@ -136,5 +139,13 @@ public class User {
      */
     public void setIdRole(Integer idRole) {
         this.idRole = idRole;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
