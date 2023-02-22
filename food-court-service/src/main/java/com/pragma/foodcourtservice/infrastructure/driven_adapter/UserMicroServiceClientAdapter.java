@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.driven_adapter;
 
-import com.pragma.foodcourtservice.application.dto.UserDto;
+import com.pragma.foodcourtservice.application.dto.users.UserDto;
 import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.Role;
@@ -13,7 +13,6 @@ import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundExceptio
  * communicate with the User microservice. Implemented with Feign Client and Eureka Discover.
  */
 public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPort {
-    public static String jwt = "xd";
     private final UserFeignClientRest userServiceConnection;
     private final UserDtoMapper userDtoMapper;
     private final RolesDTOMapper rolesDTOMapper;
@@ -75,5 +74,15 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
             throw new UserNotFoundException();
         }
         return response;
+    }
+
+    /**
+     * Saves an employee in the user microservice.
+     *
+     * @param employee the user of role "employee" to be saved.
+     */
+    @Override
+    public void saveAnEmployee(User employee) {
+        userServiceConnection.saveAnEmployee(employee);
     }
 }

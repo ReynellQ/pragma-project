@@ -29,7 +29,7 @@ public interface IUserServicePort {
     String authUser(String email, String password);
 
     /**
-     * Saves an owner in the application.
+     * Saves a user in the application.
      * @param userModel the user to the saved.
      */
     void saveUser(User userModel);

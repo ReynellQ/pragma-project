@@ -2,9 +2,13 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
+import com.pragma.foodcourtservice.domain.model.RestaurantEmployee;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEmployeeEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEntity;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEmployeeEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantEmployeeRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
 
 import java.util.List;
@@ -17,12 +21,18 @@ import java.util.stream.Collectors;
  */
 public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     private final IRestaurantRepository restaurantRepository;
+    private final IRestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantEntityMapper restaurantEntityMapper;
+    private final RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
 
     public RestaurantJpaAdapter(IRestaurantRepository restaurantRepository,
-                                RestaurantEntityMapper restaurantEntityMapper) {
+                                IRestaurantEmployeeRepository restaurantEmployeeRepository,
+                                RestaurantEntityMapper restaurantEntityMapper,
+                                RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper) {
         this.restaurantRepository = restaurantRepository;
+        this.restaurantEmployeeRepository = restaurantEmployeeRepository;
         this.restaurantEntityMapper = restaurantEntityMapper;
+        this.restaurantEmployeeEntityMapper = restaurantEmployeeEntityMapper;
     }
     /**
      * Saves a restaurant in the persistence layer. Saves in the JPA repository
@@ -45,7 +55,7 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
         Optional<RestaurantEntity> restaurantEntity = restaurantRepository.findById(id);
         if(restaurantEntity.isEmpty())
             throw new RestaurantNotFoundException();
-        return restaurantEntityMapper.toRestaurante(restaurantEntity.get());
+        return restaurantEntityMapper.toRestaurant(restaurantEntity.get());
     }
 
     /**
@@ -60,7 +70,18 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     @Override
     public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurant) {
         return restaurantRepository.findAllSortedByNameAndPaginated(page*numberOfRestaurant, numberOfRestaurant)
-                .stream().map( (entity) -> restaurantEntityMapper.toRestaurante(entity))
+                .stream().map( (entity) -> restaurantEntityMapper.toRestaurant(entity))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Register an existing employee in a restaurant.
+     *
+     * @param restaurantEmployee the restaurant's id and the employee's id
+     */
+    @Override
+    public void registerAnEmployee(RestaurantEmployee restaurantEmployee) {
+        RestaurantEmployeeEntity entity = restaurantEmployeeEntityMapper.toEntity(restaurantEmployee);
+        restaurantEmployeeRepository.save(entity);
     }
 }

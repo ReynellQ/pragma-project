@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.application.dto;
+package com.pragma.foodcourtservice.application.dto.restaurant;
 
 public class RestaurantClientResponse {
     private String name;

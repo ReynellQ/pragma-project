@@ -29,8 +29,22 @@ public interface IUserHandler {
      */
     AuthResponse authUser(UserLoginDto userLoginDto);
     /**
-     * Saves the data of a user in the application.
+     * Saves the data of an owner in the application.
      * @param userRegister the DTO with the data of the user to register.
      */
     void saveOwner(UserRegister userRegister);
+
+    /**
+     * Saves the data of an employee in the application.
+     * @param userRegister the DTO with the data of the user to register.
+     */
+    void saveEmployee(UserRegister userRegister);
+
+    /**
+     * Saves the data of a client in the application.
+     * @param userRegister the DTO with the data of the user to register.
+     */
+    void saveClient(UserRegister userRegister);
+
+
 }

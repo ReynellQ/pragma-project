@@ -49,24 +49,19 @@ public class UserUseCase implements IUserServicePort {
 
 
     /**
-     * ! RE-DOCUMENT THIS CODE
-     * Authenticates a user with the email and password provided, comparing with the user in the persistence layer that
-     * has the password ciphered, and return that user if the credentials match. Throws an exception if the credentials
-     * doesn't match with some user on the database.
+     * Authenticates a user with the email and password provided, calling the IAuth service in order to authenticate
+     * the user.
      * @param email the email of the user.
      * @param password the password of the user.
-     * @return the User to be authenticated.
-     * @throws IncorrectCredentialsException if the credentials are not valid to log in the application
+     * @return the String that contains the JWT of the authenticated user.
      */
     @Override
     public String authUser(String email, String password) {
-        User p = personaPersistencePort.getUserByEmail(email);
-
         return auth.authenticateUser(email, password);
     }
 
     /**
-     * Saves an owner in the application, checking first their data. It checks the email and the phone. Throws an
+     * Saves a user in the application, checking first their data. It checks the email and the phone. Throws an
      * exception if the data doesn't pass the validation.
      * @param userModel the user to the saved.
      * @throws IncorrectDataException

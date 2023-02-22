@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.application.dto;
+package com.pragma.foodcourtservice.application.dto.users;
 
 /**
  * A DTO for User. It's the output of the API for User.

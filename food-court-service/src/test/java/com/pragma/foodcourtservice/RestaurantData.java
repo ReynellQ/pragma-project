@@ -17,4 +17,7 @@ public class RestaurantData {
             "lalo2@gmail.com", "password", 2);
     public static final User NOT_A_OWNER = new User(2l, 2l, "Lalei", "Salamanca", "123",
             "lalei@gmail.com", "password", 3);
+
+    public static final User EMPLOYEE = new User(1000l, 1000l, "Empleado", "Random", "123",
+            "empleado@gmail.com", "password", 3);
 }

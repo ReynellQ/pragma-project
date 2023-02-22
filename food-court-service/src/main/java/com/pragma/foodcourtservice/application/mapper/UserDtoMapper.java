@@ -1,6 +1,6 @@
 package com.pragma.foodcourtservice.application.mapper;
 
-import com.pragma.foodcourtservice.application.dto.UserDto;
+import com.pragma.foodcourtservice.application.dto.users.UserDto;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import org.mapstruct.Mapper;

@@ -1,8 +1,8 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
 
 /**
  * Handler interface to communicate FoodPlateService and FoodPlateRestController.

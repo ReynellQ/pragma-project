@@ -1,6 +1,8 @@
 package com.pragma.foodcourtservice.domain.spi;
 
 import com.pragma.foodcourtservice.domain.model.Restaurant;
+import com.pragma.foodcourtservice.domain.model.RestaurantEmployee;
+import com.pragma.foodcourtservice.domain.model.User;
 
 import java.util.List;
 
@@ -29,4 +31,10 @@ public interface IRestaurantPersistencePort {
      * @return the list of restaurants.
      */
     List<Restaurant> listAllAlphabeticallyRestaurantsPaginated( int page, int numberOfRestaurants);
+
+    /**
+     * Register an existing employee in a restaurant.
+     * @param restaurantEmployee the restaurant's id and the employee's id
+     */
+    void registerAnEmployee(RestaurantEmployee restaurantEmployee);
 }

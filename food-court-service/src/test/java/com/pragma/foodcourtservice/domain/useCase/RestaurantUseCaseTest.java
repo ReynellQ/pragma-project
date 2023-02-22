@@ -1,5 +1,7 @@
-package com.pragma.foodcourtservice;
+package com.pragma.foodcourtservice.domain.useCase;
 
+import com.pragma.foodcourtservice.RestaurantData;
+import com.pragma.foodcourtservice.UserData;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
 import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
@@ -7,23 +9,23 @@ import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
-import com.pragma.foodcourtservice.domain.useCase.RestaurantUseCase;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class IRestaurantServiceTests {
+class RestaurantUseCaseTest {
+
     IUserMicroServiceClientPort userMicroServiceClientPort;
     IRestaurantValidator restaurantValidator;
     IRestaurantPersistencePort restaurantPersistencePort;
     IRestaurantServicePort restaurantServicePort;
+
 
     @BeforeEach
     void setUp(){
@@ -60,18 +62,8 @@ public class IRestaurantServiceTests {
         when(restaurantValidator.validateName(RestaurantData.NON_VALID_RESTAURANT.getPhone()))
                 .thenReturn(false);
     }
-
-    /**
-     * Saving a restaurant has the following cases:
-     * - If the owner doesn't exist, throws an UserDoesntExistsException
-     * - If the owner isn't really an owner (doesn't have the Owner role) throws an NotAnOwnerException
-     * - If the name or the phone aren't valid, throws an IncorrectDataException
-     * - In other case, the restaurant saves correctly.
-     *
-     * This test handle all the cases.
-     */
     @Test
-    void saveARestaurant() {
+    void saveRestaurant() {
         assertDoesNotThrow( //Saves correctly
                 ()->restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(),
                         RestaurantData.NON_INSERTED_RESTAURANT)
@@ -90,5 +82,32 @@ public class IRestaurantServiceTests {
         assertThrows(IncorrectDataException.class,
                 () -> restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(), r)
         );
+    }
+
+    @Test
+    void listAllAlphabeticallyRestaurantsPaginated() {
+    }
+
+    @Test
+    void saveAnEmployeeOfARestaurant() {
+        goodSave();
+    }
+
+    private void goodSave() {
+        when(userMicroServiceClientPort.getUserByEmail(RestaurantData.OWNER_001.getEmail()))
+                .thenReturn(RestaurantData.OWNER_001);
+        when(restaurantPersistencePort.getRestaurant(RestaurantData.RESTAURANT_001.getId()))
+                .thenReturn(RestaurantData.RESTAURANT_001);
+        doAnswer(
+                invocation -> {
+                    when(userMicroServiceClientPort.getUserByEmail(RestaurantData.EMPLOYEE.getEmail()))
+                            .thenReturn(RestaurantData.EMPLOYEE);
+                    return null;
+                }
+        ).when(userMicroServiceClientPort)
+                .saveAnEmployee(RestaurantData.EMPLOYEE);
+
+
+
     }
 }

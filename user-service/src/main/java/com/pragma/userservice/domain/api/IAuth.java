@@ -19,7 +19,7 @@ public interface IAuth {
 
     /**
      * Authenticates a user and returns the JWT to use the application.
-     * @return
+     * @return a String representing the jwt.
      */
     String authenticateUser(String email, String password);
 }

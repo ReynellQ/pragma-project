@@ -1,7 +1,8 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.RestaurantClientResponse;
-import com.pragma.foodcourtservice.application.dto.RestaurantCreateDto;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantClientResponse;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDto;
+import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantEmployeeDto;
 import com.pragma.foodcourtservice.application.handler.IRestaurantHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +35,28 @@ public class RestaurantRestController {
     }
 
     @GetMapping("/list/{page}/{number}")
-    public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient(@PathVariable Integer page,
-                                                                                  @PathVariable Integer number){
+    public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
+            @PathVariable Integer page, @PathVariable Integer number){
+        jwt = jwt.substring(7);
+        if(!jwtService.extractRole(jwt).equals("CLIENT")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity
                 .ok(
                         handler.listAllAlphabeticallyRestaurantsPaginated(page,number)
                 );
+    }
+    @PostMapping("/saveEmployee")
+    public ResponseEntity<Void> saveAnEmployeeOfTheRestaurant(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
+            @RequestBody RestaurantEmployeeDto restaurantEmployeeDto){
+        jwt = jwt.substring(7);
+        if(!jwtService.extractRole(jwt).equals("OWNER")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        String email = jwtService.extractUsername(jwt);
+        handler.saveAnEmployeeOfARestaurant(email, restaurantEmployeeDto);
+        return ResponseEntity.ok().build();
     }
 }
