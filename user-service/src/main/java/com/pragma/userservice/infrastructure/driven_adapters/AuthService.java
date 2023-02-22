@@ -14,13 +14,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AuthService implements IAuth {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authManager;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public AuthService(PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
+    public AuthService(PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authManager,
+                       UserDetailsServiceImpl userDetailsService) {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
+        this.authManager = authManager;
         this.userDetailsService = userDetailsService;
     }
 
@@ -46,15 +47,22 @@ public class AuthService implements IAuth {
     public boolean comparePasswords(String rawPassword, String encryptedPassword) {
         return passwordEncoder.matches(rawPassword, encryptedPassword);
     }
-
+    /**
+     * Authenticates a user and returns the JWT to use the application. Calls the auth
+     * @return a String representing the jwt.
+     */
     @Override
     public String authenticateUser(String email, String password) {
-        authenticationManager.authenticate(
+        //Calls the authentication manager, that recieves the email and password, checks the email in database
+        // and checks the passwords in the database and provided.
+        authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         email,
                         password
                 )
         );
+        //Calls the userDetailsService, called in the authManager, in order to return the token to user.
+        //It's not necessary because the token is already in header, but to return to user it's.
         String jwtToken = jwtService.generateToken((UserDetailsImpl) userDetailsService.loadUserByUsername(email));
         return jwtToken;
     }
