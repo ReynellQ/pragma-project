@@ -16,6 +16,7 @@ public class FoodPlate {
     private Long id;
     private String name;
     private Long idCategory;
+    private Category category;
     private String description;
     private Long price;
     private Long idRestaurant;

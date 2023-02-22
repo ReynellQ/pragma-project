@@ -1,8 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.*;
 import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
@@ -10,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the handler  interface to communicate FoodPlateService and FoodPlateServiceController. This uses
@@ -20,7 +21,7 @@ import javax.transaction.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class FoodPlateHandler implements IFoodPlateHandler {
-    private final IFoodPlateServicePort platoServicePort;
+    private final IFoodPlateServicePort foodPlateServicePort;
     private final FoodPlateDtoMapper foodPlateDtoMapper;
 
     /**
@@ -33,7 +34,7 @@ public class FoodPlateHandler implements IFoodPlateHandler {
     public void saveFoodPlate(String email, FoodPlateRegisterDto foodPlate) {
         FoodPlate p = foodPlateDtoMapper.toPlatoFromSave(foodPlate);
         p.setActive(true);
-        platoServicePort.saveFoodPlate(email, p);
+        foodPlateServicePort.saveFoodPlate(email, p);
     }
     /**
      * Updates and saves the data of a food plate in the application. Map the data of the update DTO to food plate and
@@ -42,7 +43,7 @@ public class FoodPlateHandler implements IFoodPlateHandler {
      */
     @Override
     public void updateFoodPlate(String email, FoodPlateUpdateDto foodPlate) {
-        platoServicePort.updateFoodPlate(email, foodPlateDtoMapper.toPlatoFromUpdate(foodPlate));
+        foodPlateServicePort.updateFoodPlate(email, foodPlateDtoMapper.toPlatoFromUpdate(foodPlate));
     }
 
     /**
@@ -52,7 +53,28 @@ public class FoodPlateHandler implements IFoodPlateHandler {
      * @param changeState the DTO with the new state and the id of the food plate to change.
      */
     @Override
-    public void changeStateFoodPlate(FoodPlateChangeState changeState) {
-        platoServicePort.changeStateFoodPlate(foodPlateDtoMapper.toChangeState(changeState));
+    public void changeStateFoodPlate(String email, FoodPlateChangeState changeState) {
+        foodPlateServicePort.changeStateFoodPlate(email, foodPlateDtoMapper.toChangeState(changeState));
+    }
+
+    /**
+     * List all the food plates of a restaurant that have one of the submitted categories. If the list of categories
+     * is empty, provide from all categories.
+     *
+     * @param idRestaurant
+     * @param categories   the list of the category's ids.
+     * @param number the number of food plates displayed in the current page.
+     * @param page the number of the page.
+     * @return a list with the food plates.
+     */
+    @Override
+    public List<FoodPlateDto> listTheFoodPlatesByCategory(Long idRestaurant, CategoryList categories, int page,
+                                                          int number) {
+        List<FoodPlate> foodPlates = foodPlateServicePort
+                .listTheFoodPlatesByCategory(idRestaurant, categories.getCategories(), page, number);
+        return foodPlates.stream()
+                .map(
+                        (foodPlate -> foodPlateDtoMapper.toFoodPlateDto(foodPlate))
+                ).collect(Collectors.toList());
     }
 }

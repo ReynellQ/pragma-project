@@ -14,7 +14,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(
         componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {CategoryEntityMapper.class}
 )
 public interface FoodPlateEntityMapper {
     FoodPlateEntity toEntity(FoodPlate plato);

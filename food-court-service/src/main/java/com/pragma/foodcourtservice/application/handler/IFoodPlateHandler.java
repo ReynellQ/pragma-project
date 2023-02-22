@@ -1,8 +1,8 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateChangeState;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateUpdateDto;
+import com.pragma.foodcourtservice.application.dto.foodplate.*;
+
+import java.util.List;
 
 /**
  * Handler interface to communicate FoodPlateService and FoodPlateRestController.
@@ -22,9 +22,21 @@ public interface IFoodPlateHandler {
     void updateFoodPlate(String email, FoodPlateUpdateDto foodPlate);
 
     /**
-     * Changed the state of a food plate in the applicaction.
+     * Changed the state of a food plate in the application.
      * TODO TESTING
      * @param changeState the DTO with the new state and the id of the food plate to change.
      */
-    void changeStateFoodPlate(FoodPlateChangeState changeState);
+    void changeStateFoodPlate(String email, FoodPlateChangeState changeState);
+
+    /**
+     * List all the food plates of a restaurant that have one of the submitted categories. If the list of categories
+     * is empty, provide from all categories.
+     * @param idRestaurant the id of the restaurant.
+     * @param categories the list of the category's ids.
+     * @param number the number of food plates displayed in the current page.
+     * @param page the number of the page.
+     * @return a list with the food plates.
+     */
+    List<FoodPlateDto> listTheFoodPlatesByCategory(Long idRestaurant, CategoryList categories, int page,
+                                                   int number);
 }
