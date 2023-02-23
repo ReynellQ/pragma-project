@@ -8,34 +8,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user/")
 @RequiredArgsConstructor
+@Validated
 public class UserRestController {
     private final IUserHandler userHandler;
     private final JwtService jwtService;
 
     @PostMapping("/save/owner")
     @RolesAllowed("ROLE_ADMIN")
-    public ResponseEntity<Void> saveOwner(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                          @RequestBody UserRegister userRegister){
+    public ResponseEntity<Void> saveOwner(@Valid @RequestBody UserRegister userRegister){
         userHandler.saveOwner(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
     @PostMapping("/save/employee")
     @RolesAllowed("ROLE_OWNER")
-    public ResponseEntity<Void> saveEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                             @RequestBody UserRegister userRegister){
+    public ResponseEntity<Void> saveEmployee(@Valid @RequestBody UserRegister userRegister){
         userHandler.saveEmployee(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> saveClient(@RequestBody UserRegister userRegister){
+    public ResponseEntity<Void> saveClient(@Valid @RequestBody UserRegister userRegister){
         userHandler.saveClient(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
