@@ -16,7 +16,7 @@ public class UserData {
 
     public static final User NON_INSERTED_USER_004 = new User(5l, 5l, "Danny", "Phantom", "123",
             "lalo@gmail.com", "password", null);
-    public static final User NON_INSERTED_USER_005 = new User(10l, 10l, "Danny", "Phantom", "+123",
+    public static final User USER_WITH_INCORRECT_EMAIL = new User(10l, 10l, "Danny", "Phantom", "+123",
             "incorrectemail", "password", null);
     public static final User NON_INSERTED_USER_006 = new User(10l, 10l, "Danny", "Phantom", "esto es un telefono",
             "correctemail@gmail.com", "password", null);

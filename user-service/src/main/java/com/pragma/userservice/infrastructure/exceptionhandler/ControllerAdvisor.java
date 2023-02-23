@@ -3,6 +3,7 @@ package com.pragma.userservice.infrastructure.exceptionhandler;
 import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
 import com.pragma.userservice.infrastructure.exception.*;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,8 +38,10 @@ public class ControllerAdvisor {
             Map.entry(RuntimeException.class,
                     new ApiRestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Bullshit happened.")),
             Map.entry(AccessDeniedException.class,
-                    new ApiRestExceptionResponse(HttpStatus.UNAUTHORIZED, "The current user doesn't have"+
-                            " permissions."))
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The current user doesn't have"+
+                            " permissions.")),
+            Map.entry(JwtException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The session isn't valid or expired."))
     );
 
     @ExceptionHandler(Exception.class)

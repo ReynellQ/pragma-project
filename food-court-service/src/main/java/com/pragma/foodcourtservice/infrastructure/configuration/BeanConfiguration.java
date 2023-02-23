@@ -4,10 +4,7 @@ import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
-import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
-import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
-import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
-import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
+import com.pragma.foodcourtservice.domain.api.*;
 import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
@@ -55,7 +52,10 @@ public class BeanConfiguration {
     private final UserFeignClientRest userFeignClientRest;
     private final AuthenticationConfiguration authConfiguration;
     private final RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
-
+    @Bean
+    public IPersistentLoggedUser persistentLoggedUser(){
+        return new PersistentLoggedUser();
+    }
 
     @Bean
     public IRestaurantValidator restaurantValidator(){
@@ -67,7 +67,8 @@ public class BeanConfiguration {
     }
     @Bean
     public IRestaurantPersistencePort restaurantPersistencePort(){
-        return new RestaurantJpaAdapter(restaurantRepository, restaurantEmployeeRepository, restaurantEntityMapper, restaurantEmployeeEntityMapper);
+        return new RestaurantJpaAdapter(restaurantRepository, restaurantEmployeeRepository, restaurantEntityMapper,
+                restaurantEmployeeEntityMapper);
     }
     @Bean
     public IUserMicroServiceClientPort userClientPort(){
@@ -75,7 +76,8 @@ public class BeanConfiguration {
     }
     @Bean
     public IRestaurantServicePort restaurantServicePort(){
-        return new RestaurantUseCase(restaurantPersistencePort(), restaurantValidator(), userClientPort());
+        return new RestaurantUseCase(restaurantPersistencePort(), restaurantValidator(), userClientPort(),
+                persistentLoggedUser());
     }
     @Bean
     public IFoodPlatePersistencePort foodPlatePersistencePort(){
@@ -88,11 +90,11 @@ public class BeanConfiguration {
     @Bean
     public IFoodPlateServicePort foodPlateServicePort(){
         return new FoodPlateUseCase(restaurantPersistencePort(), categoryPersistencePort(), foodPlatePersistencePort(),
-                foodPlateValidator(), userClientPort());
+                foodPlateValidator(), persistentLoggedUser());
     }
     @Bean
     public UserDetailsService userDetailsService(){
-        return new UserDetailsServiceImpl(userClientPort());
+        return new UserDetailsServiceImpl(userClientPort(), persistentLoggedUser());
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

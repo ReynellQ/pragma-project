@@ -27,14 +27,13 @@ public class FoodPlateHandler implements IFoodPlateHandler {
     /**
      * Saves the data of a food plate in the application. Map the data of the register DTO to a food plate and calls the
      * service in charge of save the food plate.
-     * @param email the email of the creator.
      * @param foodPlate the DTO with the data of the food plate to register.
      */
     @Override
-    public void saveFoodPlate(String email, FoodPlateRegisterDto foodPlate) {
+    public void saveFoodPlate(FoodPlateRegisterDto foodPlate) {
         FoodPlate p = foodPlateDtoMapper.toPlatoFromSave(foodPlate);
         p.setActive(true);
-        foodPlateServicePort.saveFoodPlate(email, p);
+        foodPlateServicePort.saveFoodPlate( p);
     }
     /**
      * Updates and saves the data of a food plate in the application. Map the data of the update DTO to food plate and
@@ -42,8 +41,8 @@ public class FoodPlateHandler implements IFoodPlateHandler {
      * @param foodPlate the DTO with the data of the food plate to update.
      */
     @Override
-    public void updateFoodPlate(String email, FoodPlateUpdateDto foodPlate) {
-        foodPlateServicePort.updateFoodPlate(email, foodPlateDtoMapper.toPlatoFromUpdate(foodPlate));
+    public void updateFoodPlate(FoodPlateUpdateDto foodPlate) {
+        foodPlateServicePort.updateFoodPlate(foodPlateDtoMapper.toPlatoFromUpdate(foodPlate));
     }
 
     /**
@@ -53,8 +52,8 @@ public class FoodPlateHandler implements IFoodPlateHandler {
      * @param changeState the DTO with the new state and the id of the food plate to change.
      */
     @Override
-    public void changeStateFoodPlate(String email, FoodPlateChangeState changeState) {
-        foodPlateServicePort.changeStateFoodPlate(email, foodPlateDtoMapper.toChangeState(changeState));
+    public void changeStateFoodPlate(FoodPlateChangeState changeState) {
+        foodPlateServicePort.changeStateFoodPlate(foodPlateDtoMapper.toChangeState(changeState));
     }
 
     /**

@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.domain.useCase;
 
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
+import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
 import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
 import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
@@ -28,7 +29,7 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     private final ICategoryPersistencePort categoryPersistencePort;
     private final IFoodPlatePersistencePort foodPlatePersistencePort;
     private final IFoodPlateValidator foodPlateValidator;
-    private final IUserMicroServiceClientPort userClientPort;
+    private final IPersistentLoggedUser persistentLoggedUser;
 
     /**
      * Saves a food plate in the application. Validates if the id of the restaurant belongs to an existing restaurant
@@ -38,8 +39,8 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      * @throws IncorrectDataException if one of the validations doesn't pass.
      */
     @Override
-    public void saveFoodPlate(String email, FoodPlate foodPlate) {
-        verifyingOwnersAuthenticity(email, foodPlate.getIdRestaurant());
+    public void saveFoodPlate(FoodPlate foodPlate) {
+        verifyingOwnersAuthenticity(foodPlate.getIdRestaurant());
         categoryPersistencePort.getCategory(
                 foodPlate.getIdCategory()   //Search the category and throws an exception if it doesn't exist
         );
@@ -55,9 +56,9 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      * @throws IncorrectDataException if the submitted data is invalid.
      */
     @Override
-    public FoodPlate updateFoodPlate(String email, FoodPlate foodPlate) {
+    public FoodPlate updateFoodPlate(FoodPlate foodPlate) {
         FoodPlate foodPlateToUpdate = foodPlatePersistencePort.getFoodPlate(foodPlate.getId());
-        verifyingOwnersAuthenticity(email, foodPlateToUpdate.getIdRestaurant());
+        verifyingOwnersAuthenticity(foodPlateToUpdate.getIdRestaurant());
         //No puede cambiar el estado de activo
         if(!foodPlateToUpdate.getActive().equals(foodPlate.getActive()) && foodPlate.getActive()!=null)
             throw new ForbiddenUpdateException();
@@ -84,9 +85,9 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
      * @param foodPlate the food plate
      */
     @Override
-    public void changeStateFoodPlate(String email, FoodPlate foodPlate) {
+    public void changeStateFoodPlate(FoodPlate foodPlate) {
         FoodPlate foodPlateToUpdate = foodPlatePersistencePort.getFoodPlate(foodPlate.getId());
-        verifyingOwnersAuthenticity(email, foodPlateToUpdate.getIdRestaurant());
+        verifyingOwnersAuthenticity(foodPlateToUpdate.getIdRestaurant());
         foodPlateToUpdate.setActive(foodPlate.getActive());
         foodPlatePersistencePort.updateFoodPlate(foodPlateToUpdate);
     }
@@ -106,8 +107,8 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
         return foodPlatePersistencePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number);
     }
 
-    private void verifyingOwnersAuthenticity(String email, Long idRestaurant){
-        User user = userClientPort.getUserByEmail(email);
+    private void verifyingOwnersAuthenticity(Long idRestaurant){
+        User user = persistentLoggedUser.getLoggedUser();
         //Verifies if is an owner
         if(user.getIdRole() != ROLES.OWNER.id){
             throw new NotAnOwnerException();

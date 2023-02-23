@@ -34,8 +34,8 @@ public class RestaurantHandler implements IRestaurantHandler {
      * @param restaurant the DTO with the data of the owner to register.
      */
     @Override
-    public void saveRestaurant(String emailCreator, RestaurantCreateDto restaurant) {
-        restaurantServicePort.saveRestaurant(emailCreator, restaurantDtoMapper.toRestaurant(restaurant));
+    public void saveRestaurant(RestaurantCreateDto restaurant) {
+        restaurantServicePort.saveRestaurant(restaurantDtoMapper.toRestaurant(restaurant));
     }
 
     /**
@@ -61,8 +61,8 @@ public class RestaurantHandler implements IRestaurantHandler {
      * @param restaurantEmployeeDto the data of the employee
      */
     @Override
-    public void saveAnEmployeeOfARestaurant(String emailCreator, RestaurantEmployeeDto restaurantEmployeeDto) {
+    public void saveAnEmployeeOfARestaurant(RestaurantEmployeeDto restaurantEmployeeDto) {
         User user = restaurantEmployeeDtoMapper.toUser(restaurantEmployeeDto);
-        restaurantServicePort.saveAnEmployeeOfARestaurant(emailCreator, user, restaurantEmployeeDto.getIdRestaurant());
+        restaurantServicePort.saveAnEmployeeOfARestaurant(user, restaurantEmployeeDto.getIdRestaurant());
     }
 }

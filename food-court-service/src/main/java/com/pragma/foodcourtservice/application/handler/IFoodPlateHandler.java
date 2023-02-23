@@ -10,23 +10,21 @@ import java.util.List;
 public interface IFoodPlateHandler {
     /**
      * Saves the data of a food plate in the application.
-     * @param email the email of the creator.
      * @param foodPlate the DTO with the data of the food plate to register.
      */
-    void saveFoodPlate(String email, FoodPlateRegisterDto foodPlate);
+    void saveFoodPlate( FoodPlateRegisterDto foodPlate);
     /**
      * Updates and saves the data of a food plate in the application.
-     * @param email the email of the owner.
      * @param foodPlate the DTO with the data of the food plate to update.
      */
-    void updateFoodPlate(String email, FoodPlateUpdateDto foodPlate);
+    void updateFoodPlate( FoodPlateUpdateDto foodPlate);
 
     /**
      * Changed the state of a food plate in the application.
      * TODO TESTING
      * @param changeState the DTO with the new state and the id of the food plate to change.
      */
-    void changeStateFoodPlate(String email, FoodPlateChangeState changeState);
+    void changeStateFoodPlate(FoodPlateChangeState changeState);
 
     /**
      * List all the food plates of a restaurant that have one of the submitted categories. If the list of categories

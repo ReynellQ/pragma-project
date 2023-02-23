@@ -3,59 +3,45 @@ package com.pragma.foodcourtservice.infrastructure.input.rest;
 import com.pragma.foodcourtservice.application.dto.foodplate.*;
 import com.pragma.foodcourtservice.application.handler.FoodPlateHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
 @RequestMapping("/food_plate/")
+@RequiredArgsConstructor
 public class FoodPlateRestController {
     private final FoodPlateHandler handler;
     private final JwtService jwtService;
 
-    public FoodPlateRestController(FoodPlateHandler handler, JwtService jwtService) {
-        this.handler = handler;
-        this.jwtService = jwtService;
-    }
     @PostMapping("/save")
-    public ResponseEntity<Void> saveFoodPlate(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                              @RequestBody FoodPlateRegisterDto foodPlateRegisterDTO){
-        jwt = jwt.substring(7);
-        if(!verifyRole(jwt, "OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        String email = jwtService.extractUsername(jwt);
-        handler.saveFoodPlate(email, foodPlateRegisterDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-    @PostMapping("/update")
-    public ResponseEntity<Void> updateFoodPlate(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                                @RequestBody FoodPlateUpdateDto foodPlateUpdateDTO){
-        jwt = jwt.substring(7);
-        if(!verifyRole(jwt, "OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        String email = jwtService.extractUsername(jwt);
-        handler.updateFoodPlate(email, foodPlateUpdateDTO);
+    @RolesAllowed("ROLE_OWNER")
+    public ResponseEntity<Void> saveFoodPlate(@RequestBody FoodPlateRegisterDto foodPlateRegisterDTO){
+        handler.saveFoodPlate(foodPlateRegisterDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @PostMapping("/changeState")
-    public ResponseEntity<Void> changeStateFoodPlate(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-                                                     @RequestBody FoodPlateChangeState foodPlateChangeState){
-        jwt = jwt.substring(7);
-        if(!verifyRole(jwt, "OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        String email = jwtService.extractUsername(jwt);
-        handler.changeStateFoodPlate(email, foodPlateChangeState);
+    @PutMapping("/update")
+    @RolesAllowed("ROLE_OWNER")
+    public ResponseEntity<Void> updateFoodPlate(@RequestBody FoodPlateUpdateDto foodPlateUpdateDTO){
+        handler.updateFoodPlate( foodPlateUpdateDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PatchMapping("/changeState")
+    @RolesAllowed("ROLE_OWNER")
+    public ResponseEntity<Void> changeStateFoodPlate(@RequestBody FoodPlateChangeState foodPlateChangeState){
+        handler.changeStateFoodPlate( foodPlateChangeState);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/list/{restaurant}/{page}/{number}")
+    @RolesAllowed("ROLE_CLIENT")
     public ResponseEntity<List<FoodPlateDto>> listFoodPlatesOfRestaurantToClient(
             @PathVariable Long restaurant,
             @PathVariable int page,
