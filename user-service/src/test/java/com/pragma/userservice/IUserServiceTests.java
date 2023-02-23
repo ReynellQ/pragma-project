@@ -68,7 +68,7 @@ class IUserServiceTests {
 				.saveUser(UserData.NON_INSERTED_USER_003);
 		doThrow( new UserConflictForEmailException()).when(persistencePort)
 				.saveUser(UserData.NON_INSERTED_USER_004);
-		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_005);
+		doNothing().when(persistencePort).saveUser(UserData.USER_WITH_INCORRECT_EMAIL);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_006);
 		doNothing().when(persistencePort).saveUser(UserData.NON_INSERTED_USER_007);
 	}
@@ -129,7 +129,7 @@ class IUserServiceTests {
 	 */
 	@Test
 	void saveAnOwnerWithBadData(){
-		User u1 = UserData.NON_INSERTED_USER_005; //This user isn't inserted and their email is bad
+		User u1 = UserData.USER_WITH_INCORRECT_EMAIL; //This user isn't inserted and their email is bad
 		when(userValidator.emailChecker(u1.getEmail())).thenReturn(false); //The email isn't valid
 		when(userValidator.phoneChecker(u1.getPhone())).thenReturn(true); //The phone is valid
 		assertThrows(IncorrectDataException.class,

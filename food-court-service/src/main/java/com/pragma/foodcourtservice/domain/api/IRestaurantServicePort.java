@@ -14,7 +14,7 @@ public interface IRestaurantServicePort {
      * Saves a restaurant in the application.
      * @param restaurant the restaurant to be saved.
      */
-    void saveRestaurant(String emailCreator, Restaurant restaurant);
+    void saveRestaurant(Restaurant restaurant);
 
     /**
      * List an amount of restaurants corresponding to the <code>numberOfRestaurants</code>, sorted alphabetically, and
@@ -27,9 +27,9 @@ public interface IRestaurantServicePort {
 
     /**
      * Saves an employee in the application.
-     * @param emailCreator the creator's email
+     *
      * @param employee the employee user to register.
      * @param idRestaurant the restaurant of the owner/creator, and the restaurant where the employee works.
      */
-    void saveAnEmployeeOfARestaurant(String emailCreator, User employee, Long idRestaurant);
+    void saveAnEmployeeOfARestaurant(User employee, Long idRestaurant);
 }

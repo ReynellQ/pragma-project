@@ -76,7 +76,8 @@ public class BeanConfiguration {
     }
     @Bean
     public IRestaurantServicePort restaurantServicePort(){
-        return new RestaurantUseCase(restaurantPersistencePort(), restaurantValidator(), userClientPort());
+        return new RestaurantUseCase(restaurantPersistencePort(), restaurantValidator(), userClientPort(),
+                persistentLoggedUser());
     }
     @Bean
     public IFoodPlatePersistencePort foodPlatePersistencePort(){
@@ -89,7 +90,7 @@ public class BeanConfiguration {
     @Bean
     public IFoodPlateServicePort foodPlateServicePort(){
         return new FoodPlateUseCase(restaurantPersistencePort(), categoryPersistencePort(), foodPlatePersistencePort(),
-                foodPlateValidator(), userClientPort());
+                foodPlateValidator(), persistentLoggedUser());
     }
     @Bean
     public UserDetailsService userDetailsService(){

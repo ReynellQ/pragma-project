@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 @RequiredArgsConstructor
-
 public class UserDetailsImpl implements UserDetails {
     private final User u;
     private final Role r;
@@ -24,8 +23,9 @@ public class UserDetailsImpl implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(u.getIdRole()+""));
+        List<SimpleGrantedAuthority> authorities;
+        authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+r.getName()));
         return authorities;
     }
     public String getRole(){

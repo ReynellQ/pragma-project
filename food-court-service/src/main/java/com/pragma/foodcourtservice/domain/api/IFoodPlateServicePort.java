@@ -10,23 +10,21 @@ import java.util.List;
 public interface IFoodPlateServicePort {
     /**
      * Saves a food plate in the application.
-     * @param email the email of the creator.
      * @param foodPlate the user to be saved.
      */
-    void saveFoodPlate(String email, FoodPlate foodPlate);
+    void saveFoodPlate(FoodPlate foodPlate);
     /**
      * Updates a food plate in the application.
-     * @param email the email of the updater.
      * @param foodPlate the user to be updated.
      */
-    FoodPlate updateFoodPlate(String email, FoodPlate foodPlate);
+    FoodPlate updateFoodPlate(FoodPlate foodPlate);
 
     /**
      * Changed the state of a food plate, to the state of the food plate submitted.
      * TODO TESTING
      * @param foodPlate the food plate
      */
-    void changeStateFoodPlate(String email, FoodPlate foodPlate);
+    void changeStateFoodPlate(FoodPlate foodPlate);
 
     /**
      * List all the food plates of a restaurant that have one of the submitted categories. If the list of categories

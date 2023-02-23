@@ -1,9 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
-import com.pragma.foodcourtservice.domain.exception.ForbiddenUpdateException;
-import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
-import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
-import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
+import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
@@ -29,7 +26,8 @@ public class ControllerAdvisor {
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "Update this data is forbidden.")),
             Map.entry(FoodPlateNotFoundException.class,
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The food plate doesn't exists.")),
-
+            Map.entry(IncorrectDataException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")),
             Map.entry(UserNotFoundException.class,
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The users doesn't exists.")),
             Map.entry(CategoryNotFoundException.class,
@@ -42,6 +40,7 @@ public class ControllerAdvisor {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleApiException(Exception exception) {
         System.out.println(exception.getClass());
+        System.out.println(exception.toString());
         ApiRestExceptionResponse api = messages.get(exception.getClass());
         return ResponseEntity.status(api.status)
                 .body(Collections.singletonMap(MESSAGE, api.message));

@@ -2,17 +2,18 @@ package com.pragma.foodcourtservice.domain.useCase;
 
 import com.pragma.foodcourtservice.RestaurantData;
 import com.pragma.foodcourtservice.UserData;
+import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
 import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
+import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
 import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
-import com.pragma.foodcourtservice.domain.model.Restaurant;
+import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,7 @@ class RestaurantUseCaseTest {
     IUserMicroServiceClientPort userMicroServiceClientPort;
     IRestaurantValidator restaurantValidator;
     IRestaurantPersistencePort restaurantPersistencePort;
+    IPersistentLoggedUser persistentLoggedUser;
     IRestaurantServicePort restaurantServicePort;
 
 
@@ -32,8 +34,9 @@ class RestaurantUseCaseTest {
         restaurantPersistencePort = mock(IRestaurantPersistencePort.class);
         restaurantValidator = mock(IRestaurantValidator.class);
         userMicroServiceClientPort = mock(IUserMicroServiceClientPort.class);
+        persistentLoggedUser = mock(IPersistentLoggedUser.class);
         restaurantServicePort = new RestaurantUseCase(restaurantPersistencePort, restaurantValidator,
-                userMicroServiceClientPort);
+                userMicroServiceClientPort, persistentLoggedUser);
 
         //mock data
         setUpMockValidation();
@@ -52,6 +55,7 @@ class RestaurantUseCaseTest {
 
     private void setUpMockValidation() {
         when(restaurantValidator.validateOwner(RestaurantData.OWNER_001)).thenReturn(true);
+        when(restaurantValidator.validateOwner(RestaurantData.OWNER_002)).thenReturn(true);
         when(restaurantValidator.validateOwner(RestaurantData.NOT_A_OWNER)).thenReturn(false);
         when(restaurantValidator.validateName(RestaurantData.NON_INSERTED_RESTAURANT.getName()))
                 .thenReturn(true);
@@ -64,23 +68,23 @@ class RestaurantUseCaseTest {
     }
     @Test
     void saveRestaurant() {
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
         assertDoesNotThrow( //Saves correctly
-                ()->restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(),
-                        RestaurantData.NON_INSERTED_RESTAURANT)
+                ()->restaurantServicePort.saveRestaurant(RestaurantData.NON_INSERTED_RESTAURANT)
         );
-        //Has a bad owner and bad data.
-        Restaurant r = RestaurantData.NON_VALID_RESTAURANT;
-        assertThrows(UserNotFoundException.class,
-                () -> restaurantServicePort.saveRestaurant(UserData.NON_INSERTED_USER_001.getEmail(),
-                        r)
-        );
-        //Modifying the email to an existing user, but not an owner.
+        //Logged with a user that isn't a owner
+        //TODO mock the bad owner, but technically it cannot happen for the auth service.
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.EMPLOYEE);
         assertThrows(NotAnOwnerException.class, //Throws the exception for not being a owner
-                () -> restaurantServicePort.saveRestaurant(RestaurantData.NOT_A_OWNER.getEmail(),r)
+                () -> restaurantServicePort.saveRestaurant(RestaurantData.NON_INSERTED_RESTAURANT)
         );
-        //Modifying the idOwner to a real owner
+        //Saves a restaurant with bad data
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_002);
         assertThrows(IncorrectDataException.class,
-                () -> restaurantServicePort.saveRestaurant(RestaurantData.OWNER_001.getEmail(), r)
+                () -> restaurantServicePort.saveRestaurant(RestaurantData.NON_VALID_RESTAURANT)
         );
     }
 
@@ -90,22 +94,89 @@ class RestaurantUseCaseTest {
 
     @Test
     void saveAnEmployeeOfARestaurant() {
-        goodSave();
+        goodSaveOfEmployee();
+        savingAndDoesntExistsTheRestaurant();
+        savingAndTheOwnerDoesntOwnTheRestaurant();
+        badDataOfEmployee();
     }
 
-    private void goodSave() {
-        when(userMicroServiceClientPort.getUserByEmail(RestaurantData.OWNER_001.getEmail()))
+    /**
+     * The employee has bad data. This validation it's done by the user microservice in the insertion, for this the
+     * exception is generated by the userClientPort.
+     */
+    private void badDataOfEmployee() {
+        when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         when(restaurantPersistencePort.getRestaurant(RestaurantData.RESTAURANT_001.getId()))
                 .thenReturn(RestaurantData.RESTAURANT_001);
         doAnswer(
-                invocation -> {
-                    when(userMicroServiceClientPort.getUserByEmail(RestaurantData.EMPLOYEE.getEmail()))
-                            .thenReturn(RestaurantData.EMPLOYEE);
-                    return null;
-                }
+                invocation ->
+                        when(userMicroServiceClientPort.getUserByPersonalId(RestaurantData.EMPLOYEE.getPersonalId()))
+                                .thenReturn(RestaurantData.EMPLOYEE)
         ).when(userMicroServiceClientPort)
                 .saveAnEmployee(RestaurantData.EMPLOYEE);
+        doThrow(new IncorrectDataException())
+                .when(userMicroServiceClientPort).saveAnEmployee(UserData.USER_WITH_INCORRECT_EMAIL);
+        assertThrows(
+                IncorrectDataException.class,
+                ()->restaurantServicePort.saveAnEmployeeOfARestaurant(
+                        UserData.USER_WITH_INCORRECT_EMAIL,
+                        RestaurantData.RESTAURANT_001.getId())
+        );
+    }
+
+    private void savingAndTheOwnerDoesntOwnTheRestaurant() {
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_002);
+        when(restaurantPersistencePort.getRestaurant(RestaurantData.RESTAURANT_001.getId()))
+                .thenReturn(RestaurantData.RESTAURANT_001);
+        doAnswer(
+                invocation ->
+                        when(userMicroServiceClientPort.getUserByPersonalId(RestaurantData.EMPLOYEE.getPersonalId()))
+                                .thenReturn(RestaurantData.EMPLOYEE)
+        ).when(userMicroServiceClientPort)
+                .saveAnEmployee(RestaurantData.EMPLOYEE);
+        assertThrows(
+                NotAllowedRestaurantException.class,
+                ()->restaurantServicePort.saveAnEmployeeOfARestaurant(
+                        RestaurantData.EMPLOYEE,
+                        RestaurantData.RESTAURANT_001.getId())
+        );
+    }
+
+    private void savingAndDoesntExistsTheRestaurant() {
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
+        when(restaurantPersistencePort.getRestaurant(RestaurantData.NON_INSERTED_RESTAURANT.getId()))
+                .thenThrow(new RestaurantNotFoundException());
+        doAnswer(
+                invocation ->
+                        when(userMicroServiceClientPort.getUserByPersonalId(RestaurantData.EMPLOYEE.getPersonalId()))
+                                .thenReturn(RestaurantData.EMPLOYEE)
+        ).when(userMicroServiceClientPort)
+                .saveAnEmployee(RestaurantData.EMPLOYEE);
+        assertThrows(
+                RestaurantNotFoundException.class,
+                ()->restaurantServicePort.saveAnEmployeeOfARestaurant(
+                        RestaurantData.EMPLOYEE,
+                        RestaurantData.NON_INSERTED_RESTAURANT.getId())
+        );
+    }
+
+    private void goodSaveOfEmployee() {
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
+        when(restaurantPersistencePort.getRestaurant(RestaurantData.RESTAURANT_001.getId()))
+                .thenReturn(RestaurantData.RESTAURANT_001);
+        doAnswer(
+                invocation ->
+                    when(userMicroServiceClientPort.getUserByPersonalId(RestaurantData.EMPLOYEE.getPersonalId()))
+                            .thenReturn(RestaurantData.EMPLOYEE)
+        ).when(userMicroServiceClientPort)
+                .saveAnEmployee(RestaurantData.EMPLOYEE);
+        assertDoesNotThrow( ()->restaurantServicePort.saveAnEmployeeOfARestaurant(RestaurantData.EMPLOYEE,
+                RestaurantData.RESTAURANT_001.getId()));
+
 
 
 

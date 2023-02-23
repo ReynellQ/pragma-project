@@ -5,58 +5,42 @@ import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDt
 import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantEmployeeDto;
 import com.pragma.foodcourtservice.application.handler.IRestaurantHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
 @RequestMapping("/restaurant/")
+@RequiredArgsConstructor
 public class RestaurantRestController {
     private final IRestaurantHandler handler;
-    private final JwtService jwtService;
 
-    public RestaurantRestController(IRestaurantHandler handler, JwtService jwtService) {
-        this.handler = handler;
-        this.jwtService = jwtService;
-    }
     @PostMapping("/save")
+    @RolesAllowed("ROLE_OWNER")
     public ResponseEntity<Void> saveRestaurant(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
                                                @RequestBody RestaurantCreateDto restaurantCreateDTO){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        String email = jwtService.extractUsername(jwt);
-        handler.saveRestaurant(email, restaurantCreateDTO);
+        handler.saveRestaurant(restaurantCreateDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/list/{page}/{number}")
-    public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-            @PathVariable Integer page, @PathVariable Integer number){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("CLIENT")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    @RolesAllowed("ROLE_CLIENT")
+    public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient( @PathVariable Integer page,
+                                                                                   @PathVariable Integer number){
         return ResponseEntity
                 .ok(
                         handler.listAllAlphabeticallyRestaurantsPaginated(page,number)
                 );
     }
     @PostMapping("/saveEmployee")
-    public ResponseEntity<Void> saveAnEmployeeOfTheRestaurant(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
-            @RequestBody RestaurantEmployeeDto restaurantEmployeeDto){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        String email = jwtService.extractUsername(jwt);
-        handler.saveAnEmployeeOfARestaurant(email, restaurantEmployeeDto);
+    @RolesAllowed("ROLE_OWNER")
+    public ResponseEntity<Void> saveAnEmployeeOfTheRestaurant( @RequestBody RestaurantEmployeeDto restaurantEmployeeDto){
+        handler.saveAnEmployeeOfARestaurant(restaurantEmployeeDto);
         return ResponseEntity.ok().build();
     }
 }

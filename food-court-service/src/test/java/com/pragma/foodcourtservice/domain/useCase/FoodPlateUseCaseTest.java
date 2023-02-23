@@ -5,6 +5,7 @@ import com.pragma.foodcourtservice.FoodPlateData;
 import com.pragma.foodcourtservice.RestaurantData;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateServicePort;
 import com.pragma.foodcourtservice.domain.api.IFoodPlateValidator;
+import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.model.FoodPlate;
 import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
@@ -24,19 +25,18 @@ class FoodPlateUseCaseTest {
     ICategoryPersistencePort categoryPersistencePort;
     IFoodPlatePersistencePort foodPlatePersistencePort;
     IFoodPlateValidator foodPlateValidator;
+    IPersistentLoggedUser persistentLoggedUser;
+
     IFoodPlateServicePort foodPlateServicePort;
-    IUserMicroServiceClientPort userClientPort;
     @BeforeEach
     void setUp(){
         restaurantPersistencePort = mock(IRestaurantPersistencePort.class);
         categoryPersistencePort = mock(ICategoryPersistencePort.class);
         foodPlatePersistencePort = mock(IFoodPlatePersistencePort.class);
         foodPlateValidator = mock(IFoodPlateValidator.class);
-        userClientPort = mock(IUserMicroServiceClientPort.class);
+        persistentLoggedUser = mock(IPersistentLoggedUser.class);
         foodPlateServicePort = new FoodPlateUseCase(restaurantPersistencePort, categoryPersistencePort,
-                foodPlatePersistencePort, foodPlateValidator, userClientPort);
-        //Mock user client port
-        mockUserClientPort();
+                foodPlatePersistencePort, foodPlateValidator, persistentLoggedUser);
         //Mock restaurant persistence port
         mockRestaurantPersistencePort();
         //Mock category persistence port
@@ -47,14 +47,6 @@ class FoodPlateUseCaseTest {
                 .validatesPrice(FoodPlateData.INVALID_PRICE_FOOD_PLATE.getPrice())).thenReturn(false);
     }
 
-    private void mockUserClientPort() {
-        when(userClientPort.getUserByEmail(RestaurantData.OWNER_001.getEmail()))
-                .thenReturn(RestaurantData.OWNER_001);
-        when(userClientPort.getUserByEmail(RestaurantData.OWNER_002.getEmail()))
-                .thenReturn(RestaurantData.OWNER_002);
-        when(userClientPort.getUserByEmail(RestaurantData.NOT_A_OWNER.getEmail()))
-                .thenReturn(RestaurantData.NOT_A_OWNER);
-    }
 
     void mockRestaurantPersistencePort(){
         //Mock restaurant persistence port
@@ -93,30 +85,26 @@ class FoodPlateUseCaseTest {
      */
     @Test
     void saveFoodPlate() {
+        //TODO mock the logged user, that has to be an owner
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
         //The food plate has to save correctly.
-        assertDoesNotThrow(()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                FoodPlateData.VALID_FOOD_PLATE));
+        assertDoesNotThrow(()-> foodPlateServicePort.saveFoodPlate( FoodPlateData.VALID_FOOD_PLATE));
         //The food plate won't save because the price isn't valid.
         assertThrows(IncorrectDataException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                        FoodPlateData.INVALID_PRICE_FOOD_PLATE));
+                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_PRICE_FOOD_PLATE));
         //The food plate won't save because the restaurant doesn't exist.
         assertThrows(RestaurantNotFoundException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                        FoodPlateData.INVALID_RESTAURANT_FOOD_PLATE));
+                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_RESTAURANT_FOOD_PLATE));
         //The food plate won't save because the category doesn't exist.
         assertThrows(CategoryNotFoundException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                        FoodPlateData.INVALID_CATEGORY_FOOD_PLATE));
-        //The food plate won't save because the "owner" isn't really an owner.
-        assertThrows(NotAnOwnerException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(RestaurantData.NOT_A_OWNER.getEmail(),
-                        FoodPlateData.VALID_FOOD_PLATE));
+                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_CATEGORY_FOOD_PLATE));
 
         //The food plate won't save because the owner isn't the owner of the restaurant
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_002);
         assertThrows(NotAllowedRestaurantException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(RestaurantData.OWNER_002.getEmail(),
-                        FoodPlateData.VALID_FOOD_PLATE));
+                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.VALID_FOOD_PLATE));
     }
     /**
      * Update a restaurant with a FoodPlate provided data. It charges a FoodPlate data and contrast with an FoodPlate
@@ -130,6 +118,8 @@ class FoodPlateUseCaseTest {
      */
     @Test
     void updateFoodPlate() {
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
         FoodPlate test = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
         //Ensures that the new object (test) has the same ID as FOOD_PLATE_001
         assertTrue(FoodPlateData.FOOD_PLATE_001.getId() == test.getId());
@@ -137,39 +127,48 @@ class FoodPlateUseCaseTest {
         when(foodPlatePersistencePort.getFoodPlate(FoodPlateData.FOOD_PLATE_001.getId()))
                 .thenReturn(FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001));
         //Works fine, nothing has changed.
-        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                test));
+        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(test));
 
-        //Works fine, the changed data is null but doesn't matter.
+        //Works fine, the price is null but doesn't matter.
         test.setPrice(null);
-        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                test));
+        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(test));
 
         //Works fine, only the description and price has changed and are valid.
         test.setDescription("LALALALALALALA");
         test.setPrice(FoodPlateData.VALID_FOOD_PLATE.getPrice());
-        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                test));
+        assertDoesNotThrow( () -> foodPlateServicePort.updateFoodPlate(test));
 
         //Fails, The price isn't valid.
         test.setPrice(FoodPlateData.INVALID_PRICE_FOOD_PLATE.getPrice());
         assertThrows(IncorrectDataException.class,
-                () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                        test));
+                () -> foodPlateServicePort.updateFoodPlate(test));
 
         //Fails, the price is OK but the idRestaurant changed.
         test.setPrice(FoodPlateData.FOOD_PLATE_001.getPrice());
         test.setIdRestaurant(RestaurantData.NON_INSERTED_RESTAURANT.getId());
         assertThrows(ForbiddenUpdateException.class,
-                () -> foodPlateServicePort.updateFoodPlate(RestaurantData.OWNER_001.getEmail(),
-                        test));
+                () -> foodPlateServicePort.updateFoodPlate(test));
+
+        //The food plate won't update because the owner isn't the owner of the restaurant
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_002);
+        test.setIdRestaurant(RestaurantData.RESTAURANT_001.getId());
+        assertThrows(NotAllowedRestaurantException.class,
+                () -> foodPlateServicePort.updateFoodPlate(test));
+
+        //The user signed isn't a owner. It won't ever happen, but is validated.
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.EMPLOYEE);
+        assertThrows(NotAnOwnerException.class,
+                () -> foodPlateServicePort.updateFoodPlate(test));
     }
 
     @Test
     void changeStateFoodPlate() {
+        //The owner is logged
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(RestaurantData.OWNER_001);
+        Boolean newStatus = true;
     }
 
-    @Test
-    void listTheFoodPlatesByCategory() {
-    }
 }

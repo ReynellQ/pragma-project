@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping("/user/")
 @RequiredArgsConstructor
@@ -18,22 +20,16 @@ public class UserRestController {
     private final JwtService jwtService;
 
     @PostMapping("/save/owner")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<Void> saveOwner(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
                                           @RequestBody UserRegister userRegister){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("ADMIN")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         userHandler.saveOwner(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
     @PostMapping("/save/employee")
+    @RolesAllowed("ROLE_OWNER")
     public ResponseEntity<Void> saveEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt,
                                              @RequestBody UserRegister userRegister){
-        jwt = jwt.substring(7);
-        if(!jwtService.extractRole(jwt).equals("OWNER")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         userHandler.saveEmployee(userRegister);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
