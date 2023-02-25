@@ -9,4 +9,5 @@ class IFoodPlateValidatorTest {
     @Test
     void validatesPrice() {
     }
+
 }
