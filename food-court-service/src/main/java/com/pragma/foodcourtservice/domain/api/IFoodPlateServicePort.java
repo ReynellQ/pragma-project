@@ -21,7 +21,6 @@ public interface IFoodPlateServicePort {
 
     /**
      * Changed the state of a food plate, to the state of the food plate submitted.
-     * TODO TESTING
      * @param foodPlate the food plate
      */
     void changeStateFoodPlate(FoodPlate foodPlate);

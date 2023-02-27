@@ -21,7 +21,6 @@ public interface IFoodPlateHandler {
 
     /**
      * Changed the state of a food plate in the application.
-     * TODO TESTING
      * @param changeState the DTO with the new state and the id of the food plate to change.
      */
     void changeStateFoodPlate(FoodPlateChangeState changeState);

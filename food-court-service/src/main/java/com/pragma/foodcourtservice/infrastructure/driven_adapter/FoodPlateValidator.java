@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class FoodPlateValidator implements IFoodPlateValidator {
-    private final IRestaurantRepository restaurantRepository;
 
 
     /**
@@ -16,6 +15,6 @@ public class FoodPlateValidator implements IFoodPlateValidator {
      */
     @Override
     public boolean validatesPrice(Long price) {
-        return price > 0;
+        return price != null && price > 0;
     }
 }
