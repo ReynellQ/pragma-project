@@ -3,6 +3,7 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.model.RestaurantEmployee;
+import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEmployeeEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEntity;
@@ -79,18 +80,18 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     }
 
     /**
-     * Search if the employee works for the submitted restaurant. Search in JPA is exists a tuple with the PK
-     * (idRestaurant, idOwner), and returns if it's present or not.
+     * Search and returns the data of the restaurant of the employee submited.
      *
-     * @param restaurantEmployee the data of the employee and their restaurant.
-     * @return <code>true</code> if the employee works for restaurant, <code>false</code> in other case.
+     * @param employee the data of the employee.
+     * @return an <code>RestaurantEmployee</code> with the data of the employee and its restaurant.
      */
     @Override
-    public boolean doesEmployeeWorksAtRestaurant(RestaurantEmployee restaurantEmployee) {
-        RestaurantEmployeeEntity entity = restaurantEmployeeEntityMapper
-                .toEntity(restaurantEmployee);
-        return restaurantEmployeeRepository
-                .findById(entity.getRestaurantEmployeeEntityID())
-                .isPresent();
+    public RestaurantEmployee employeeWorkPlace(User employee) {
+        Optional<RestaurantEmployeeEntity> entity = restaurantEmployeeRepository.findByIdIdUser(employee.getId());
+        if(entity.isEmpty()){
+            throw new RestaurantNotFoundException();
+        }
+        return restaurantEmployeeEntityMapper
+                .toRestaurantEmployee(entity.get());
     }
 }

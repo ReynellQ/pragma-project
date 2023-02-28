@@ -11,6 +11,7 @@ import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
+import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.useCase.OrderUseCase;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ class IOrderServicePortTest {
     IOrderPersistencePort orderPersistencePort;
     IFoodPlatePersistencePort foodPlatePersistencePort;
     IPersistentLoggedUser persistentLoggedUser;
+    IRestaurantPersistencePort restaurantPersistencePort;
 
     IOrderServicePort orderServicePort;
     @BeforeEach
@@ -33,7 +35,9 @@ class IOrderServicePortTest {
         orderPersistencePort = mock(IOrderPersistencePort.class);
         foodPlatePersistencePort = mock(IFoodPlatePersistencePort.class);
         persistentLoggedUser = mock(IPersistentLoggedUser.class);
-        orderServicePort = new OrderUseCase(orderPersistencePort, foodPlatePersistencePort, persistentLoggedUser);
+        restaurantPersistencePort = mock(IRestaurantPersistencePort.class);
+        orderServicePort = new OrderUseCase(orderPersistencePort, foodPlatePersistencePort, persistentLoggedUser,
+                restaurantPersistencePort);
     }
 
     @Test
@@ -136,5 +140,9 @@ class IOrderServicePortTest {
                 NotAClientException.class,
                 ()->orderServicePort.saveOrder(order, foodPlatesList)
         );
+    }
+
+    @Test
+    void getOrdersFilterByState() {
     }
 }

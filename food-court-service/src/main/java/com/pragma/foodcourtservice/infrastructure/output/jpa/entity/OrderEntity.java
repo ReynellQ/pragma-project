@@ -33,6 +33,6 @@ public class OrderEntity {
     })
     @ManyToOne
     private RestaurantEmployeeEntity restaurantEmployee;
-    @OneToMany
+    @OneToMany(mappedBy = "order")
     private List<OrderFoodPlatesEntity> orderFoodPlates;
 }

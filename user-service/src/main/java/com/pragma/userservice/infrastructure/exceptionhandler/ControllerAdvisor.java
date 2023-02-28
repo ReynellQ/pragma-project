@@ -1,6 +1,5 @@
 package com.pragma.userservice.infrastructure.exceptionhandler;
 
-import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
 import com.pragma.userservice.infrastructure.exception.*;
 import io.jsonwebtoken.JwtException;

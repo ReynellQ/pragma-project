@@ -1,9 +1,11 @@
 package com.pragma.foodcourtservice.application.mapper;
 
 import com.pragma.foodcourtservice.application.dto.order.FoodPlateOrderDto;
+import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
 import com.pragma.foodcourtservice.domain.model.Order;
 import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
+import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -23,4 +25,7 @@ import org.mapstruct.ReportingPolicy;
 public interface OrderDtoMapper {
     Order toOrder(OrderWithFoodPlatesDto orderWithFoodPlatesDto);
     OrderFoodPlates toOrderFoodPlates(FoodPlateOrderDto foodPlateOrderDto);
+
+    OrderResponseDto toOrderResponseDto(OrderWithFoodPlates order);
+
 }

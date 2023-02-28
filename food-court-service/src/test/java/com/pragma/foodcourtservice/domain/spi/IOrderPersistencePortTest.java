@@ -68,4 +68,9 @@ class IOrderPersistencePortTest {
                 ()->orderPersistencePort.saveOrder(order, foodPlatesList)
         );
     }
+
+    @Test
+    void getOrdersFilterByState() {
+    }
+
 }
