@@ -1,13 +1,13 @@
 package com.pragma.userservice.infrastructure.configuration;
 
-import com.pragma.userservice.domain.api.IAuth;
+import com.pragma.userservice.domain.api.IAuthServicePort;
 import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.api.IUserServicePort;
 import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
 import com.pragma.userservice.domain.useCase.UserUseCase;
 import com.pragma.userservice.infrastructure.configuration.jwt.JwtService;
-import com.pragma.userservice.infrastructure.driven_adapters.AuthService;
+import com.pragma.userservice.infrastructure.driven_adapters.AuthServiceServicePort;
 import com.pragma.userservice.infrastructure.output.jpa.adapter.RoleJpaAdapter;
 import com.pragma.userservice.infrastructure.output.jpa.adapter.UserJpaAdapter;
 import com.pragma.userservice.infrastructure.output.jpa.mapper.RolesEntityMapper;
@@ -61,9 +61,8 @@ public class BeanConfiguration {
         return new UserDetailsServiceImpl(userPersistencePort(), rolesPersistencePort());
     }
     @Bean
-    public IAuth authService() {
-        return new AuthService(passwordEncoder(), jwtService, authenticationManager(),
-                (UserDetailsServiceImpl) userDetailsService());
+    public IAuthServicePort authService() {
+        return new AuthServiceServicePort(passwordEncoder(), jwtService, authenticationManager());
     }
     @Bean
     public IUserServicePort userServicePort(){

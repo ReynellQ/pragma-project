@@ -50,7 +50,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
      */
     @Override
     public void saveUser(User userModel) {
-        Optional<UserEntity> userEntity = userRepository.findByPersonalId(userModel.getId());
+        Optional<UserEntity> userEntity = userRepository.findByPersonalId(userModel.getPersonalId());
         if(userEntity.isPresent())
             throw new UserConflictForIdException();
         userEntity = userRepository.findByEmail(userModel.getEmail());

@@ -52,6 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             authRequestInterceptor.setAuthHeader(authHeader);
+
+
             jwt = authHeader.substring(7);
             //Process JWT
 

@@ -1,10 +1,9 @@
 package com.pragma.userservice.domain.useCase;
 
-import com.pragma.userservice.domain.api.IAuth;
+import com.pragma.userservice.domain.api.IAuthServicePort;
 import com.pragma.userservice.domain.api.IUserValidator;
 import com.pragma.userservice.domain.api.IUserServicePort;
 import com.pragma.userservice.domain.exception.IncorrectDataException;
-import com.pragma.userservice.domain.exception.IncorrectCredentialsException;
 import com.pragma.userservice.domain.model.User;
 import com.pragma.userservice.domain.spi.IRolesPersistencePort;
 import com.pragma.userservice.domain.spi.IUserPersistencePort;
@@ -19,7 +18,7 @@ public class UserUseCase implements IUserServicePort {
     private final IUserPersistencePort personaPersistencePort;
     private final IRolesPersistencePort rolesPersistencePort;
     private final IUserValidator personaChecker;
-    private final IAuth auth;
+    private final IAuthServicePort auth;
 
     /**
      * Gets a user that has the id provided, searching it in the persistence layer.
