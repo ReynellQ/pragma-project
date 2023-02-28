@@ -39,9 +39,9 @@ public interface IRestaurantPersistencePort {
     void registerAnEmployee(RestaurantEmployee restaurantEmployee);
 
     /**
-     * Search if the employee works for the submitted restaurant.
-     * @param restaurantEmployee the data of the employee and their restaurant.
-     * @return <code>true</code> if the employee works for restaurant, <code>false</code> in other case.
+     * Search and returns the data of the restaurant of the employee submited.
+     * @param employee the data of the employee.
+     * @return an <code>RestaurantEmployee</code> with the data of the employee and its restaurant.
      */
-    boolean doesEmployeeWorksAtRestaurant(RestaurantEmployee restaurantEmployee);
+    RestaurantEmployee employeeWorkPlace(User employee);
 }

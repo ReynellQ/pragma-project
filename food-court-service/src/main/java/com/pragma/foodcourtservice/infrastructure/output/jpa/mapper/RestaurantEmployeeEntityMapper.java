@@ -9,7 +9,8 @@ import org.mapstruct.ReportingPolicy;
 /**
  * Mapping interface to map:
  *
- * -  RestaurantEmployee to RestaurantEmployeeEntity.
+ * - RestaurantEmployee to RestaurantEmployeeEntity.
+ * - RestaurantEmployeeEntity to RestaurantEmployee
  */
 @Mapper(
         componentModel = "spring",
@@ -17,7 +18,11 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface RestaurantEmployeeEntityMapper {
-    @Mapping(target = "restaurantEmployeeEntityID.idRestaurant", source = "restaurantEmployee.idRestaurant")
-    @Mapping(target = "restaurantEmployeeEntityID.idUser", source = "restaurantEmployee.idUser")
+    @Mapping(target = "id.idRestaurant", source = "restaurantEmployee.idRestaurant")
+    @Mapping(target = "id.idUser", source = "restaurantEmployee.idUser")
     RestaurantEmployeeEntity toEntity(RestaurantEmployee restaurantEmployee);
+
+    @Mapping(target = "idRestaurant", source = "entity.id.idRestaurant")
+    @Mapping(target = "idUser", source = "entity.id.idUser")
+    RestaurantEmployee toRestaurantEmployee(RestaurantEmployeeEntity entity);
 }

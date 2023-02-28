@@ -1,10 +1,12 @@
 package com.pragma.foodcourtservice.application.handler;
 
+import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
 import com.pragma.foodcourtservice.application.mapper.OrderDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IOrderServicePort;
 import com.pragma.foodcourtservice.domain.model.Order;
 import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
+import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +34,21 @@ public class OrderHandler implements IOrderHandler{
                         (orderFoodPlate) -> orderDtoMapper.toOrderFoodPlates(orderFoodPlate)
                 ).collect(Collectors.toList());
         orderServicePort.saveOrder(order, orderFoodPlates);
+    }
+
+    /**
+     * Gets the orders of the restaurant filtered by state in the application.
+     *
+     * @param state the state provided to filter.
+     * @param page  the page to return.
+     * @param limit the amount of registers per page.
+     * @return a list with the Orders.
+     */
+    @Override
+    public List<OrderResponseDto> getOrdersFilterByState(Integer state, Integer page, Integer limit) {
+        List<OrderWithFoodPlates> orders = orderServicePort.getOrdersFilterByState(state, page, limit);
+        return orders.stream().map(
+                (order)-> orderDtoMapper.toOrderResponseDto(order)
+        ).collect(Collectors.toList());
     }
 }

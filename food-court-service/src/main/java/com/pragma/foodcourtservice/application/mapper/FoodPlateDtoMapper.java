@@ -28,4 +28,6 @@ public interface FoodPlateDtoMapper {
 
     @Mapping(target = "category", source = "foodPlate.category.name")
     FoodPlateDto toFoodPlateDto(FoodPlate foodPlate);
+
+
 }

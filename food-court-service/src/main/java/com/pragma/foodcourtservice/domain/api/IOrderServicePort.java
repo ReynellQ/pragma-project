@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.domain.api;
 
 import com.pragma.foodcourtservice.domain.model.Order;
 import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
+import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
 
 import java.util.List;
 
@@ -15,4 +16,13 @@ public interface IOrderServicePort {
      * @param foodPlates The food plates
      */
     void saveOrder(Order order, List<OrderFoodPlates> foodPlates);
+
+    /**
+     * Gets the orders of the restaurant filtered by state. The restaurant is the working place of the logged employee.
+     * @param state the state provided to filter.
+     * @param page the page to return.
+     * @param limit the amount of registers per page.
+     * @return a list with the Orders.
+     */
+    List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Integer page, Integer limit);
 }

@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 public class RestaurantEmployeeEntity {
     @EmbeddedId
-    private RestaurantEmployeeEntityID restaurantEmployeeEntityID;
+    private RestaurantEmployeeEntityID id;
     @ManyToOne
     @JoinColumn(name = "id_restaurant", insertable=false, updatable=false)
     private RestaurantEntity restaurant;

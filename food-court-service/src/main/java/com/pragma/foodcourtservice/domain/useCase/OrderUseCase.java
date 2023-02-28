@@ -2,9 +2,7 @@ package com.pragma.foodcourtservice.domain.useCase;
 
 import com.pragma.foodcourtservice.domain.api.IOrderServicePort;
 import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
-import com.pragma.foodcourtservice.domain.exception.InvalidOrderException;
-import com.pragma.foodcourtservice.domain.exception.NoPlatesException;
-import com.pragma.foodcourtservice.domain.exception.NotAClientException;
+import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
@@ -19,6 +17,7 @@ public class OrderUseCase implements IOrderServicePort {
     private final IOrderPersistencePort orderPersistencePort;
     private final IFoodPlatePersistencePort foodPlatePersistencePort;
     private final IPersistentLoggedUser persistentLoggedUser;
+    private final IRestaurantPersistencePort restaurantPersistencePort;
     /**
      * Saves an order with the associated food plates and their quantities. The process consists on, and in this order:
      * - Verify if the order contains food plates. In other case return InvalidOrderException.
@@ -56,5 +55,26 @@ public class OrderUseCase implements IOrderServicePort {
         order.setDate(LocalDate.now());
         order.setState(OrderState.PENDING);
         orderPersistencePort.saveOrder(order, foodPlates);
+    }
+
+    /**
+     * Gets the orders of the restaurant filtered by state. The restaurant is the working place of the logged employee.
+     * Checks the logged user, that has to be an Employee, and checks if the state is valid.
+     * @param state the state provided to filter.
+     * @param page the page to return.
+     * @param limit the amount of registers per page.
+     * @return a list with the Orders.
+     */
+    @Override
+    public List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Integer page, Integer limit) {
+        User employee = persistentLoggedUser.getLoggedUser();
+        if(employee.getIdRole() != ROLES.EMPLOYEE){
+            throw new NotAnEmployeeException();
+        }
+        if(!OrderState.states.contains(state)){
+            throw new InvalidStateException();
+        }
+        Long idRestaurant = restaurantPersistencePort.employeeWorkPlace(employee).getIdRestaurant();
+        return orderPersistencePort.getOrdersFilterByState(state, idRestaurant, page, limit);
     }
 }
