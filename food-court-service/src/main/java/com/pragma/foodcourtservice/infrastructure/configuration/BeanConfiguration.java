@@ -5,24 +5,17 @@ import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.api.*;
-import com.pragma.foodcourtservice.domain.spi.ICategoryPersistencePort;
-import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
-import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
-import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
+import com.pragma.foodcourtservice.domain.spi.*;
 import com.pragma.foodcourtservice.domain.useCase.FoodPlateUseCase;
+import com.pragma.foodcourtservice.domain.useCase.OrderUseCase;
 import com.pragma.foodcourtservice.domain.useCase.RestaurantUseCase;
 import com.pragma.foodcourtservice.infrastructure.driven_adapter.*;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.CategoryJpaAdapter;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.FoodPlateJpaAdapter;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderJpaAdapter;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.RestaurantJpaAdapter;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.CategoryEntityMapper;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.FoodPlateEntityMapper;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEmployeeEntityMapper;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEntityMapper;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.ICategoryRepository;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IFoodPlateRepository;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantEmployeeRepository;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaurantRepository;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.*;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -114,6 +107,19 @@ public class BeanConfiguration {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    private final IOrderRepository orderRepository;
+    private final IOrderFoodPlatesRepository orderFoodPlatesRepository;
+    private final OrderEntityMapper orderEntityMapper;
+    @Bean
+    public IOrderPersistencePort orderPersistencePort(){
+        return new OrderJpaAdapter(orderRepository, orderFoodPlatesRepository, orderEntityMapper);
+    }
+
+    @Bean
+    public IOrderServicePort orderServicePort(){
+        return new OrderUseCase(orderPersistencePort(),foodPlatePersistencePort(),
+                persistentLoggedUser());
     }
 
 

@@ -14,9 +14,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RestaurantEmployeeEntityID implements Serializable {
-    @Column(name="id_restaurant")
-    private Long idRestaurant;
-    @Column(name="id_user")
-    private Long idUser;
+public class OrderFoodPlatesEntityID implements Serializable {
+    @Column(name = "id_order")
+    private Long idOrder;
+    @Column(name = "id_foodplate")
+    private Long idFoodPlate;
 }

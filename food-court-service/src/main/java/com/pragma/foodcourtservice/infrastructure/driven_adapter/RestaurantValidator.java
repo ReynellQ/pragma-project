@@ -16,7 +16,7 @@ public class RestaurantValidator implements IRestaurantValidator {
      */
     @Override
     public boolean validateOwner(User owner) {
-        return owner.getIdRole() == ROLES.OWNER.id;
+        return owner.getIdRole() == ROLES.OWNER;
     }
     /**
      * Checks if the string phone is a valid phone.
