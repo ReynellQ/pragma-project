@@ -15,7 +15,7 @@ public class Order {
     private Long id;
     private Long idClient;
     private LocalDate date;
-    private Integer orderState;
+    private Integer state;
     private Long idChef;
     private Long idRestaurant;
 }

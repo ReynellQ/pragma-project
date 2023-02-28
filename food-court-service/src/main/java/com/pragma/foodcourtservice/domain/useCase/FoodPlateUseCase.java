@@ -110,7 +110,7 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     private void verifyingOwnersAuthenticity(Long idRestaurant){
         User user = persistentLoggedUser.getLoggedUser();
         //Verifies if is an owner
-        if(user.getIdRole() != ROLES.OWNER.id){
+        if(user.getIdRole() != ROLES.OWNER){
             throw new NotAnOwnerException();
         }
         Restaurant r = restaurantPersistencePort.getRestaurant(

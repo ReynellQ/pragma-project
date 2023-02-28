@@ -1,12 +1,8 @@
 package com.pragma.foodcourtservice.domain.model;
 
-public enum ROLES {
-    ADMIN(1),
-    OWNER(2),
-    EMPLOYEE(3),
-    CLIENT(4);
-    public final int id;
-    ROLES(int id) {
-        this.id = id;
-    }
+public class ROLES {
+    public static final Integer ADMIN = 1;
+    public static final Integer OWNER = 2;
+    public static final Integer EMPLOYEE = 3;
+    public static final Integer CLIENT = 4;
 }

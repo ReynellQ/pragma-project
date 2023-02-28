@@ -77,4 +77,20 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
         RestaurantEmployeeEntity entity = restaurantEmployeeEntityMapper.toEntity(restaurantEmployee);
         restaurantEmployeeRepository.save(entity);
     }
+
+    /**
+     * Search if the employee works for the submitted restaurant. Search in JPA is exists a tuple with the PK
+     * (idRestaurant, idOwner), and returns if it's present or not.
+     *
+     * @param restaurantEmployee the data of the employee and their restaurant.
+     * @return <code>true</code> if the employee works for restaurant, <code>false</code> in other case.
+     */
+    @Override
+    public boolean doesEmployeeWorksAtRestaurant(RestaurantEmployee restaurantEmployee) {
+        RestaurantEmployeeEntity entity = restaurantEmployeeEntityMapper
+                .toEntity(restaurantEmployee);
+        return restaurantEmployeeRepository
+                .findById(entity.getRestaurantEmployeeEntityID())
+                .isPresent();
+    }
 }

@@ -34,7 +34,11 @@ public class ControllerAdvisor {
                     new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The category doesn't exists.")),
             Map.entry(NotAllowedRestaurantException.class,
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The current user is not allowed to " +
-                            "insert data referent to this restaurant."))
+                            "insert data referent to this restaurant.")),
+            Map.entry(NotAClientException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "A client is needed.")),
+            Map.entry(InvalidOrderException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The order is invalid."))
     );
 
     @ExceptionHandler(Exception.class)
