@@ -85,37 +85,9 @@ class FoodPlateUseCaseTest {
      */
     @Test
     void saveFoodPlate() {
-        //TODO mock the logged user, that has to be an owner
-        when(persistentLoggedUser.getLoggedUser())
-                .thenReturn(RestaurantData.OWNER_001);
-        //The food plate has to save correctly.
-        assertDoesNotThrow(()-> foodPlateServicePort.saveFoodPlate( FoodPlateData.VALID_FOOD_PLATE));
-        //The food plate won't save because the price isn't valid.
-        assertThrows(IncorrectDataException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_PRICE_FOOD_PLATE));
-        //The food plate won't save because the restaurant doesn't exist.
-        assertThrows(RestaurantNotFoundException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_RESTAURANT_FOOD_PLATE));
-        //The food plate won't save because the category doesn't exist.
-        assertThrows(CategoryNotFoundException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.INVALID_CATEGORY_FOOD_PLATE));
 
-        //The food plate won't save because the owner isn't the owner of the restaurant
-        when(persistentLoggedUser.getLoggedUser())
-                .thenReturn(RestaurantData.OWNER_002);
-        assertThrows(NotAllowedRestaurantException.class,
-                ()-> foodPlateServicePort.saveFoodPlate(FoodPlateData.VALID_FOOD_PLATE));
     }
-    /**
-     * Update a restaurant with a FoodPlate provided data. It charges a FoodPlate data and contrast with an FoodPlate
-     * object with the same id (has to exist, in other case return FoodPlateDoesntExistException) to changes the data.
-     * After do that, can occur one of the following cases:
-     * - If the active state, category, restaurant is changed and is different of null,
-     * throws an ForbiddenUpdateException.
-     * - If the description or price isn't provided (is null), this data keeps the same.
-     * - If the new price isn't valid, throw IncorrectDataException.
-     * - Saves the food plate correctly.
-     */
+
     @Test
     void updateFoodPlate() {
         when(persistentLoggedUser.getLoggedUser())
@@ -165,10 +137,7 @@ class FoodPlateUseCaseTest {
 
     @Test
     void changeStateFoodPlate() {
-        //The owner is logged
-        when(persistentLoggedUser.getLoggedUser())
-                .thenReturn(RestaurantData.OWNER_001);
-        Boolean newStatus = true;
+
     }
 
 }

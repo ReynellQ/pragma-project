@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * A DTO to update a food plate.
  */
@@ -13,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FoodPlateUpdateDto {
+    @NotNull
     private Long id;
     private String description;
     private Long price;

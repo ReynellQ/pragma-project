@@ -56,7 +56,7 @@ public class BeanConfiguration {
     }
     @Bean
     public IFoodPlateValidator foodPlateValidator(){
-        return new FoodPlateValidator(restaurantRepository);
+        return new FoodPlateValidator();
     }
     @Bean
     public IRestaurantPersistencePort restaurantPersistencePort(){

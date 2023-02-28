@@ -7,35 +7,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/food_plate/")
 @RequiredArgsConstructor
 public class FoodPlateRestController {
     private final FoodPlateHandler handler;
-    private final JwtService jwtService;
 
     @PostMapping("/save")
     @RolesAllowed("ROLE_OWNER")
-    public ResponseEntity<Void> saveFoodPlate(@RequestBody FoodPlateRegisterDto foodPlateRegisterDTO){
+    public ResponseEntity<Void> saveFoodPlate(@Valid @RequestBody FoodPlateRegisterDto foodPlateRegisterDTO){
         handler.saveFoodPlate(foodPlateRegisterDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PutMapping("/update")
     @RolesAllowed("ROLE_OWNER")
-    public ResponseEntity<Void> updateFoodPlate(@RequestBody FoodPlateUpdateDto foodPlateUpdateDTO){
+    public ResponseEntity<Void> updateFoodPlate(@Valid @RequestBody FoodPlateUpdateDto foodPlateUpdateDTO){
         handler.updateFoodPlate( foodPlateUpdateDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PatchMapping("/changeState")
     @RolesAllowed("ROLE_OWNER")
-    public ResponseEntity<Void> changeStateFoodPlate(@RequestBody FoodPlateChangeState foodPlateChangeState){
+    public ResponseEntity<Void> changeStateFoodPlate(@Valid @RequestBody FoodPlateChangeState foodPlateChangeState){
         handler.changeStateFoodPlate( foodPlateChangeState);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
@@ -46,12 +49,7 @@ public class FoodPlateRestController {
             @PathVariable Long restaurant,
             @PathVariable int page,
             @PathVariable int number,
-            @RequestBody CategoryList categoryList){
+            @Valid @RequestBody CategoryList categoryList){
         return ResponseEntity.ok().body(handler.listTheFoodPlatesByCategory(restaurant, categoryList, page, number));
-    }
-
-
-    private boolean verifyRole(String jwt, String expectedRole){
-        return jwtService.extractRole(jwt).equals(expectedRole);
     }
 }

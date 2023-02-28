@@ -6,8 +6,10 @@ import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundExc
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -38,13 +40,17 @@ public class ControllerAdvisor {
             Map.entry(NotAClientException.class,
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "A client is needed.")),
             Map.entry(InvalidOrderException.class,
-                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The order is invalid."))
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The order is invalid.")),
+            Map.entry(MethodArgumentNotValidException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")
+            ),
+            Map.entry(MethodArgumentTypeMismatchException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")
+            )
     );
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleApiException(Exception exception) {
-        System.out.println(exception.getClass());
-        System.out.println(exception.toString());
         ApiRestExceptionResponse api = messages.get(exception.getClass());
         return ResponseEntity.status(api.status)
                 .body(Collections.singletonMap(MESSAGE, api.message));

@@ -7,6 +7,7 @@ import com.pragma.foodcourtservice.domain.api.IRestaurantValidator;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
 import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
 import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
+import com.pragma.foodcourtservice.domain.model.ROLES;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.model.RestaurantEmployee;
 import com.pragma.foodcourtservice.domain.model.User;
@@ -41,12 +42,15 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     public void saveRestaurant(Restaurant restaurant) {
         User owner = persistentLoggedUser.getLoggedUser();
         restaurant.setIdOwner(owner.getId());
-        if(!restaurantValidator.validateOwner(owner))
+        if(!restaurantValidator.validateOwner(owner)){
             throw new NotAnOwnerException();
-        if(!restaurantValidator.validatePhone(restaurant.getPhone()))
+        }
+        if(!restaurantValidator.validatePhone(restaurant.getPhone())){
             throw new IncorrectDataException();
-        if(!restaurantValidator.validateName(restaurant.getName()))
+        }
+        if(!restaurantValidator.validateName(restaurant.getName())){
             throw new IncorrectDataException();
+        }
         restaurantPersistencePort.saveRestaurant(restaurant);
     }
 
@@ -60,7 +64,7 @@ public class RestaurantUseCase implements IRestaurantServicePort {
      */
     @Override
     public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurants) {
-        return restaurantPersistencePort.listAllAlphabeticallyRestaurantsPaginated(numberOfRestaurants, page);
+        return restaurantPersistencePort.listAllAlphabeticallyRestaurantsPaginated(page, numberOfRestaurants);
     }
 
     /**
@@ -75,6 +79,9 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     public void saveAnEmployeeOfARestaurant(User employee, Long idRestaurant) {
 
         User owner = persistentLoggedUser.getLoggedUser();
+        if(!restaurantValidator.validateOwner(owner)){
+            throw new NotAnOwnerException();
+        }
         Restaurant r = restaurantPersistencePort.getRestaurant(idRestaurant);
         if(r.getIdOwner() != owner.getId()){
             throw new NotAllowedRestaurantException();
