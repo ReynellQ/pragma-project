@@ -11,4 +11,6 @@ public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
             nativeQuery = true)
     List<OrderEntity> findTheOrdersFromRestaurantAndState(Integer state, Long idRestaurant,
                                                           Integer offset, Integer limit);
+
+    List<OrderEntity> findByIdClient(Long idClient);
 }

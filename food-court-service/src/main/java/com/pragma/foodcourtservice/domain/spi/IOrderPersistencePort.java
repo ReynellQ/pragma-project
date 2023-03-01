@@ -58,4 +58,6 @@ public interface IOrderPersistencePort {
      * @param idOrder the order's id.
      */
     void deleteOrderTicket(Long idOrder);
+
+    boolean hasActiveOrdersInTheRestaurant(Long idClient);
 }

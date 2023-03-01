@@ -53,6 +53,9 @@ public class OrderUseCase implements IOrderServicePort {
         if(client.getIdRole() != ROLES.CLIENT ){
             throw new NotAClientException();
         }
+        if(orderPersistencePort.hasActiveOrdersInTheRestaurant(client.getId())){
+            throw new HasActiveOrdersException();
+        }
         order.setIdClient(client.getId());
         order.setDate(LocalDate.now());
         order.setState(OrderState.PENDING);
