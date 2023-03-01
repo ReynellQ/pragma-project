@@ -6,6 +6,7 @@ import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantEmployee
 import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RestaurantEmployeeDtoMapper;
 import com.pragma.foodcourtservice.domain.api.IRestaurantServicePort;
+import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,11 @@ public class RestaurantHandler implements IRestaurantHandler {
      */
     @Override
     public List<RestaurantClientResponse> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurant) {
-        return restaurantServicePort.listAllAlphabeticallyRestaurantsPaginated(numberOfRestaurant, page)
-                .stream()
-                .map( (restaurant -> restaurantDtoMapper.toClientResponse(restaurant)))
-                .collect(Collectors.toList());
+        List<Restaurant> restaurants = restaurantServicePort
+                .listAllAlphabeticallyRestaurantsPaginated(page, numberOfRestaurant);
+        return restaurants.stream() .map(
+                    (restaurant -> restaurantDtoMapper.toClientResponse(restaurant))
+                ).collect(Collectors.toList());
     }
 
     /**

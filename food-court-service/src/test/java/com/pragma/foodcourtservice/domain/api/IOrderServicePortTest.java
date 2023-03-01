@@ -28,6 +28,7 @@ class IOrderServicePortTest {
     IFoodPlatePersistencePort foodPlatePersistencePort;
     IPersistentLoggedUser persistentLoggedUser;
     IRestaurantPersistencePort restaurantPersistencePort;
+    IOrderNotifierPort orderNotifierPort;
 
     IOrderServicePort orderServicePort;
     @BeforeEach
@@ -37,7 +38,7 @@ class IOrderServicePortTest {
         persistentLoggedUser = mock(IPersistentLoggedUser.class);
         restaurantPersistencePort = mock(IRestaurantPersistencePort.class);
         orderServicePort = new OrderUseCase(orderPersistencePort, foodPlatePersistencePort, persistentLoggedUser,
-                restaurantPersistencePort);
+                restaurantPersistencePort, orderNotifierPort);
     }
 
     @Test
@@ -148,5 +149,9 @@ class IOrderServicePortTest {
 
     @Test
     void assignToAnOrder() {
+    }
+
+    @Test
+    void notifyTheOrderIsReady() {
     }
 }

@@ -1,9 +1,8 @@
 package com.pragma.foodcourtservice.application.handler;
 
-import com.pragma.foodcourtservice.application.dto.order.AssignOrderDto;
+import com.pragma.foodcourtservice.application.dto.order.OrderIdDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
-import com.pragma.foodcourtservice.domain.model.Order;
 
 import java.util.List;
 
@@ -25,7 +24,13 @@ public interface IOrderHandler {
 
     /**
      * Assign the logged employee to an order to change their state.
-     * @param assignOrderDto a DTO with the id of the order.
+     * @param orderIdDto a DTO with the id of the order.
      */
-    void assignToAnOrder(AssignOrderDto assignOrderDto);
+    void assignToAnOrder(OrderIdDto orderIdDto);
+
+    /**
+     * Notify that the order with the provided ID is ready and the client can claim
+     * @param orderIdDto a DTO with the id of the order.
+     */
+    void notifyTheOrderIsReady(OrderIdDto orderIdDto);
 }

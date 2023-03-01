@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface IRestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
-    @Query(value="SELECT * FROM RESTAURANT r  ORDER BY r.name offset ?1 limit ?2", nativeQuery = true)
+    @Query(value="SELECT * FROM RESTAURANT r ORDER BY r.name offset ?1 limit ?2", nativeQuery = true)
     public List<RestaurantEntity> findAllSortedByNameAndPaginated( int offset, int limit);
 }

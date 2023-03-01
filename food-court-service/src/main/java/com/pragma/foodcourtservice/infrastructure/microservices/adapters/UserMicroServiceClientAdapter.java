@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.infrastructure.driven_adapter;
+package com.pragma.foodcourtservice.infrastructure.microservices.adapters;
 
 import com.pragma.foodcourtservice.application.dto.users.UserDto;
 import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
@@ -6,6 +6,7 @@ import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
+import com.pragma.foodcourtservice.infrastructure.microservices.feign_client.UserFeignClientRest;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +37,23 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
         }
         return response;
     }
+    /**
+     * Gets a user with the provided id.
+     * @param id the id of the user.
+     * @return the User with that id.
+     * @throws UserNotFoundException if the user doesn't be in the user microservice.
+     */
+    @Override
+    public User getUserById(Long id) {
+        User response;
+        try{
+            UserDto userDto = userServiceConnection.getUserById(id);
+            response = userDtoMapper.toUser(userDto);
+        }catch(Exception ex){
+            throw new UserNotFoundException();
+        }
+        return response;
+    }
 
     /**
      * Gets a user with the provided email;
@@ -58,14 +76,14 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
     /**
      * Gets the user's role with the provided id.
      *
-     * @param personalId the id of the user.
+     * @param id the id of the user.
      * @return the role of the User with that id.
      */
     @Override
-    public Role getRolesUser(Long personalId) {
+    public Role getRolesUser(Long id) {
         Role response;
         try{
-            UserDto userDto = userServiceConnection.getUserByPersonalId(personalId);
+            UserDto userDto = userServiceConnection.getUserById(id);
             response = rolesDTOMapper.toRole(userDto.getRole());
         }catch(Exception ex){
             throw new UserNotFoundException();

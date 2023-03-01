@@ -11,6 +11,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.pk.OrderFood
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderFoodPlatesRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderRepository;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderTicketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,15 +24,18 @@ import static org.mockito.Mockito.when;
 
 class IOrderPersistencePortTest {
     IOrderRepository orderRepository;
+    IOrderTicketRepository orderTicketRepository;
     IOrderFoodPlatesRepository orderFoodPlatesRepository;
     OrderEntityMapper orderEntityMapper;
+
     IOrderPersistencePort orderPersistencePort;
     @BeforeEach
     void setUp(){
         orderRepository = mock(IOrderRepository.class);
         orderFoodPlatesRepository = mock(IOrderFoodPlatesRepository.class);
         orderEntityMapper = mock(OrderEntityMapper.class);
-        orderPersistencePort = new OrderJpaAdapter(orderRepository, orderFoodPlatesRepository, orderEntityMapper);
+        orderPersistencePort = new OrderJpaAdapter(orderRepository,orderTicketRepository, orderFoodPlatesRepository,
+                orderEntityMapper);
 
     }
     @Test

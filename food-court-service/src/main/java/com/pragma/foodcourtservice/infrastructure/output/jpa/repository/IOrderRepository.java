@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
-    @Query(value="SELECT * FROM CLIENT_ORDER cor WHERE cor.id_restaurant = ?1 AND cor.state = ?2 offset ?3 limit ?4",
+    @Query(value="SELECT * FROM CLIENT_ORDER cor WHERE cor.state = ?1 AND cor.id_restaurant = ?2 offset ?3 limit ?4",
             nativeQuery = true)
     List<OrderEntity> findTheOrdersFromRestaurantAndState(Integer state, Long idRestaurant,
                                                           Integer offset, Integer limit);

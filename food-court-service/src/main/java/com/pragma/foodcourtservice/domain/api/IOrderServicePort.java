@@ -31,4 +31,10 @@ public interface IOrderServicePort {
      * @param idOrder the id of the order.
      */
     void assignToAnOrder(Long idOrder);
+
+    /**
+     * Notify that the order with the provided ID is ready and the client can claim
+     * @param idOrder the id of the order.
+     */
+    void notifyTheOrderIsReady(Long idOrder);
 }

@@ -2,13 +2,16 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.foodcourtservice.domain.model.Order;
 import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
+import com.pragma.foodcourtservice.domain.model.OrderTicket;
 import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderTicketEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderFoodPlatesRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderRepository;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderTicketRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderJpaAdapter implements IOrderPersistencePort {
     private final IOrderRepository orderRepository;
+    private final IOrderTicketRepository orderTicketRepository;
     private final IOrderFoodPlatesRepository orderFoodPlatesRepository;
     private final OrderEntityMapper orderEntityMapper;
     /**
@@ -52,7 +56,8 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
     @Override
     public List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Long idRestaurant, Integer page, Integer limit) {
         Integer offset = page*limit;
-        List<OrderEntity> ordersEntity = orderRepository.findTheOrdersFromRestaurantAndState(state, idRestaurant, offset, limit);
+        List<OrderEntity> ordersEntity = orderRepository
+                .findTheOrdersFromRestaurantAndState(state, idRestaurant, offset, limit);
         return ordersEntity
                 .stream().map(
                         (orderEntity -> orderEntityMapper.toOrderWithFoodPlates(orderEntity))
@@ -90,5 +95,20 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         entity.setIdRestaurant(order.getIdRestaurant());
         entity.setDate(order.getDate());
         orderRepository.save(entity);
+    }
+
+    /**
+     * Saves the ticket with the order in the persistence layer. It assumes that the order previously exists.
+     *
+     * @param orderTicket the order ticket, with the code.
+     */
+    @Override
+    public void saveOrderTicket(OrderTicket orderTicket) {
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(
+                orderTicket.getIdOrder(),
+                orderTicket.getCode(),
+                null
+        );
+        orderTicketRepository.save(orderTicketEntity);
     }
 }

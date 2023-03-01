@@ -10,6 +10,10 @@ import com.pragma.foodcourtservice.domain.useCase.FoodPlateUseCase;
 import com.pragma.foodcourtservice.domain.useCase.OrderUseCase;
 import com.pragma.foodcourtservice.domain.useCase.RestaurantUseCase;
 import com.pragma.foodcourtservice.infrastructure.driven_adapter.*;
+import com.pragma.foodcourtservice.infrastructure.microservices.adapters.IMessagingMicroServiceAdapter;
+import com.pragma.foodcourtservice.infrastructure.microservices.adapters.UserMicroServiceClientAdapter;
+import com.pragma.foodcourtservice.infrastructure.microservices.feign_client.MessagingFeignClientRest;
+import com.pragma.foodcourtservice.infrastructure.microservices.feign_client.UserFeignClientRest;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.CategoryJpaAdapter;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.FoodPlateJpaAdapter;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderJpaAdapter;
@@ -45,6 +49,7 @@ public class BeanConfiguration {
     private final UserFeignClientRest userFeignClientRest;
     private final AuthenticationConfiguration authConfiguration;
     private final RestaurantEmployeeEntityMapper restaurantEmployeeEntityMapper;
+    private final IOrderTicketRepository orderTicketRepository;
     @Bean
     public IPersistentLoggedUser persistentLoggedUser(){
         return new PersistentLoggedUser();
@@ -113,13 +118,23 @@ public class BeanConfiguration {
     private final OrderEntityMapper orderEntityMapper;
     @Bean
     public IOrderPersistencePort orderPersistencePort(){
-        return new OrderJpaAdapter(orderRepository, orderFoodPlatesRepository, orderEntityMapper);
+        return new OrderJpaAdapter(orderRepository, orderTicketRepository, orderFoodPlatesRepository, orderEntityMapper);
     }
 
+    private final MessagingFeignClientRest messagingFeignClientRest;
+    @Bean
+    public IMessagingMicroServiceClientPort messagingClientPort(){
+        return new IMessagingMicroServiceAdapter(messagingFeignClientRest);
+    }
+    @Bean
+    public IOrderNotifierPort orderNotifierPort(){
+        return new OrderNotifierAdapter(messagingClientPort(), userClientPort(),
+                restaurantPersistencePort(), orderPersistencePort());
+    }
     @Bean
     public IOrderServicePort orderServicePort(){
         return new OrderUseCase(orderPersistencePort(),foodPlatePersistencePort(),
-                persistentLoggedUser(), restaurantPersistencePort());
+                persistentLoggedUser(), restaurantPersistencePort(), orderNotifierPort());
     }
 
 

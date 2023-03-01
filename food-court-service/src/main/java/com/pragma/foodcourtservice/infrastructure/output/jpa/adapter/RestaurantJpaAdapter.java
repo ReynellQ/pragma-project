@@ -57,13 +57,16 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
      * List an amount of restaurants corresponding to the <code>numberOfRestaurants</code>, sorted alphabetically, and
      * displaying the number of page provided.
      *
-     * @param numberOfRestaurant the number of restaurants displayed in the current page.
+     * @param numberOfRestaurants the number of restaurants displayed in the current page.
      * @param page               the number of the page.
      * @return the list of restaurants.
      */
     @Override
-    public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurant) {
-        return restaurantRepository.findAllSortedByNameAndPaginated(page*numberOfRestaurant, numberOfRestaurant)
+    public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurants) {
+        int offset = page*numberOfRestaurants;
+        List<RestaurantEntity> restaurantEntities = restaurantRepository
+                .findAllSortedByNameAndPaginated(offset, numberOfRestaurants);
+        return restaurantEntities
                 .stream().map( (entity) -> restaurantEntityMapper.toRestaurant(entity))
                 .collect(Collectors.toList());
     }

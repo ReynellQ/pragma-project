@@ -1,17 +1,15 @@
-package com.pragma.foodcourtservice.application.dto.order;
+package com.pragma.foodcourtservice.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssignOrderDto {
-    @NotNull
+public class OrderTicket {
     private Long idOrder;
+    private String code;
 }

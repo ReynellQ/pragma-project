@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.domain.spi;
 
 import com.pragma.foodcourtservice.domain.model.Order;
 import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
+import com.pragma.foodcourtservice.domain.model.OrderTicket;
 import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
 
 import java.util.List;
@@ -36,4 +37,11 @@ public interface IOrderPersistencePort {
      * @param order the order to update.
      */
     void updateOrder(Order order);
+
+    /**
+     * Saves the ticket with the order in the persistence layer.
+     *
+     * @param orderTicket the order ticket, with the code.
+     */
+    void saveOrderTicket(OrderTicket orderTicket);
 }
