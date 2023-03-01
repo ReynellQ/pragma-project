@@ -1,9 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
-import com.pragma.foodcourtservice.domain.model.Order;
-import com.pragma.foodcourtservice.domain.model.OrderFoodPlates;
-import com.pragma.foodcourtservice.domain.model.OrderTicket;
-import com.pragma.foodcourtservice.domain.model.OrderWithFoodPlates;
+import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
@@ -126,5 +123,16 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
             throw new OrderTicketNotFoundException();
         }
         orderTicketRepository.delete(orderTicketEntity.get());
+    }
+
+    @Override
+    public boolean hasActiveOrdersInTheRestaurant(Long idClient) {
+        List<OrderEntity> orders = orderRepository.findByIdClient(idClient);
+        for(OrderEntity order : orders){
+            if(order.getState() != OrderState.DELIVERED && order.getState() !=OrderState.CANCELLLED ){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
+import com.pragma.foodcourtservice.domain.useCase.HasActiveOrdersException;
 import com.pragma.foodcourtservice.domain.useCase.InvalidPinException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
@@ -68,6 +69,10 @@ public class ControllerAdvisor {
             ),
             Map.entry(InvalidPinException.class,
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The pin code isn't correct or is invalid.")
+            ),
+            Map.entry(HasActiveOrdersException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "You has a active order currently, " +
+                            "wait until it finishes or cancel it.")
             )
     );
 
