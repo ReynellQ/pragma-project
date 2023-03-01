@@ -1,9 +1,11 @@
 package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.*;
+import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,6 +48,22 @@ public class ControllerAdvisor {
             ),
             Map.entry(MethodArgumentTypeMismatchException.class,
                     new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")
+            ),
+            Map.entry(OrderNotFoundException.class,
+                    new ApiRestExceptionResponse(HttpStatus.NOT_FOUND, "The order doesn't exist.")
+            ),
+            Map.entry(NoPlatesException.class,
+                    new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "There are no plates in the order.")
+            ),
+            Map.entry(NotPendingOrderException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The order isn't PENDING, can't be assigned.")
+            ),
+            Map.entry(NotAnEmployeeException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "A employee is needed.")
+            ),
+            Map.entry(ForbiddenWorkInOrderException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The order is forbidden. It's from other" +
+                            "restaurant.")
             )
     );
 

@@ -89,9 +89,10 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     public RestaurantEmployee employeeWorkPlace(User employee) {
         Optional<RestaurantEmployeeEntity> entity = restaurantEmployeeRepository.findByIdIdUser(employee.getId());
         if(entity.isEmpty()){
-            throw new RestaurantNotFoundException();
+            throw new WorkplaceNotFoundException();
         }
         return restaurantEmployeeEntityMapper
                 .toRestaurantEmployee(entity.get());
     }
+
 }

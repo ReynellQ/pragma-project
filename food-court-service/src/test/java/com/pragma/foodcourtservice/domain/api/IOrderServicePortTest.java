@@ -145,4 +145,8 @@ class IOrderServicePortTest {
     @Test
     void getOrdersFilterByState() {
     }
+
+    @Test
+    void assignToAnOrder() {
+    }
 }

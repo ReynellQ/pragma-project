@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
+import com.pragma.foodcourtservice.application.dto.order.AssignOrderDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
 import com.pragma.foodcourtservice.application.mapper.OrderDtoMapper;
@@ -50,5 +51,15 @@ public class OrderHandler implements IOrderHandler{
         return orders.stream().map(
                 (order)-> orderDtoMapper.toOrderResponseDto(order)
         ).collect(Collectors.toList());
+    }
+
+    /**
+     * Assign the logged employee to an order to change their state.
+     *
+     * @param assignOrderDto a DTO with the id of the order.
+     */
+    @Override
+    public void assignToAnOrder(AssignOrderDto assignOrderDto) {
+        orderServicePort.assignToAnOrder(assignOrderDto.getIdOrder());
     }
 }

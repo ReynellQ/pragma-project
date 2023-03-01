@@ -23,13 +23,14 @@ public class OrderEntity {
     private Long idClient;
     private LocalDate date;
     private Integer state;
-    @Column(name = "id_chef")
-    private Long idChef;
+
     @Column(name = "id_restaurant")
     private Long idRestaurant;
+    @Column(name = "id_chef")
+    private Long idChef;
     @JoinColumns({
-            @JoinColumn(name = "id_chef", insertable=false, updatable=false),
-            @JoinColumn(name = "id_restaurant", insertable=false, updatable=false)
+            @JoinColumn(name = "id_restaurant", insertable=false, updatable=false),
+            @JoinColumn(name = "id_chef", insertable=false, updatable=false)
     })
     @ManyToOne
     private RestaurantEmployeeEntity restaurantEmployee;

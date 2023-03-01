@@ -25,4 +25,10 @@ public interface IOrderServicePort {
      * @return a list with the Orders.
      */
     List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Integer page, Integer limit);
+
+    /**
+     * Assign to an order to change their state.
+     * @param idOrder the id of the order.
+     */
+    void assignToAnOrder(Long idOrder);
 }

@@ -4,6 +4,7 @@ import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
+import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

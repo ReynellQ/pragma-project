@@ -24,6 +24,7 @@ import java.util.List;
 )
 public interface OrderEntityMapper {
     OrderEntity toEntity(Order order);
+    Order toOrder(OrderEntity entity);
     @Mapping(target = "id.idOrder", source = "orderFoodPlates.idOrder")
     @Mapping(target = "id.idFoodPlate", source = "orderFoodPlates.idFoodPlate")
     @Mapping(target = "quantity", source = "orderFoodPlates.quantity")

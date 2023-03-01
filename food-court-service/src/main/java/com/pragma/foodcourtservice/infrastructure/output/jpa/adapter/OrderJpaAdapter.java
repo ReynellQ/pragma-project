@@ -12,6 +12,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderRe
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -56,5 +57,38 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
                 .stream().map(
                         (orderEntity -> orderEntityMapper.toOrderWithFoodPlates(orderEntity))
                 ).collect(Collectors.toList());
+    }
+
+    /**
+     * Get an order in the persistence layer with the id provided.
+     *
+     * @param idOrder the id of the order.
+     * @return the order with the id provided.
+     */
+    @Override
+    public Order getOrder(Long idOrder) {
+        Optional<OrderEntity> entity = orderRepository.findById(idOrder);
+        if(entity.isEmpty()){
+            throw new OrderNotFoundException();
+        }
+        return orderEntityMapper.toOrder(entity.get());
+    }
+
+    /**
+     * Update a giving order that exists in the persistence layer. It assumes that the order previously exists.
+     *
+     * @param order the order to update.
+     */
+    @Override
+    public void updateOrder(Order order) {
+        //Only to know if the order previously exists.
+        OrderEntity entity = orderRepository.findById(order.getId()).get();
+        entity.setDate(order.getDate());
+        entity.setIdChef(order.getIdChef());
+        entity.setIdClient(order.getIdClient());
+        entity.setState(order.getState());
+        entity.setIdRestaurant(order.getIdRestaurant());
+        entity.setDate(order.getDate());
+        orderRepository.save(entity);
     }
 }
