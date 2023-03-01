@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
+import com.pragma.foodcourtservice.application.dto.order.DeliverOrderDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderIdDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
@@ -33,4 +34,10 @@ public interface IOrderHandler {
      * @param orderIdDto a DTO with the id of the order.
      */
     void notifyTheOrderIsReady(OrderIdDto orderIdDto);
+
+    /**
+     * Deliver an order with the id provided and verifies the pin.
+     * @param deliverOrderDto a DTO with the order's id and the pin code of the order.
+     */
+    void deliverAnOrder(DeliverOrderDto deliverOrderDto);
 }

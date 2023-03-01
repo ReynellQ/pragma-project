@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
+import com.pragma.foodcourtservice.application.dto.order.DeliverOrderDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderIdDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
@@ -46,6 +47,13 @@ public class OrderRestController {
     @RolesAllowed("ROLE_EMPLOYEE")
     public ResponseEntity<Void> notifyIsReadyTheOrder(@Valid @RequestBody OrderIdDto orderIdDto){
         handler.notifyTheOrderIsReady(orderIdDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PostMapping("/deliver")
+    @RolesAllowed("ROLE_EMPLOYEE")
+    public ResponseEntity<Void> deliverTheOrder(@Valid @RequestBody DeliverOrderDto deliverOrderDto){
+        handler.deliverAnOrder(deliverOrderDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

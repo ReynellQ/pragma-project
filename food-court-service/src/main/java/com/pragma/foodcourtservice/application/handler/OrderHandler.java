@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.application.handler;
 
+import com.pragma.foodcourtservice.application.dto.order.DeliverOrderDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderIdDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
@@ -66,5 +67,10 @@ public class OrderHandler implements IOrderHandler{
     @Override
     public void notifyTheOrderIsReady(OrderIdDto orderIdDto) {
         orderServicePort.notifyTheOrderIsReady(orderIdDto.getIdOrder());
+    }
+
+    @Override
+    public void deliverAnOrder(DeliverOrderDto deliverOrderDto) {
+        orderServicePort.deliverAnOrder(deliverOrderDto.getIdOrder(), deliverOrderDto.getPin());
     }
 }

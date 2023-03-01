@@ -44,4 +44,18 @@ public interface IOrderPersistencePort {
      * @param orderTicket the order ticket, with the code.
      */
     void saveOrderTicket(OrderTicket orderTicket);
+
+    /**
+     * Gets the order ticket with the order's id provided.
+     * @param idOrder the order's id.
+     * @return the order ticket.
+     */
+    OrderTicket getOrderTicketWithIdOrder(Long idOrder);
+
+    /**
+     * Delete an order ticket associated with the idOrder submitted.
+     *
+     * @param idOrder the order's id.
+     */
+    void deleteOrderTicket(Long idOrder);
 }
