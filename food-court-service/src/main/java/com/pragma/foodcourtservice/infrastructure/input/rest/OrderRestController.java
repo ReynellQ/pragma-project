@@ -56,4 +56,11 @@ public class OrderRestController {
         handler.deliverAnOrder(deliverOrderDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
+
+    @PostMapping("/cancel")
+    @RolesAllowed("ROLE_CLIENT")
+    public ResponseEntity<Void> cancelAnOrder(@Valid @RequestBody OrderIdDto orderIdDto){
+        handler.cancelAnOrder(orderIdDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
 }

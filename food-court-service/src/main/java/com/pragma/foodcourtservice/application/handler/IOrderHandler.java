@@ -40,4 +40,11 @@ public interface IOrderHandler {
      * @param deliverOrderDto a DTO with the order's id and the pin code of the order.
      */
     void deliverAnOrder(DeliverOrderDto deliverOrderDto);
+
+    /**
+     * Cancel an order with the provided id.
+     *
+     * @param orderIdDto a DTO with the id of the order.
+     */
+    void cancelAnOrder(OrderIdDto orderIdDto);
 }

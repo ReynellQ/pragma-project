@@ -73,4 +73,9 @@ public class OrderHandler implements IOrderHandler{
     public void deliverAnOrder(DeliverOrderDto deliverOrderDto) {
         orderServicePort.deliverAnOrder(deliverOrderDto.getIdOrder(), deliverOrderDto.getPin());
     }
+
+    @Override
+    public void cancelAnOrder(OrderIdDto orderIdDto) {
+        orderServicePort.cancelAnOrder(orderIdDto.getIdOrder());
+    }
 }

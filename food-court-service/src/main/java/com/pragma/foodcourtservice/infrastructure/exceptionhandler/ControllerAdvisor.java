@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
+import com.pragma.foodcourtservice.domain.useCase.ForbiddenCancelOrderException;
 import com.pragma.foodcourtservice.domain.useCase.HasActiveOrdersException;
 import com.pragma.foodcourtservice.domain.useCase.InvalidPinException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
@@ -73,7 +74,9 @@ public class ControllerAdvisor {
             Map.entry(HasActiveOrdersException.class,
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "You has a active order currently, " +
                             "wait until it finishes or cancel it.")
-            )
+            ),
+            Map.entry(ForbiddenCancelOrderException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "You can't cancel this order."))
     );
 
     @ExceptionHandler(Exception.class)

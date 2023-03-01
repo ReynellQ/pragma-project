@@ -153,4 +153,23 @@ public class OrderUseCase implements IOrderServicePort {
         orderPersistencePort.updateOrder(order);
         orderPersistencePort.deleteOrderTicket(order.getId());
     }
+
+    /**
+     * Cancel an order with the provided id. An order only can be cancelled if it's PENDING or CANCELLED.
+     *
+     * @param idOrder the id of the order.
+     */
+    @Override
+    public void cancelAnOrder(Long idOrder) {
+        Order order = orderPersistencePort.getOrder(idOrder);
+        User client = persistentLoggedUser.getLoggedUser();
+        if(client.getIdRole() != ROLES.CLIENT ){
+            throw new NotAClientException();
+        }
+        if(order.getState() != OrderState.PENDING){
+            throw new ForbiddenCancelOrderException();
+        }
+        order.setState(OrderState.CANCELLLED);
+        orderPersistencePort.updateOrder(order);
+    }
 }

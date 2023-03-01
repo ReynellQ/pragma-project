@@ -44,4 +44,11 @@ public interface IOrderServicePort {
      * @param pin the pin to deliver the order.
      */
     void deliverAnOrder(Long idOrder, String pin);
+
+    /**
+     * Cancel an order with the provided id.
+     *
+     * @param idOrder the id of the order.
+     */
+    void cancelAnOrder(Long idOrder);
 }
