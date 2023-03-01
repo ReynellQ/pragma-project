@@ -44,4 +44,5 @@ public interface IRestaurantPersistencePort {
      * @return an <code>RestaurantEmployee</code> with the data of the employee and its restaurant.
      */
     RestaurantEmployee employeeWorkPlace(User employee);
+
 }

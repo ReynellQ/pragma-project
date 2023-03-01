@@ -24,4 +24,16 @@ public interface IOrderPersistencePort {
      */
     List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Long idRestaurant, Integer page, Integer limit);
 
+    /**
+     * Get an order in the persistence layer with the id provided.
+     * @param idOrder the id of the order.
+     * @return the order with the id provided.
+     */
+    Order getOrder(Long idOrder);
+
+    /**
+     * Update a giving order that exists in the persistence layer.
+     * @param order the order to update.
+     */
+    void updateOrder(Order order);
 }

@@ -73,4 +73,11 @@ class IOrderPersistencePortTest {
     void getOrdersFilterByState() {
     }
 
+    @Test
+    void getOrder() {
+    }
+
+    @Test
+    void updateOrder() {
+    }
 }

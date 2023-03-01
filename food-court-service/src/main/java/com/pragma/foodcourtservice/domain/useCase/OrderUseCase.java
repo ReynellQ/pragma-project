@@ -77,4 +77,29 @@ public class OrderUseCase implements IOrderServicePort {
         Long idRestaurant = restaurantPersistencePort.employeeWorkPlace(employee).getIdRestaurant();
         return orderPersistencePort.getOrdersFilterByState(state, idRestaurant, page, limit);
     }
+
+    /**
+     * Assign to an order to change their state. Checks if the logged user is an employee and works for the restaurant
+     * of the order.
+     *
+     * @param idOrder the id of the order.
+     */
+    @Override
+    public void assignToAnOrder(Long idOrder) {
+        User employee = persistentLoggedUser.getLoggedUser();
+        if(employee.getIdRole() != ROLES.EMPLOYEE){
+            throw new NotAnEmployeeException();
+        }
+        RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
+        Order order = orderPersistencePort.getOrder(idOrder);
+        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+            throw new ForbiddenWorkInOrderException();
+        }
+        order.setIdChef(employee.getId());
+        if(order.getState() != OrderState.PENDING){
+            throw new NotPendingOrderException();
+        }
+        order.setState(OrderState.IN_PROCESS);
+        orderPersistencePort.updateOrder(order);
+    }
 }

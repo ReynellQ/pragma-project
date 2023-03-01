@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.configuration.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.foodcourtservice.infrastructure.driven_adapter.AuthRequestInterceptor;
+import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -77,7 +78,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }catch (JwtException jwtException){
             Map<String, Object> errorDetails = new HashMap<>();
             errorDetails.put("message", "Invalid token");
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            new ObjectMapper()
+                    .writeValue(response.getWriter(), errorDetails);
+        }catch(UserNotFoundException userNotFoundException){
+            Map<String, Object> errorDetails = new HashMap<>();
+            errorDetails.put("message", "The logged user doesn't exist");
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             new ObjectMapper()
                     .writeValue(response.getWriter(), errorDetails);
