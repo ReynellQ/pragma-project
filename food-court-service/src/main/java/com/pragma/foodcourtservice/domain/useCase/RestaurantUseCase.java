@@ -64,7 +64,9 @@ public class RestaurantUseCase implements IRestaurantServicePort {
      */
     @Override
     public List<Restaurant> listAllAlphabeticallyRestaurantsPaginated(int page, int numberOfRestaurants) {
-        return restaurantPersistencePort.listAllAlphabeticallyRestaurantsPaginated(page, numberOfRestaurants);
+        List<Restaurant> restaurants = restaurantPersistencePort
+                .listAllAlphabeticallyRestaurantsPaginated(page, numberOfRestaurants);
+        return restaurants;
     }
 
     /**

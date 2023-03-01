@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.infrastructure.driven_adapter;
+package com.pragma.foodcourtservice.infrastructure.microservices.feign_client;
 
 import com.pragma.foodcourtservice.application.dto.users.UserDto;
 import com.pragma.foodcourtservice.domain.model.User;
@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "user-service",
             configuration = {FeignClientConfiguration.class})
 public interface UserFeignClientRest {
-    @GetMapping("user/id/{id}")
+    @GetMapping("user/personalId/{id}")
     UserDto getUserByPersonalId(@PathVariable Long id);
+
+    @GetMapping("user/id/{id}")
+    UserDto getUserById(@PathVariable Long id);
 
     @GetMapping("user/email/{email}")
     UserDto getUserByEmail(@PathVariable String email);

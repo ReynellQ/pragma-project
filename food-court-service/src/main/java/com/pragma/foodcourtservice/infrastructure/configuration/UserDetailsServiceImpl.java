@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userClientPort.getUserByEmail(username);
-        Role role = userClientPort.getRolesUser(user.getPersonalId());
+        Role role = userClientPort.getRolesUser(user.getId());
         persistentLoggedUser.setLoggedUser(user);
         persistentLoggedUser.setRoleOfLoggedUser(role);
         return new UserDetailsImpl(user, role);

@@ -1,7 +1,6 @@
 package com.pragma.foodcourtservice.infrastructure.input.rest;
 
-import com.pragma.foodcourtservice.application.dto.foodplate.FoodPlateRegisterDto;
-import com.pragma.foodcourtservice.application.dto.order.AssignOrderDto;
+import com.pragma.foodcourtservice.application.dto.order.OrderIdDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderResponseDto;
 import com.pragma.foodcourtservice.application.dto.order.OrderWithFoodPlatesDto;
 import com.pragma.foodcourtservice.application.handler.IOrderHandler;
@@ -38,8 +37,15 @@ public class OrderRestController {
 
     @PostMapping("/assign")
     @RolesAllowed("ROLE_EMPLOYEE")
-    public ResponseEntity<Void> assignToAnOrder(@Valid @RequestBody AssignOrderDto assignOrderDto){
-        handler.assignToAnOrder(assignOrderDto);
+    public ResponseEntity<Void> assignToAnOrder(@Valid @RequestBody OrderIdDto orderIdDto){
+        handler.assignToAnOrder(orderIdDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PostMapping("/notify")
+    @RolesAllowed("ROLE_EMPLOYEE")
+    public ResponseEntity<Void> notifyIsReadyTheOrder(@Valid @RequestBody OrderIdDto orderIdDto){
+        handler.notifyTheOrderIsReady(orderIdDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

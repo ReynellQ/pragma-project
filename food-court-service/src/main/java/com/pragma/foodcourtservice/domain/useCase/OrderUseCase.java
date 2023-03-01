@@ -1,5 +1,6 @@
 package com.pragma.foodcourtservice.domain.useCase;
 
+import com.pragma.foodcourtservice.domain.api.IOrderNotifierPort;
 import com.pragma.foodcourtservice.domain.api.IOrderServicePort;
 import com.pragma.foodcourtservice.domain.api.IPersistentLoggedUser;
 import com.pragma.foodcourtservice.domain.exception.*;
@@ -7,6 +8,7 @@ import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
+import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -18,6 +20,7 @@ public class OrderUseCase implements IOrderServicePort {
     private final IFoodPlatePersistencePort foodPlatePersistencePort;
     private final IPersistentLoggedUser persistentLoggedUser;
     private final IRestaurantPersistencePort restaurantPersistencePort;
+    private final IOrderNotifierPort orderNotifierPort;
     /**
      * Saves an order with the associated food plates and their quantities. The process consists on, and in this order:
      * - Verify if the order contains food plates. In other case return InvalidOrderException.
@@ -101,5 +104,28 @@ public class OrderUseCase implements IOrderServicePort {
         }
         order.setState(OrderState.IN_PROCESS);
         orderPersistencePort.updateOrder(order);
+    }
+
+    /**
+     * Notify that the order with the provided ID is ready and the client can claim
+     * @param idOrder the id of the order.
+     */
+    @Override
+    public void notifyTheOrderIsReady(Long idOrder) {
+        User employee = persistentLoggedUser.getLoggedUser();
+        if(employee.getIdRole() != ROLES.EMPLOYEE){
+            throw new NotAnEmployeeException();
+        }
+        RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
+        Order order = orderPersistencePort.getOrder(idOrder);
+        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+            throw new ForbiddenWorkInOrderException();
+        }
+        if(order.getState() != OrderState.IN_PROCESS){
+            throw new NotInProcessOrder();
+        }
+        order.setState(OrderState.READY);
+        orderPersistencePort.updateOrder(order);
+        orderNotifierPort.sendMessage(order);
     }
 }
