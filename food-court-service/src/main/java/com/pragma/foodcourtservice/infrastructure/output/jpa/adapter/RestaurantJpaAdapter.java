@@ -53,7 +53,6 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     }
 
     /**
-         * TODO TESTING
      * List an amount of restaurants corresponding to the <code>numberOfRestaurants</code>, sorted alphabetically, and
      * displaying the number of page provided.
      *
