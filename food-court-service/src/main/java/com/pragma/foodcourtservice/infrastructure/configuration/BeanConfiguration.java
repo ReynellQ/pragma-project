@@ -116,9 +116,11 @@ public class BeanConfiguration {
     private final IOrderRepository orderRepository;
     private final IOrderFoodPlatesRepository orderFoodPlatesRepository;
     private final OrderEntityMapper orderEntityMapper;
+    private final OrderTicketEntityMapper orderTicketEntityMapper;
     @Bean
     public IOrderPersistencePort orderPersistencePort(){
-        return new OrderJpaAdapter(orderRepository, orderTicketRepository, orderFoodPlatesRepository, orderEntityMapper);
+        return new OrderJpaAdapter(orderRepository, orderTicketRepository, orderFoodPlatesRepository, orderEntityMapper,
+                orderTicketEntityMapper);
     }
 
     private final MessagingFeignClientRest messagingFeignClientRest;

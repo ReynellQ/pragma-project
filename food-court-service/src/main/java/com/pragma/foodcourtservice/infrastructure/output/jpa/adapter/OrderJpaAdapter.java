@@ -9,6 +9,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderTicketEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderEntityMapper;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderTicketEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderFoodPlatesRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderTicketRepository;
@@ -24,6 +25,7 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
     private final IOrderTicketRepository orderTicketRepository;
     private final IOrderFoodPlatesRepository orderFoodPlatesRepository;
     private final OrderEntityMapper orderEntityMapper;
+    private final OrderTicketEntityMapper orderTicketEntityMapper;
     /**
      * Saves and retrieves an order in the persistence layer, with the food plates associated to the order.
      *
@@ -104,11 +106,25 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
      */
     @Override
     public void saveOrderTicket(OrderTicket orderTicket) {
-        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(
-                orderTicket.getIdOrder(),
-                orderTicket.getCode(),
-                null
-        );
+        OrderTicketEntity orderTicketEntity = orderTicketEntityMapper.toOrderTicketEntity(orderTicket);
         orderTicketRepository.save(orderTicketEntity);
+    }
+
+    @Override
+    public OrderTicket getOrderTicketWithIdOrder(Long idOrder) {
+        Optional<OrderTicketEntity> orderTicketEntity = orderTicketRepository.findById(idOrder);
+        if(orderTicketEntity.isEmpty()){
+            throw new OrderTicketNotFoundException();
+        }
+        return orderTicketEntityMapper.toOrderTicket(orderTicketEntity.get());
+    }
+
+    @Override
+    public void deleteOrderTicket(Long idOrder) {
+        Optional<OrderTicketEntity> orderTicketEntity = orderTicketRepository.findById(idOrder);
+        if(orderTicketEntity.isEmpty()){
+            throw new OrderTicketNotFoundException();
+        }
+        orderTicketRepository.delete(orderTicketEntity.get());
     }
 }

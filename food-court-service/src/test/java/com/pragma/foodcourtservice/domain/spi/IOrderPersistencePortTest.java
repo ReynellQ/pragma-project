@@ -9,6 +9,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.pk.OrderFoodPlatesEntityID;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderEntityMapper;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderTicketEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderFoodPlatesRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderRepository;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IOrderTicketRepository;
@@ -27,6 +28,7 @@ class IOrderPersistencePortTest {
     IOrderTicketRepository orderTicketRepository;
     IOrderFoodPlatesRepository orderFoodPlatesRepository;
     OrderEntityMapper orderEntityMapper;
+    OrderTicketEntityMapper orderTicketEntityMapper;
 
     IOrderPersistencePort orderPersistencePort;
     @BeforeEach
@@ -35,7 +37,7 @@ class IOrderPersistencePortTest {
         orderFoodPlatesRepository = mock(IOrderFoodPlatesRepository.class);
         orderEntityMapper = mock(OrderEntityMapper.class);
         orderPersistencePort = new OrderJpaAdapter(orderRepository,orderTicketRepository, orderFoodPlatesRepository,
-                orderEntityMapper);
+                orderEntityMapper, orderTicketEntityMapper);
 
     }
     @Test

@@ -2,6 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
+import com.pragma.foodcourtservice.domain.useCase.InvalidPinException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
@@ -64,6 +65,9 @@ public class ControllerAdvisor {
             Map.entry(ForbiddenWorkInOrderException.class,
                     new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The order is forbidden. It's from other" +
                             "restaurant.")
+            ),
+            Map.entry(InvalidPinException.class,
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "The pin code isn't correct or is invalid.")
             )
     );
 

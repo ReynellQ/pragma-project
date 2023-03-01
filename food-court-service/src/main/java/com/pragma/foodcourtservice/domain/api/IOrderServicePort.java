@@ -37,4 +37,11 @@ public interface IOrderServicePort {
      * @param idOrder the id of the order.
      */
     void notifyTheOrderIsReady(Long idOrder);
+
+    /**
+     * Deliver an order with the id provided and verifies the pin.
+     * @param idOrder the id of the order.
+     * @param pin the pin to deliver the order.
+     */
+    void deliverAnOrder(Long idOrder, String pin);
 }

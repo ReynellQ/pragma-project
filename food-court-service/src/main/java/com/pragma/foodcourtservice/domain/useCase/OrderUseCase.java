@@ -8,7 +8,6 @@ import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.domain.spi.IFoodPlatePersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
-import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -122,10 +121,33 @@ public class OrderUseCase implements IOrderServicePort {
             throw new ForbiddenWorkInOrderException();
         }
         if(order.getState() != OrderState.IN_PROCESS){
-            throw new NotInProcessOrder();
+            throw new NotInProcessOrderException();
         }
         order.setState(OrderState.READY);
         orderPersistencePort.updateOrder(order);
         orderNotifierPort.sendMessage(order);
+    }
+
+    @Override
+    public void deliverAnOrder(Long idOrder, String pin) {
+        User employee = persistentLoggedUser.getLoggedUser();
+        if(employee.getIdRole() != ROLES.EMPLOYEE){
+            throw new NotAnEmployeeException();
+        }
+        RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
+        Order order = orderPersistencePort.getOrder(idOrder);
+        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+            throw new ForbiddenWorkInOrderException();
+        }
+        if(order.getState() != OrderState.READY){
+            throw new NotReadyOrderException();
+        }
+        OrderTicket orderTicket = orderPersistencePort.getOrderTicketWithIdOrder(order.getId());
+        if(!orderTicket.getCode().equals(pin)){
+            throw new InvalidPinException();
+        }
+        order.setState(OrderState.DELIVERED);
+        orderPersistencePort.updateOrder(order);
+        orderPersistencePort.deleteOrderTicket(order.getId());
     }
 }
