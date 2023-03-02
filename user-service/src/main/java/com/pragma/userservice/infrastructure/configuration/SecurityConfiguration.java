@@ -23,6 +23,16 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/auth/**", "/user/register/**"
+    };
+
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.authenticationProvider = authenticationProvider;
@@ -34,7 +44,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**", "/user/register/**")
+                .antMatchers(AUTH_WHITELIST)
                     .permitAll()
 
                 .anyRequest()
