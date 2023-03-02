@@ -9,6 +9,9 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 eureka:
   client:
