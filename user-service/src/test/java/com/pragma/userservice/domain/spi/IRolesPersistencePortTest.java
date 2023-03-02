@@ -28,20 +28,18 @@ class IRolesPersistencePortTest {
         rolesEntityMapper = mock(RolesEntityMapper.class);
         rolesPersistencePort = new RoleJpaAdapter(rolesRepository, rolesEntityMapper);
     }
-    @Test
-    void getRol() {
-        getExistingRole();
-        getNonExistingRole();
-    }
 
-    private void getExistingRole() {
+    @Test
+    void getExistingRole() {
         Role role = new Role(ROLES.ADMIN.id, "ADMIN", "ROL DE ADMIN");
         RolesEntity rolesEntity = new RolesEntity(ROLES.ADMIN.id, "ADMIN", "ROL DE ADMIN");
         when(rolesEntityMapper.toRol(rolesEntity)).thenReturn(role);
         when(rolesRepository.findById(rolesEntity.getId())).thenReturn(Optional.of(rolesEntity));
         assertEquals( role, rolesPersistencePort.getRol(role.getId()));
     }
-    private void getNonExistingRole() {
+
+    @Test
+    void getNonExistingRole() {
         Role role = new Role(-1, "ROL INEXISTENTE", "ESTE ROL NO EXISTE");
         when(rolesRepository.findById(role.getId())).thenReturn(Optional.empty());
         assertThrows(

@@ -20,10 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class IUserPersistencePortTest {
-
-
     IUserRepository userRepository;
     UserEntityMapper userEntityMapper;
+
     IUserPersistencePort persistencePort;
 
     /**
@@ -36,13 +35,9 @@ class IUserPersistencePortTest {
         persistencePort = new UserJpaAdapter(userRepository, userEntityMapper);
     }
 
-    @Test
-    void getUserByPersonalId() {
-        getAnExistingUserWithIdProvided();
-        getAnNonExistingUserWithIdProvided();
-    }
 
-    private void getAnExistingUserWithIdProvided() {
+    @Test
+    void getAnExistingUserWithIdProvided() {
         UserEntity userEntity = new UserEntity(1L, 1L, "Lalo", "Salamanca", "123",
                 "lalo@gmail.com", "password", 2);
         User user = new User(1l, 1l, "Lalo", "Salamanca", "123",
@@ -52,7 +47,8 @@ class IUserPersistencePortTest {
         assertEquals(user, persistencePort.getUserByPersonalId(user.getPersonalId()));
     }
 
-    private void getAnNonExistingUserWithIdProvided() {
+    @Test
+    void getAnNonExistingUserWithIdProvided() {
         UserEntity userEntity = new UserEntity(2L, 1L, "Lalo", "Salamanca", "123",
                 "lalo@gmail.com", "password", 2);
         User user = new User(1l, 1l, "Lalo", "Salamanca", "123",
@@ -63,12 +59,7 @@ class IUserPersistencePortTest {
     }
 
     @Test
-    void getUserByEmail() {
-        getAnExistingUserWithEmailProvided();
-        getAnNonExistingUserWithEmailProvided();
-    }
-
-    private void getAnExistingUserWithEmailProvided() {
+    void getAnExistingUserWithEmailProvided() {
         UserEntity userEntity = new UserEntity(1L, 1L, "Lalo", "Salamanca", "123",
                 "lalo@gmail.com", "password", 2);
         User user = new User(1l, 1l, "Lalo", "Salamanca", "123",
@@ -78,7 +69,8 @@ class IUserPersistencePortTest {
         assertEquals(user, persistencePort.getUserByEmail(user.getEmail()));
     }
 
-    private void getAnNonExistingUserWithEmailProvided() {
+    @Test
+    void getAnNonExistingUserWithEmailProvided() {
         UserEntity userEntity = new UserEntity(2L, 1L, "Lalo", "Salamanca", "123",
                 "lalo@gmail.com", "password", 2);
         User user = new User(1l, 1l, "Lalo", "Salamanca", "123",
@@ -88,26 +80,8 @@ class IUserPersistencePortTest {
                 ()->persistencePort.getUserByEmail(user.getEmail()));
     }
 
-    /**
-     * Save a user that doesn't exist.
-     * Save a user has 3 cases:
-     * - A user with the same id already exists, throw a UserWithIDAlreadyExistsException
-     * - a user with the same email already exists, throws a UserWithEmailAlreadyExistsException
-     * - in another case, save the user correctly.
-     *
-     * If the user U is saved, it cannot be saved again if the id or the email is the same as other user in the database
-     * and this user is, effectively, the user U. If that data changes, the user can be saved again because isn't the
-     * same user anymore.
-     */
     @Test
-    void saveUser() {
-        saveUserCorrectly();
-        saveUserButConflictWithId();
-        saveUserButConflictWithEmail();
-    }
-
-
-    private void saveUserCorrectly() {
+    void saveUserCorrectly() {
         User u1 = cloneUser(UserData.NON_INSERTED_USER_001);
         u1.setIdRole(2); //At this point the idRole has been set.
         UserEntity entity = new UserEntity(3l,3l, "Walter", "White", "123",
@@ -120,7 +94,8 @@ class IUserPersistencePortTest {
         assertDoesNotThrow(()->persistencePort.saveUser(u1)); //Insert the user
     }
 
-    private void saveUserButConflictWithId() {
+    @Test
+    void saveUserButConflictWithId() {
         User u = cloneUser(UserData.USER_001);
         UserEntity entity = new UserEntity(u.getId(), u.getPersonalId(), u.getName(), u.getLastname(), u.getPhone(),
                 u.getEmail(), u.getPassword(), u.getIdRole());
@@ -132,7 +107,8 @@ class IUserPersistencePortTest {
                 ()->persistencePort.saveUser(u)); //Cannot insert the user because was previously inserted.
     }
 
-    private void saveUserButConflictWithEmail(){
+    @Test
+    void saveUserButConflictWithEmail(){
         User u = cloneUser(UserData.USER_001);
         UserEntity entity = new UserEntity(u.getId(), u.getPersonalId(), u.getName(), u.getLastname(), u.getPhone(),
                 u.getEmail(), u.getPassword(), u.getIdRole());
@@ -147,8 +123,4 @@ class IUserPersistencePortTest {
         assertThrows(UserConflictForEmailException.class,
                 ()->persistencePort.saveUser(u)); //Cannot insert a user with the same email was previously inserted.
     }
-
-
-
-
 }
