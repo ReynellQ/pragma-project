@@ -43,37 +43,8 @@ class IFoodPlateServicePortTest {
                 foodPlatePersistencePort, foodPlateValidator, persistentLoggedUser);
     }
 
-    /**
-     * Saving a restaurant has the following cases:
-     * <br>
-     * <br>
-     * - If the price isn't valid, throws IncorrectDataException.
-     * <br>
-     * - If the restaurant of the food plate doesn't exist, throws RestaurantDoestExistsException.
-     * <br>
-     * - If the restaurant exists, but the creator of the food plate isn't the owner of the restaurant, throws
-     *      NotAllowedRestaurantException
-     *  <br>
-     * - If the category of the food plate doesn't exist, throws CategoryDoesntExistException.
-     * <br>
-     * - Saves the food plate correctly.
-     *
-     * Technically, the email of the creator may not correspond to an actual user, but that it's previously checked
-     * with the extraction of the JWT, so it's not implemented here.
-     */
     @Test
-    void saveFoodPlate() {
-        assertAll(
-                ()-> goodSaveFoodPlate(),
-                ()-> badDataSavingFoodPlate(),
-                ()-> restaurantFoodPlateDoesNotExist(),
-                ()-> categoryFoodPlateDoesNotExist(),
-                ()-> restaurantDoesNotBelongToOwnerSavingFoodPlate(),
-                ()-> saveFoodPlateNotAnOwner()
-        );
-    }
-
-    private void goodSaveFoodPlate() {
+    void saveFoodPlateCorrectly() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.FOOD_PLATE_001;
@@ -90,7 +61,8 @@ class IFoodPlateServicePortTest {
         assertDoesNotThrow(()-> foodPlateServicePort.saveFoodPlate( foodPlate));
     }
 
-    private void badDataSavingFoodPlate() {
+    @Test
+    void saveFoodPlateWithBadData() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.INVALID_PRICE_FOOD_PLATE;
@@ -109,7 +81,8 @@ class IFoodPlateServicePortTest {
                 ()-> foodPlateServicePort.saveFoodPlate(foodPlate));
     }
 
-    private void restaurantFoodPlateDoesNotExist() {
+    @Test
+    void saveFoodPlateButRestaurantDoesNotExist() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.INVALID_RESTAURANT_FOOD_PLATE;
@@ -125,7 +98,8 @@ class IFoodPlateServicePortTest {
                 ()-> foodPlateServicePort.saveFoodPlate(foodPlate));
     }
 
-    private void categoryFoodPlateDoesNotExist() {
+    @Test
+    void saveFoodPlateButCategoryDoesNotExist() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.INVALID_CATEGORY_FOOD_PLATE;
@@ -144,7 +118,8 @@ class IFoodPlateServicePortTest {
                 ()-> foodPlateServicePort.saveFoodPlate(foodPlate));
     }
 
-    private void restaurantDoesNotBelongToOwnerSavingFoodPlate() {
+    @Test
+    void saveFoodPlateRestaurantDoesNotBelongToOwner() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_002);
         FoodPlate foodPlate = FoodPlateData.FOOD_PLATE_001;
@@ -163,7 +138,8 @@ class IFoodPlateServicePortTest {
                 ()-> foodPlateServicePort.saveFoodPlate(foodPlate));
     }
 
-    private void saveFoodPlateNotAnOwner() {
+    @Test
+    void saveFoodPlateNotAnOwner() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.EMPLOYEE);
         FoodPlate foodPlate = FoodPlateData.FOOD_PLATE_001;
@@ -182,28 +158,8 @@ class IFoodPlateServicePortTest {
                 ()-> foodPlateServicePort.saveFoodPlate(foodPlate));
     }
 
-    /**
-     * Update a restaurant with a FoodPlate provided data. It charges a FoodPlate data and contrast with an FoodPlate
-     * object with the same id (has to exist, in other case return FoodPlateDoesntExistException) to changes the data.
-     * After do that, can occur one of the following cases:
-     * - If the active state, category, restaurant is changed and is different of null,
-     * throws an ForbiddenUpdateException. If those are null, the data keeps same
-     * - If the new price isn't valid, throw IncorrectDataException.
-     * - Saves the food plate correctly.
-     */
     @Test
-    void updateFoodPlate() {
-        assertAll(
-                ()-> updateDataCorrectly(),
-                ()-> updateWithIncorrectData(),
-                ()-> updateForbiddenData(),
-                ()-> updateFoodPlateWithAnNonOwnerUser(),
-                ()-> updateAFoodPlateThatDoesntBelongToOwner(),
-                ()-> updateNonExistingFoodPlate()
-        );
-    }
-
-    private void updateDataCorrectly() {
+    void updateDataCorrectly() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -229,7 +185,8 @@ class IFoodPlateServicePortTest {
         assertEquals(foodPlateToUpdate, foodPlateServicePort.updateFoodPlate(foodPlate));
     }
 
-    private void updateWithIncorrectData() {
+    @Test
+    void updateWithIncorrectData() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -237,12 +194,12 @@ class IFoodPlateServicePortTest {
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         when(restaurantPersistencePort.getRestaurant(restaurant.getId()))
                 .thenReturn(restaurant);
-        String newDescrption = null; //Can be null
-        Long newPrice = -1l; //A bad value
-        foodPlate.setDescription(newDescrption);
+        String newDescription = null; //Can be null
+        Long newPrice = -1L; //A bad value
+        foodPlate.setDescription(newDescription);
         foodPlate.setPrice(newPrice);
-        foodPlateToUpdate.setDescription( newDescrption != null ?
-                newDescrption : foodPlateToUpdate.getDescription());
+        foodPlateToUpdate.setDescription( newDescription != null ?
+                newDescription : foodPlateToUpdate.getDescription());
         foodPlateToUpdate.setPrice( newPrice != null ?
                 newPrice : foodPlateToUpdate.getPrice());
         when(foodPlateValidator.validatesPrice(foodPlateToUpdate.getPrice()))
@@ -256,7 +213,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void updateForbiddenData() {
+    @Test
+    void updateForbiddenData() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -275,7 +233,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void updateNonExistingFoodPlate() {
+    @Test
+    void updateNonExistingFoodPlate() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -283,7 +242,7 @@ class IFoodPlateServicePortTest {
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         when(restaurantPersistencePort.getRestaurant(restaurant.getId()))
                 .thenReturn(restaurant);
-        foodPlate.setIdCategory(3l); //This is forbidden.
+        foodPlate.setIdCategory(3L); //This is forbidden.
 
         when(foodPlatePersistencePort.getFoodPlate(foodPlate.getId()))
                 .thenThrow(FoodPlateNotFoundException.class);
@@ -294,7 +253,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void updateFoodPlateWithAnNonOwnerUser() {
+    @Test
+    void updateFoodPlateWithAnNonOwnerUser() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.EMPLOYEE);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -311,7 +271,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void updateAFoodPlateThatDoesntBelongToOwner() {
+    @Test
+    void updateAFoodPlateThatDoesNotBelongToOwner() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_002);
         FoodPlate foodPlate = FoodPlateData.clone(FoodPlateData.FOOD_PLATE_001);
@@ -332,16 +293,7 @@ class IFoodPlateServicePortTest {
     }
 
     @Test
-    void changeStateFoodPlate() {
-        //The owner is logged
-        assertAll(
-                ()->goodChangeState(),
-                ()->changeStateAndLoggedUserIsNotOwner(),
-                ()->changeStateAndOwnerDoesNotOwnsRestaurant()
-        );
-    }
-
-    private void goodChangeState() {
+    void goodChangeState() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_001);
         Boolean newStatus = true;
@@ -357,7 +309,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void changeStateAndLoggedUserIsNotOwner() {
+    @Test
+    void changeStateAndLoggedUserIsNotOwner() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.EMPLOYEE);
         Boolean newStatus = true;
@@ -374,7 +327,8 @@ class IFoodPlateServicePortTest {
         );
     }
 
-    private void changeStateAndOwnerDoesNotOwnsRestaurant() {
+    @Test
+    void changeStateAndOwnerDoesNotOwnsRestaurant() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(RestaurantData.OWNER_002);
         Boolean newStatus = true;
@@ -418,9 +372,9 @@ class IFoodPlateServicePortTest {
                 )
         );
         Long idRestaurant = 1l;
-        List<Long> categories = List.of(1l, 2l);
-        int page = 0;
-        int number = 0;
+        List<Long> categories = List.of(1L, 2L);
+        int page = 1;
+        int number = 10;
         if(!categories.isEmpty()){
             foodPlates.stream()
                     .filter(
@@ -435,7 +389,9 @@ class IFoodPlateServicePortTest {
         }
         when(foodPlatePersistencePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number))
                 .thenReturn(foodPlates);
-        when(foodPlateServicePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number))
-                .thenReturn(foodPlates);
+        assertEquals(
+                foodPlates,
+                foodPlateServicePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number)
+        );
     }
 }

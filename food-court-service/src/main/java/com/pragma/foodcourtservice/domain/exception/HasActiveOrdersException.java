@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.domain.useCase;
+package com.pragma.foodcourtservice.domain.exception;
 
 public class HasActiveOrdersException extends RuntimeException {
 }

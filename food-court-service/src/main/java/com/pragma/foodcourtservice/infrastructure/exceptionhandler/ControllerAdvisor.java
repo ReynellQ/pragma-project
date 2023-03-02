@@ -2,9 +2,9 @@ package com.pragma.foodcourtservice.infrastructure.exceptionhandler;
 
 import com.pragma.foodcourtservice.domain.exception.*;
 import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
-import com.pragma.foodcourtservice.domain.useCase.ForbiddenCancelOrderException;
-import com.pragma.foodcourtservice.domain.useCase.HasActiveOrdersException;
-import com.pragma.foodcourtservice.domain.useCase.InvalidPinException;
+import com.pragma.foodcourtservice.domain.exception.ForbiddenCancelOrderException;
+import com.pragma.foodcourtservice.domain.exception.HasActiveOrdersException;
+import com.pragma.foodcourtservice.domain.exception.InvalidPinException;
 import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;

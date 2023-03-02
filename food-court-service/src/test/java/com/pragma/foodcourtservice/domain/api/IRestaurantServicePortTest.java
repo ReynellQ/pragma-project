@@ -38,15 +38,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void saveRestaurant() {
-        assertAll(
-                ()->goodSave(),
-                ()->savingWithAnLoggedUserNotOwner(),
-                ()->savingWithBadData()
-        );
-    }
-
-    private void goodSave() {
+    void goodSave() {
         User owner = RestaurantData.OWNER_001;
         Restaurant restaurant = RestaurantData.NON_VALID_RESTAURANT;
         when(restaurantValidator.validateOwner(owner))
@@ -62,7 +54,8 @@ class IRestaurantServicePortTest {
         );
     }
 
-    private void savingWithAnLoggedUserNotOwner() {
+    @Test
+    void savingWithAnLoggedUserNotOwner() {
         User owner = RestaurantData.NOT_A_OWNER;
         Restaurant restaurant = RestaurantData.NON_VALID_RESTAURANT;
         when(restaurantValidator.validateOwner(owner))
@@ -79,7 +72,8 @@ class IRestaurantServicePortTest {
         );
     }
 
-    private void savingWithBadData() {
+    @Test
+    void savingWithBadData() {
         User owner = RestaurantData.OWNER_001;
         Restaurant restaurant = RestaurantData.NON_VALID_RESTAURANT;
         when(restaurantValidator.validateOwner(owner))
@@ -142,16 +136,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void saveAnEmployeeOfARestaurant() {
-        assertAll(
-                ()->goodEmployeeSave(),
-                ()->userLoggedIsNotAOwner(),
-                ()->userLoggedIsNotTheOwnerOfRestaurant(),
-                ()->badInsertEmployee()
-        );
-    }
-
-    private void goodEmployeeSave() {
+    void goodEmployeeSave() {
         User owner = RestaurantData.OWNER_001;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -171,7 +156,8 @@ class IRestaurantServicePortTest {
         );
     }
 
-    private void userLoggedIsNotAOwner() {
+    @Test
+    void userLoggedIsNotAOwner() {
         User owner = RestaurantData.NOT_A_OWNER;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -192,7 +178,8 @@ class IRestaurantServicePortTest {
         );
     }
 
-    private void userLoggedIsNotTheOwnerOfRestaurant() {
+    @Test
+    void userLoggedIsNotTheOwnerOfRestaurant() {
         User owner = RestaurantData.OWNER_002;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -213,7 +200,8 @@ class IRestaurantServicePortTest {
         );
     }
 
-    private void badInsertEmployee() {
+    @Test
+    void badInsertEmployee() {
         User owner = RestaurantData.OWNER_002;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
