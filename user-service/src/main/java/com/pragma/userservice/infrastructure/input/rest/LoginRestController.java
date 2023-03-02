@@ -5,6 +5,8 @@ import com.pragma.userservice.application.dto.UserLoginDto;
 import com.pragma.userservice.application.handler.IUserHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LoginRestController {
     private final IUserHandler userHandler;
-    @ApiOperation(value = "Permite loguear al usuario.", response = AuthResponse.class)
+    @ApiOperation(value = "Allows the user to login.", response = AuthResponse.class)
     @PostMapping("/")
     public ResponseEntity<AuthResponse> login(@RequestBody UserLoginDto login){
         AuthResponse response = userHandler.authUser(login);
