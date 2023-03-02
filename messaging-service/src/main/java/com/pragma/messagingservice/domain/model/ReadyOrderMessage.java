@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReadyOrderMessage {
+    private Long idOrder;
+    private String restaurant;
     private String phone;
     private String pin;
 }

@@ -11,7 +11,11 @@ public class MessagingUseCase implements IMessagingServicePort {
 
     @Override
     public void sendReadyOrderMessage(ReadyOrderMessage readyOrderMessage) {
-        String body = "Your order is ready.\nYour pin is " + readyOrderMessage.getPin();
+        String body = "Your order #" +
+                readyOrderMessage.getIdOrder() +
+                " is ready from the restaurant " +
+                readyOrderMessage.getRestaurant() +
+                ".\nYour pin is " + readyOrderMessage.getPin();
         senderMessagesPort.sendMessage(readyOrderMessage.getPhone(), body);
     }
 }
