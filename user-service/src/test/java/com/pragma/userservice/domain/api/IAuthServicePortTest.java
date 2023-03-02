@@ -38,14 +38,7 @@ class IAuthServicePortTest {
     }
 
     @Test
-    void authenticateUser() {
-        goodCredentials();
-        badCredentials();
-    }
-
-
-
-    private void goodCredentials() {
+    void goodCredentials() {
         String user = "gooduser@gmail.com";
         String password = "correctPassword";
         String imaginaryJwt = "bXl1c2VyaXNub3dhdXRoZW50aWNhdGVk";
@@ -62,7 +55,9 @@ class IAuthServicePortTest {
                 .thenReturn("bXl1c2VyaXNub3dhdXRoZW50aWNhdGVk");
         assertEquals(authServicePort.authenticateUser(user, password), imaginaryJwt);
     }
-    private void badCredentials() {
+
+    @Test
+    void badCredentials() {
         String user = "gooduser@gmail.com";
         String password = "badPassword";
         doThrow(BadCredentialsException.class).when(authManager).authenticate(

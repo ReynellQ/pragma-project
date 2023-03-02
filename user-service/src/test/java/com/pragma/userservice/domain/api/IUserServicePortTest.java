@@ -18,7 +18,6 @@ import static org.mockito.Mockito.*;
 
 class IUserServicePortTest {
     IRolesPersistencePort rolesPersistencePort;
-
     IUserPersistencePort persistencePort;
     IUserValidator userValidator;
     IAuthServicePort auth;
@@ -34,20 +33,17 @@ class IUserServicePortTest {
         userServicePort = new UserUseCase(persistencePort, rolesPersistencePort, userValidator, auth);
     }
 
-    @Test
-    void getUserByPersonalId() {
-        getAnExistingUserWithIdProvided();
-        getAnNonExistingUserWithIdProvided();
-    }
 
-    private void getAnExistingUserWithIdProvided() {
+    @Test
+    public void getAnExistingUserWithIdProvided() {
         User user = UserData.USER_001;
         when(persistencePort.getUserByPersonalId(user.getPersonalId()))
                 .thenReturn(user);
         assertEquals( userServicePort.getUserByPersonalId(user.getPersonalId()), user);
     }
 
-    private void getAnNonExistingUserWithIdProvided() {
+    @Test
+    public void getAnNonExistingUserWithIdProvided() {
         User user = UserData.NON_INSERTED_USER_001;
         when(persistencePort.getUserByPersonalId(user.getPersonalId()))
                 .thenThrow(UserNotFoundException.class);
@@ -58,20 +54,17 @@ class IUserServicePortTest {
         );
     }
 
-    @Test
-    void getUserByEmail() {
-        getAnExistingUserWithEmailProvided();
-        getAnNonExistingUserWithEmailProvided();
-    }
 
-    private void getAnExistingUserWithEmailProvided() {
+    @Test
+    public void getAnExistingUserWithEmailProvided() {
         User user = UserData.USER_001;
         when(persistencePort.getUserByEmail(user.getEmail()))
                 .thenReturn(user);
         assertEquals( userServicePort.getUserByEmail(user.getEmail()) , user);
     }
 
-    private void getAnNonExistingUserWithEmailProvided() {
+    @Test
+    public void getAnNonExistingUserWithEmailProvided() {
         User u1 = UserData.NON_INSERTED_USER_001;
         when(persistencePort.getUserByEmail(u1.getEmail()))
                 .thenThrow(UserNotFoundException.class);
@@ -81,13 +74,9 @@ class IUserServicePortTest {
                 () ->userServicePort.getUserByEmail(u1.getEmail())
         );
     }
-    @Test
-    void authUser() {
-        goodCredentials();
-        badCredentials();
-    }
 
-    private void goodCredentials() {
+    @Test
+    public void goodCredentials() {
         String email = "good@email.com";
         String password = "correctpassword";
         String jwt = "bXl1c2VyaXNub3dhdXRoZW50aWNhdGVk";
@@ -95,7 +84,8 @@ class IUserServicePortTest {
         userServicePort.authUser(email, password);
     }
 
-    private void badCredentials() {
+    @Test
+    public void badCredentials() {
         String email = "good@email.com";
         String password = "badpassword";
         String jwt = "bXl1c2VyaXNub3dhdXRoZW50aWNhdGVk";
@@ -104,19 +94,9 @@ class IUserServicePortTest {
                 ()-> userServicePort.authUser(email, password));
     }
 
+
     @Test
-    void saveUser() {
-        savesCorrectly();
-        savesAUserWithBadEmail();
-        savesAUserWithBadPhone();
-        savesAUserWithAnExistingId();
-        savesAUserWithAnExistingEmail();
-    }
-
-
-
-
-    private void savesCorrectly() {
+    public void savesCorrectly() {
         User u1 = UserData.NON_INSERTED_USER_002;
         when(userValidator.emailChecker(u1.getEmail())).thenReturn(true); //The email is valid
         when(userValidator.phoneChecker(u1.getPhone())).thenReturn(true); //The phone is valid
@@ -125,20 +105,24 @@ class IUserServicePortTest {
         ); //Insert the user
     }
 
-    private void savesAUserWithBadEmail() {
+    @Test
+    public void savesAUserWithBadEmail() {
         User user = UserData.USER_WITH_INCORRECT_DATA;
         when(userValidator.emailChecker(user.getEmail())).thenReturn(false);
         assertThrows(IncorrectDataException.class,
                 ()->userServicePort.saveUser(user));
     }
-    private void savesAUserWithBadPhone() {
+
+    @Test
+    public void savesAUserWithBadPhone() {
         User user = UserData.USER_WITH_INCORRECT_DATA;
         when(userValidator.phoneChecker(user.getPhone())).thenReturn(false);
         assertThrows(IncorrectDataException.class,
                 ()->userServicePort.saveUser(user)); //Insert the user, but throws an exception
     }
 
-    private void savesAUserWithAnExistingId() {
+    @Test
+    public void savesAUserWithAnExistingId() {
         User u1 = UserData.USER_001; //This user is inserted
         doThrow(UserConflictForIdException.class)
                 .when(persistencePort).saveUser(UserData.USER_001);
@@ -149,7 +133,8 @@ class IUserServicePortTest {
 
     }
 
-    private void savesAUserWithAnExistingEmail() {
+    @Test
+    public void savesAUserWithAnExistingEmail() {
         User u1 = UserData.USER_001; //This user is inserted
         doThrow(UserConflictForEmailException.class)
                 .when(persistencePort).saveUser(UserData.USER_001);
