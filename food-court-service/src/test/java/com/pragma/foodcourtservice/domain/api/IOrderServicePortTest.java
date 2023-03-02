@@ -143,13 +143,6 @@ class IOrderServicePortTest {
     }
 
     @Test
-    void getOrdersFilterByState() {
-        getOrdersFilterByStateCorrectly();
-        getOrdersFilterByStateButLoggedUserIsNotEmployee();
-        getOrdersFilterByStateButIncorrectState();
-    }
-
-    @Test
     void getOrdersFilterByStateCorrectly() {
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;

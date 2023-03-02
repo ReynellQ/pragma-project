@@ -389,7 +389,9 @@ class IFoodPlateServicePortTest {
         }
         when(foodPlatePersistencePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number))
                 .thenReturn(foodPlates);
-        when(foodPlateServicePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number))
-                .thenReturn(foodPlates);
+        assertEquals(
+                foodPlates,
+                foodPlateServicePort.listTheFoodPlatesByCategory(idRestaurant, categories, page, number)
+        );
     }
 }
