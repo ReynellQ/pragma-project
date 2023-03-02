@@ -25,14 +25,21 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
-
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**"
+    };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**", "/register")
+                .antMatchers(AUTH_WHITELIST)
                     .permitAll()
 
                 .anyRequest()

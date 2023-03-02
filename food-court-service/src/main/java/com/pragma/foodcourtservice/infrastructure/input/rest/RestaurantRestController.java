@@ -5,6 +5,8 @@ import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantCreateDt
 import com.pragma.foodcourtservice.application.dto.restaurant.RestaurantEmployeeDto;
 import com.pragma.foodcourtservice.application.handler.IRestaurantHandler;
 import com.pragma.foodcourtservice.infrastructure.configuration.jwt.JwtService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,13 +18,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
+
 @RestController
+@Api(value = "Restaurant controller")
 @RequestMapping("/restaurant/")
 @RequiredArgsConstructor
 @Validated
 public class RestaurantRestController {
     private final IRestaurantHandler handler;
 
+    @ApiOperation(value = "Save one of your restaurants. Only for OWNERS.")
     @PostMapping("/save")
     @RolesAllowed("ROLE_OWNER")
     public ResponseEntity<Void> saveRestaurant(@Valid @RequestBody RestaurantCreateDto restaurantCreateDTO){
@@ -30,6 +35,7 @@ public class RestaurantRestController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    @ApiOperation(value = "List all restaurants of your food court. Only for clients.")
     @GetMapping("/list/{page}/{number}")
     @RolesAllowed("ROLE_CLIENT")
     public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient(@Valid @PathVariable Integer page,
@@ -39,6 +45,7 @@ public class RestaurantRestController {
                         handler.listAllAlphabeticallyRestaurantsPaginated(page,number)
                 );
     }
+    @ApiOperation(value = "Save an employee from one of your restaurants. Only for OWNERS.")
     @PostMapping("/saveEmployee")
     @RolesAllowed("ROLE_OWNER")
     public ResponseEntity<Void> saveAnEmployeeOfTheRestaurant(
