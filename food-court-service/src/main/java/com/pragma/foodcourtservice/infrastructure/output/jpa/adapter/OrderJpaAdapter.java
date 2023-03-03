@@ -2,6 +2,8 @@ package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
 
 import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
+import com.pragma.foodcourtservice.infrastructure.exception.OrderTicketNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exceptionhandler.OrderNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderTicketEntity;

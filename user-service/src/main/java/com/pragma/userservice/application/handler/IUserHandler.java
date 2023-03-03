@@ -15,6 +15,13 @@ public interface IUserHandler {
      * @return the UserDTO with the User's data with the id provided.
      */
     UserDto getUserByPersonalId(Long id);
+
+    /**
+     * Gets a userDTO that has the id provided to expose to API.
+     * @param id the id of the user searched.
+     * @return the UserDTO with the User's data with the id provided.
+     */
+    UserDto getUserById(Long id);
     /**
      * Gets a userDTO that has the email provided to expose to API.
      * @param email the email of the user searched.

@@ -41,6 +41,20 @@ public class UserHandler implements IUserHandler {
     }
 
     /**
+     * Gets a userDTO that has the id provided to expose to API.
+     *
+     * @param id the id of the user searched.
+     * @return the UserDTO with the User's data with the id provided.
+     */
+    @Override
+    public UserDto getUserById(Long id) {
+        User p = iUserServicePort.getUserById(id);
+        Role r = rolesPersistencePort.getRol(p.getIdRole());
+        UserDto dto = userDTOMapper.toDTO(p, r);
+        return dto;
+    }
+
+    /**
      * Gets a userDTO that has the email provided to expose to API.
      *
      * @param email the email of the user searched.

@@ -10,20 +10,24 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Api(value = "Login controller")
 @RestController
 @RequestMapping("/auth/")
 @RequiredArgsConstructor
+@Validated
 public class LoginRestController {
     private final IUserHandler userHandler;
     @ApiOperation(value = "Allows the user to login.", response = AuthResponse.class)
     @PostMapping("/")
-    public ResponseEntity<AuthResponse> login(@RequestBody UserLoginDto login){
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserLoginDto login){
         AuthResponse response = userHandler.authUser(login);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Authorization",

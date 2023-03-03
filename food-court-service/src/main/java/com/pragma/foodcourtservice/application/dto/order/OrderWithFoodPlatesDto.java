@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -12,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderWithFoodPlatesDto {
+    @NotNull
     private Long idRestaurant;
+    @NotNull
     private List<FoodPlateOrderDto> foodPlateOrderDtoList;
 }

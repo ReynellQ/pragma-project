@@ -31,6 +31,21 @@ public class UserJpaAdapter implements IUserPersistencePort {
             throw new UserNotFoundException();
         return userEntityMapper.toUser(personaEntity.get());
     }
+
+    /**
+     * Gets a user that has the id provided.
+     *
+     * @param id the id of the user searched.
+     * @return the User with the id provided.
+     */
+    @Override
+    public User getUserById(Long id) {
+        Optional<UserEntity> personaEntity = userRepository.findById(id);
+        if(personaEntity.isEmpty())
+            throw new UserNotFoundException();
+        return userEntityMapper.toUser(personaEntity.get());
+    }
+
     /**
      * Gets a user that has the email provided. It's assumed that aren't more the one user with the same email.
      * Search in the JPA repository and map the entity User to the User domain model.

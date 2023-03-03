@@ -5,6 +5,7 @@ import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.model.RestaurantEmployee;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
+import com.pragma.foodcourtservice.infrastructure.exception.WorkplaceNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEmployeeEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.RestaurantEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.RestaurantEmployeeEntityMapper;

@@ -5,9 +5,11 @@ import com.pragma.foodcourtservice.RestaurantData;
 import com.pragma.foodcourtservice.UserData;
 import com.pragma.foodcourtservice.domain.model.*;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderJpaAdapter;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exceptionhandler.OrderNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exception.OrderTicketNotFoundException;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderFoodPlatesEntity;
+import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.OrderTicketEntity;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.entity.pk.OrderFoodPlatesEntityID;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderEntityMapper;
 import com.pragma.foodcourtservice.infrastructure.output.jpa.mapper.OrderTicketEntityMapper;
@@ -37,8 +39,11 @@ class IOrderPersistencePortTest {
     @BeforeEach
     void setUp(){
         orderRepository = mock(IOrderRepository.class);
+        orderTicketRepository = mock(IOrderTicketRepository.class);
         orderFoodPlatesRepository = mock(IOrderFoodPlatesRepository.class);
         orderEntityMapper = mock(OrderEntityMapper.class);
+        orderTicketEntityMapper = mock(OrderTicketEntityMapper.class);
+
         orderPersistencePort = new OrderJpaAdapter(orderRepository,orderTicketRepository, orderFoodPlatesRepository,
                 orderEntityMapper, orderTicketEntityMapper);
 
@@ -193,5 +198,110 @@ class IOrderPersistencePortTest {
         assertDoesNotThrow(
                 ()->orderPersistencePort.updateOrder(order)
         );
+    }
+
+    @Test
+    void saveOrderTicket() {
+        Long idOrder = 3L;
+        String code = "1242";
+        OrderTicket orderTicket = new OrderTicket(idOrder, code);
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(idOrder, code, null);
+        when(orderTicketEntityMapper.toOrderTicketEntity(orderTicket))
+                .thenReturn(orderTicketEntity);
+        assertDoesNotThrow(
+                ()-> orderPersistencePort.saveOrderTicket(orderTicket)
+        );
+    }
+
+    @Test
+    void getOrderTicketWithIdOrderCorrectly() {
+        Long idOrder = 3L;
+        String code = "1242";
+        OrderTicket orderTicket = new OrderTicket(idOrder, code);
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(idOrder, code, null);
+        when(orderTicketRepository.findById(idOrder))
+                .thenReturn(Optional.of(orderTicketEntity));
+        when(orderTicketEntityMapper.toOrderTicket(orderTicketEntity))
+                .thenReturn(orderTicket);
+        assertEquals(
+                orderTicket,
+                orderPersistencePort.getOrderTicketWithIdOrder(idOrder)
+        );
+    }
+
+    @Test
+    void getOrderTicketWithIdOrderButDoesNotExist() {
+        Long idOrder = 3L;
+        String code = "1242";
+        OrderTicket orderTicket = new OrderTicket(idOrder, code);
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(idOrder, code, null);
+        when(orderTicketRepository.findById(idOrder))
+                .thenReturn(Optional.empty());
+        assertThrows(
+                OrderTicketNotFoundException.class,
+                ()->orderPersistencePort.getOrderTicketWithIdOrder(idOrder)
+        );
+    }
+
+
+    @Test
+    void deleteOrderTicketCorrectly() {
+        Long idOrder = 3L;
+        String code = "1242";
+        OrderTicket orderTicket = new OrderTicket(idOrder, code);
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(idOrder, code, null);
+        when(orderTicketRepository.findById(idOrder))
+                .thenReturn(Optional.of(orderTicketEntity));
+        when(orderTicketEntityMapper.toOrderTicket(orderTicketEntity))
+                .thenReturn(orderTicket);
+        assertDoesNotThrow(
+                ()-> orderPersistencePort.getOrderTicketWithIdOrder(idOrder)
+        );
+    }
+
+    @Test
+    void deleteOrderTicketButDoesNotExist() {
+        Long idOrder = 3L;
+        String code = "1242";
+        OrderTicket orderTicket = new OrderTicket(idOrder, code);
+        OrderTicketEntity orderTicketEntity = new OrderTicketEntity(idOrder, code, null);
+        when(orderTicketRepository.findById(idOrder))
+                .thenReturn(Optional.empty());
+        assertThrows(
+                OrderTicketNotFoundException.class,
+                ()->orderPersistencePort.deleteOrderTicket(idOrder)
+        );
+    }
+
+    @Test
+    void hasActiveOrdersInTheRestaurant() {
+        Long idOrder = 1L;
+        User employee = UserData.OWNER;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        List<OrderEntity> orders = List.of(
+                new OrderEntity(idOrder, idClient, LocalDate.now(), state,restaurant.getId(), employee.getId(),
+                        null,null)
+        );
+        when(orderRepository.findByIdClient(idClient))
+                .thenReturn(orders);
+        assertTrue(orderPersistencePort.hasActiveOrdersInTheRestaurant(idClient));
+    }
+
+    @Test
+    void doesNotHasActiveOrdersInTheRestaurant() {
+        Long idOrder = 1L;
+        User employee = UserData.OWNER;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.CANCELLLED; //Could be cancelled or delivered
+        List<OrderEntity> orders = List.of(
+                new OrderEntity(idOrder, idClient, LocalDate.now(), state,restaurant.getId(), employee.getId(),
+                        null,null)
+        );
+        when(orderRepository.findByIdClient(idClient))
+                .thenReturn(orders);
+        assertFalse(orderPersistencePort.hasActiveOrdersInTheRestaurant(idClient));
     }
 }

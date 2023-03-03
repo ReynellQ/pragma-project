@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public interface RolesDTOMapper {
+public interface RolesDtoMapper {
     RoleDto toDTO(Role roleModel);
     Role toRole(RoleDto roleDto);
 }

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,13 +21,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/order/")
 @RequiredArgsConstructor
+@Validated
 public class OrderRestController {
     private final IOrderHandler handler;
 
     @ApiOperation(value = "Save an order, only if you are a client.")
     @PostMapping("/do")
     @RolesAllowed("ROLE_CLIENT")
-    public ResponseEntity<Void> saveFoodPlate(@RequestBody OrderWithFoodPlatesDto orderWithFoodPlatesDto){
+    public ResponseEntity<Void> saveFoodPlate(@Valid @RequestBody OrderWithFoodPlatesDto orderWithFoodPlatesDto){
         handler.saveOrder(orderWithFoodPlatesDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

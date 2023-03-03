@@ -17,7 +17,7 @@ import org.mapstruct.ReportingPolicy;
         componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = {RolesDTOMapper.class}
+        uses = {RolesDtoMapper.class}
 )
 public interface UserDtoMapper {
     @Mapping(source = "userModel.id", target = "id")

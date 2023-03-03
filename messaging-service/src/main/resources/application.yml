@@ -17,7 +17,7 @@ eureka:
 my:
   twilio:
     account-sid: "AC376b203725be67112d011a25a8819b12"
-    auth-token: "c15324bc851291a39ae7290cf720189e"
+    auth-token: "c29b4783824950cea1d53be35144efc9"
 
 
 
