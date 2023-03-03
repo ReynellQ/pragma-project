@@ -50,13 +50,19 @@ public class UserRestController {
 
     @ApiOperation(value = "Gets an user given their id.", response = UserDto.class)
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> getUserByPersonalId(@PathVariable(name = "id") Long id){
+    public ResponseEntity<UserDto> getUserById(@Valid @PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(userHandler.getUserById(id));
+    }
+
+    @ApiOperation(value = "Gets an user given their personal id. (NUIP)", response = UserDto.class)
+    @GetMapping("/personalId/{id}")
+    public ResponseEntity<UserDto> getUserByPersonalId(@Valid @PathVariable(name = "id") Long id){
         return ResponseEntity.ok(userHandler.getUserByPersonalId(id));
     }
 
     @ApiOperation(value = "Gets an user given their email.", response = UserDto.class)
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserDto> getUserByPersonalEmail(@PathVariable(name = "email") String email){
+    public ResponseEntity<UserDto> getUserByPersonalEmail(@Valid @PathVariable(name = "email") String email){
         return ResponseEntity.ok(userHandler.getUserByEmail(email));
     }
 

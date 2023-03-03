@@ -31,6 +31,17 @@ public class UserUseCase implements IUserServicePort {
     }
 
     /**
+     * Gets a user that has the id provided.
+     *
+     * @param id the id of the user searched.
+     * @return the User with the id provided.
+     */
+    @Override
+    public User getUserById(Long id) {
+        return personaPersistencePort.getUserById(id);
+    }
+
+    /**
      * Gets a user that has the email provided.
      *
      * @param email the email of the user searched.

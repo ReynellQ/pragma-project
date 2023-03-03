@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class OrderUseCase implements IOrderServicePort {
@@ -44,13 +45,13 @@ public class OrderUseCase implements IOrderServicePort {
         }
         foodPlates.forEach( (orderFoodPlate)->{
             FoodPlate foodPlate = foodPlatePersistencePort.getFoodPlate(orderFoodPlate.getIdFoodPlate());
-            if(foodPlate.getIdRestaurant() != idRestaurant || orderFoodPlate.getQuantity() < 0 ||
+            if(!Objects.equals(foodPlate.getIdRestaurant(), idRestaurant) || orderFoodPlate.getQuantity() < 0 ||
                     !foodPlate.getActive()){
                 throw new InvalidOrderException();
             }
         });
         User client = persistentLoggedUser.getLoggedUser();
-        if(client.getIdRole() != ROLES.CLIENT ){
+        if(!Objects.equals(client.getIdRole(), ROLES.CLIENT)){
             throw new NotAClientException();
         }
         if(orderPersistencePort.hasActiveOrdersInTheRestaurant(client.getId())){
@@ -73,7 +74,7 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public List<OrderWithFoodPlates> getOrdersFilterByState(Integer state, Integer page, Integer limit) {
         User employee = persistentLoggedUser.getLoggedUser();
-        if(employee.getIdRole() != ROLES.EMPLOYEE){
+        if(!Objects.equals(employee.getIdRole(), ROLES.EMPLOYEE)){
             throw new NotAnEmployeeException();
         }
         if(!OrderState.states.contains(state)){
@@ -92,12 +93,12 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public void assignToAnOrder(Long idOrder) {
         User employee = persistentLoggedUser.getLoggedUser();
-        if(employee.getIdRole() != ROLES.EMPLOYEE){
+        if(!Objects.equals(employee.getIdRole(), ROLES.EMPLOYEE)){
             throw new NotAnEmployeeException();
         }
         RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
         Order order = orderPersistencePort.getOrder(idOrder);
-        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+        if(!Objects.equals(order.getIdRestaurant(), restaurantEmployee.getIdRestaurant())){
             throw new ForbiddenWorkInOrderException();
         }
         order.setIdChef(employee.getId());
@@ -115,12 +116,12 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public void notifyTheOrderIsReady(Long idOrder) {
         User employee = persistentLoggedUser.getLoggedUser();
-        if(employee.getIdRole() != ROLES.EMPLOYEE){
+        if(!Objects.equals(employee.getIdRole(), ROLES.EMPLOYEE)){
             throw new NotAnEmployeeException();
         }
         RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
         Order order = orderPersistencePort.getOrder(idOrder);
-        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+        if(!Objects.equals(order.getIdRestaurant(), restaurantEmployee.getIdRestaurant())){
             throw new ForbiddenWorkInOrderException();
         }
         if(order.getState() != OrderState.IN_PROCESS){
@@ -134,12 +135,12 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public void deliverAnOrder(Long idOrder, String pin) {
         User employee = persistentLoggedUser.getLoggedUser();
-        if(employee.getIdRole() != ROLES.EMPLOYEE){
+        if(!Objects.equals(employee.getIdRole(), ROLES.EMPLOYEE)){
             throw new NotAnEmployeeException();
         }
         RestaurantEmployee restaurantEmployee = restaurantPersistencePort.employeeWorkPlace(employee);
         Order order = orderPersistencePort.getOrder(idOrder);
-        if(order.getIdRestaurant() != restaurantEmployee.getIdRestaurant()){
+        if(!Objects.equals(order.getIdRestaurant(), restaurantEmployee.getIdRestaurant())){
             throw new ForbiddenWorkInOrderException();
         }
         if(order.getState() != OrderState.READY){
@@ -163,7 +164,7 @@ public class OrderUseCase implements IOrderServicePort {
     public void cancelAnOrder(Long idOrder) {
         Order order = orderPersistencePort.getOrder(idOrder);
         User client = persistentLoggedUser.getLoggedUser();
-        if(client.getIdRole() != ROLES.CLIENT ){
+        if(!Objects.equals(client.getIdRole(), ROLES.CLIENT)){
             throw new NotAClientException();
         }
         if(order.getState() != OrderState.PENDING){

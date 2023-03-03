@@ -32,6 +32,9 @@ public class ControllerAdvisor {
                     ),
             Map.entry(MethodArgumentTypeMismatchException.class,
                     new ApiRestExceptionResponse(HttpStatus.BAD_REQUEST, "The user provided incorrect data.")
+                    ),
+            Map.entry(org.springframework.security.authentication.InternalAuthenticationServiceException.class,
+                    new ApiRestExceptionResponse(HttpStatus.UNAUTHORIZED, "Cannot login.")
                     )
     );
 

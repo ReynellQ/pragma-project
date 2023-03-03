@@ -15,5 +15,5 @@ public class FoodPlateChangeState {
     @NotNull
     private Long id;
     @NotNull
-    private boolean active;
+    private Boolean active;
 }

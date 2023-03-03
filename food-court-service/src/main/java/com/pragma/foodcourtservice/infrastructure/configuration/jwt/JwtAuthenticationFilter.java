@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.configuration.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pragma.foodcourtservice.infrastructure.driven_adapter.AuthRequestInterceptor;
+import com.pragma.foodcourtservice.infrastructure.microservices.feign_client.AuthRequestInterceptor;
 import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;

@@ -14,6 +14,13 @@ public interface IUserServicePort {
     User getUserByPersonalId(Long personalId);
 
     /**
+     * Gets a user that has the id provided.
+     * @param id the id of the user searched.
+     * @return the User with the id provided.
+     */
+    User getUserById(Long id);
+
+    /**
      * Gets a user that has the email provided.
      * @param email the email of the user searched.
      * @return the User with the email provided.

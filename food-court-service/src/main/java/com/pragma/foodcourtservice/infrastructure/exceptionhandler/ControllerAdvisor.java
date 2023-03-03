@@ -5,10 +5,7 @@ import com.pragma.foodcourtservice.domain.exception.NotPendingOrderException;
 import com.pragma.foodcourtservice.domain.exception.ForbiddenCancelOrderException;
 import com.pragma.foodcourtservice.domain.exception.HasActiveOrdersException;
 import com.pragma.foodcourtservice.domain.exception.InvalidPinException;
-import com.pragma.foodcourtservice.infrastructure.exception.CategoryNotFoundException;
-import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
-import com.pragma.foodcourtservice.infrastructure.exception.UserNotFoundException;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.OrderNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,9 +73,15 @@ public class ControllerAdvisor {
                             "wait until it finishes or cancel it.")
             ),
             Map.entry(ForbiddenCancelOrderException.class,
-                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "You can't cancel this order."))
+                    new ApiRestExceptionResponse(HttpStatus.FORBIDDEN, "You can't cancel this order.")),
+            Map.entry(NotLoggedUserException.class,
+                    new ApiRestExceptionResponse(HttpStatus.UNAUTHORIZED, "The user isn't logged."))
     );
-
+    @ExceptionHandler(FeignResponseException.class)
+    public ResponseEntity<Map<String, Object>> handleFeignResponseException(FeignResponseException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(Collections.singletonMap(MESSAGE, exception.getMessage()));
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleApiException(Exception exception) {
         ApiRestExceptionResponse api = messages.get(exception.getClass());

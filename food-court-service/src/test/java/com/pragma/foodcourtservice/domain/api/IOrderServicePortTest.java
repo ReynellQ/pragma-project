@@ -10,7 +10,8 @@ import com.pragma.foodcourtservice.domain.spi.IOrderPersistencePort;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
 import com.pragma.foodcourtservice.domain.useCase.OrderUseCase;
 import com.pragma.foodcourtservice.infrastructure.exception.FoodPlateNotFoundException;
-import com.pragma.foodcourtservice.infrastructure.output.jpa.adapter.WorkplaceNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exceptionhandler.OrderNotFoundException;
+import com.pragma.foodcourtservice.infrastructure.exception.WorkplaceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,12 +37,13 @@ class IOrderServicePortTest {
         foodPlatePersistencePort = mock(IFoodPlatePersistencePort.class);
         persistentLoggedUser = mock(IPersistentLoggedUser.class);
         restaurantPersistencePort = mock(IRestaurantPersistencePort.class);
+        orderNotifierPort = mock(IOrderNotifierPort.class);
         orderServicePort = new OrderUseCase(orderPersistencePort, foodPlatePersistencePort, persistentLoggedUser,
                 restaurantPersistencePort, orderNotifierPort);
     }
 
     @Test
-    void saveOrderGoodOrder() {
+    void saveOrderCorrectly() {
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(UserData.CLIENT);
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
@@ -142,6 +144,26 @@ class IOrderServicePortTest {
         );
     }
 
+    @Test
+    void saveOrderButHasActiveOrders() {
+        User client = UserData.CLIENT;
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(UserData.CLIENT);
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Order order = new Order();
+        order.setIdRestaurant(restaurant.getId());
+        when(foodPlatePersistencePort.getFoodPlate(FoodPlateData.FOOD_PLATE_001.getId()))
+                .thenReturn(FoodPlateData.FOOD_PLATE_001);
+        List<OrderFoodPlates> foodPlatesList = List.of(
+                new OrderFoodPlates(null, FoodPlateData.FOOD_PLATE_001.getId(), 1l)
+        );
+        when(orderPersistencePort.hasActiveOrdersInTheRestaurant(client.getId()))
+                .thenReturn(true);
+        assertThrows(
+                HasActiveOrdersException.class,
+                ()->orderServicePort.saveOrder(order, foodPlatesList)
+        );
+    }
     @Test
     void getOrdersFilterByStateCorrectly() {
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
@@ -296,7 +318,7 @@ class IOrderServicePortTest {
         Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
                 restaurant.getId());
         when(persistentLoggedUser.getLoggedUser())
-                .thenThrow(NotAnEmployeeException.class);
+                .thenReturn(employee);
         assertThrows(
                 NotAnEmployeeException.class,
                 ()->orderServicePort.assignToAnOrder(idOrder)
@@ -304,8 +326,8 @@ class IOrderServicePortTest {
     }
 
     @Test
-    void assignToAnOrderCorrectlyButTheEmployeeDoesNotHaveWorkplace() {
-        Long idOrder = 1l;
+    void assignToAnOrderButTheEmployeeDoesNotHaveWorkplace() {
+        Long idOrder = 1L;
         User employee = RestaurantData.EMPLOYEE;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         Long idClient = UserData.CLIENT.getId();
@@ -325,14 +347,14 @@ class IOrderServicePortTest {
     }
 
     @Test
-    void assignToAnOrderCorrectlyButTheOrderIsFromOtherRestaurant() {
-        Long idOrder = 1l;
+    void assignToAnOrderButTheOrderIsFromOtherRestaurant() {
+        Long idOrder = 1L;
         User employee = RestaurantData.EMPLOYEE;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         Long idClient = UserData.CLIENT.getId();
         int state = OrderState.PENDING;
         Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
-                23124l);
+                23124L);
         when(persistentLoggedUser.getLoggedUser())
                 .thenReturn(employee);
         when(restaurantPersistencePort.employeeWorkPlace(employee))
@@ -349,8 +371,8 @@ class IOrderServicePortTest {
     }
 
     @Test
-    void assignToAnOrderCorrectlyButTheOrderIsNotPending() {
-        Long idOrder = 1l;
+    void assignToAnOrderButTheOrderIsNotPending() {
+        Long idOrder = 1L;
         User employee = RestaurantData.EMPLOYEE;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         Long idClient = UserData.CLIENT.getId();
@@ -373,6 +395,354 @@ class IOrderServicePortTest {
     }
 
     @Test
-    void notifyTheOrderIsReady() {
+    void notifyTheOrderIsReadyCorrectly() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.IN_PROCESS;
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertDoesNotThrow(
+                ()->orderServicePort.notifyTheOrderIsReady(idOrder)
+        );
+    }
+
+    @Test
+    void notifyTheOrderIsReadyButIsNotLoggedAnEmployee() {
+        Long idOrder = 1L;
+        User employee = UserData.CLIENT;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.IN_PROCESS;
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                NotAnEmployeeException.class,
+                ()->orderServicePort.notifyTheOrderIsReady(idOrder)
+        );
+    }
+
+    @Test
+    void notifyTheOrderIsReadyButTheEmployeeDoesNotHaveWorkplace() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.IN_PROCESS;
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenThrow(WorkplaceNotFoundException.class);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                WorkplaceNotFoundException.class,
+                ()->orderServicePort.notifyTheOrderIsReady(idOrder)
+        );
+    }
+
+    @Test
+    void notifyTheOrderIsReadyButTheOrderIsFromOtherRestaurant() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.IN_PROCESS;
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                23124L);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                ForbiddenWorkInOrderException.class,
+                ()->orderServicePort.notifyTheOrderIsReady(idOrder)
+        );
+    }
+
+    @Test
+    void notifyTheOrderIsReadyButTheOrderIsNotInProcess() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.CANCELLLED;
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                NotInProcessOrderException.class,
+                ()->orderServicePort.notifyTheOrderIsReady(idOrder)
+        );
+    }
+
+    @Test
+    void deliverAnOrder() {
+    }
+
+    @Test
+    void deliverAnOrderCorrectly() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        String pin = "3134";
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        OrderTicket orderTicket = new OrderTicket(idOrder, pin);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertDoesNotThrow(
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void deliverAnOrderButIsNotLoggedAnEmployee() {
+        Long idOrder = 1L;
+        User employee = UserData.CLIENT;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        String pin = "3134";
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        OrderTicket orderTicket = new OrderTicket(idOrder, pin);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertThrows(
+                NotAnEmployeeException.class,
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void deliverAnOrderButTheEmployeeDoesNotHaveWorkplace() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        String pin = "3134";
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        OrderTicket orderTicket = new OrderTicket(idOrder, pin);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenThrow(WorkplaceNotFoundException.class);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertThrows(
+                WorkplaceNotFoundException.class,
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void deliverAnOrderButTheOrderIsFromOtherRestaurant() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        String pin = "3134";
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                2131214L);
+        OrderTicket orderTicket = new OrderTicket(idOrder, pin);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertThrows(
+                ForbiddenWorkInOrderException.class,
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void deliverAnOrderButTheOrderIsNotReady() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.DELIVERED;
+        String pin = "3134";
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        OrderTicket orderTicket = new OrderTicket(idOrder, pin);
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertThrows(
+                NotReadyOrderException.class,
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void deliverAnOrderButTheOrderIsNotCorrect() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        Long idClient = UserData.CLIENT.getId();
+        int state = OrderState.READY;
+        String pin = "3134";
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee( restaurant.getId(),  employee.getId() );
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        OrderTicket orderTicket = new OrderTicket(idOrder, "3124");
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(employee);
+        when(restaurantPersistencePort.employeeWorkPlace(employee))
+                .thenReturn(restaurantEmployee);
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        when(orderPersistencePort.getOrderTicketWithIdOrder(idOrder))
+                .thenReturn(orderTicket);
+        assertThrows(
+                InvalidPinException.class,
+                ()->orderServicePort.deliverAnOrder(idOrder, pin)
+        );
+    }
+
+    @Test
+    void cancelAnOrderCorrectly() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        User client = UserData.CLIENT;
+        Long idClient = client.getId();
+        int state = OrderState.PENDING;
+
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(client);
+
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertDoesNotThrow(
+                ()->orderServicePort.cancelAnOrder(idOrder)
+        );
+    }
+
+    @Test
+    void cancelAnOrderButTheLoggedUserIsNotClient() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        User client = UserData.ADMIN;
+        Long idClient = client.getId();
+        int state = OrderState.PENDING;
+
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(client);
+
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                NotAClientException.class,
+                ()->orderServicePort.cancelAnOrder(idOrder)
+        );
+    }
+
+    @Test
+    void cancelAnOrderButTheOrderDoesNotExist() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        User client = UserData.ADMIN;
+        Long idClient = client.getId();
+        int state = OrderState.PENDING;
+
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(client);
+
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenThrow(OrderNotFoundException.class);
+        assertThrows(
+                OrderNotFoundException.class,
+                ()->orderServicePort.cancelAnOrder(idOrder)
+        );
+    }
+
+    @Test
+    void cancelAnOrderButTheOrderIsNotPending() {
+        Long idOrder = 1L;
+        User employee = RestaurantData.EMPLOYEE;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        User client = UserData.CLIENT;
+        Long idClient = client.getId();
+        int state = OrderState.IN_PROCESS;
+
+        Order order = new Order(idOrder, idClient, LocalDate.now(), state, employee.getId(),
+                restaurant.getId());
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(client);
+
+        when(orderPersistencePort.getOrder(idOrder))
+                .thenReturn(order);
+        assertThrows(
+                ForbiddenCancelOrderException.class,
+                ()->orderServicePort.cancelAnOrder(idOrder)
+        );
     }
 }

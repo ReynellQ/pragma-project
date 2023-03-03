@@ -18,10 +18,10 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Api(value = "Food plate controller")
-@Validated
 @RestController
 @RequestMapping("/food_plate/")
 @RequiredArgsConstructor
+@Validated
 public class FoodPlateRestController {
     private final FoodPlateHandler handler;
 
@@ -44,18 +44,17 @@ public class FoodPlateRestController {
     @ApiOperation(value = "Change the current state of a food plate.")
     @PatchMapping("/changeState")
     @RolesAllowed("ROLE_OWNER")
-    public ResponseEntity<Void> changeStateFoodPlate(@Valid @RequestBody FoodPlateChangeState foodPlateChangeState){
+    public ResponseEntity<Void> changeStateFoodPlate(@RequestBody @Valid FoodPlateChangeState foodPlateChangeState){
         handler.changeStateFoodPlate( foodPlateChangeState);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @ApiOperation(value = "Get a list of food plates from a restaurant paginated.", response = List.class)
     @GetMapping("/list/{restaurant}/{page}/{number}")
-    @RolesAllowed("ROLE_CLIENT")
     public ResponseEntity<List<FoodPlateDto>> listFoodPlatesOfRestaurantToClient(
-            @PathVariable Long restaurant,
-            @PathVariable int page,
-            @PathVariable int number,
+            @Valid @PathVariable Long restaurant,
+            @Valid @PathVariable int page,
+            @Valid @PathVariable int number,
             @Valid @RequestBody CategoryList categoryList){
         return ResponseEntity.ok().body(handler.listTheFoodPlatesByCategory(restaurant, categoryList, page, number));
     }

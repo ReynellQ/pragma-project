@@ -4,6 +4,7 @@ import com.pragma.foodcourtservice.RestaurantData;
 import com.pragma.foodcourtservice.domain.exception.IncorrectDataException;
 import com.pragma.foodcourtservice.domain.exception.NotAllowedRestaurantException;
 import com.pragma.foodcourtservice.domain.exception.NotAnOwnerException;
+import com.pragma.foodcourtservice.domain.exception.RestaurantNotFoundException;
 import com.pragma.foodcourtservice.domain.model.Restaurant;
 import com.pragma.foodcourtservice.domain.model.User;
 import com.pragma.foodcourtservice.domain.spi.IRestaurantPersistencePort;
@@ -40,7 +41,7 @@ class IRestaurantServicePortTest {
     @Test
     void goodSave() {
         User owner = RestaurantData.OWNER_001;
-        Restaurant restaurant = RestaurantData.NON_VALID_RESTAURANT;
+        Restaurant restaurant = RestaurantData.NON_INSERTED_RESTAURANT;
         when(restaurantValidator.validateOwner(owner))
                 .thenReturn(true);
         when(restaurantValidator.validateName(restaurant.getName()))
@@ -136,7 +137,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void goodEmployeeSave() {
+    void saveAnEmployeeOfARestaurantCorrectly() {
         User owner = RestaurantData.OWNER_001;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -157,7 +158,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void userLoggedIsNotAOwner() {
+    void saveAnEmployeeOfARestaurantButUserLoggedIsNotAOwner() {
         User owner = RestaurantData.NOT_A_OWNER;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -179,7 +180,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void userLoggedIsNotTheOwnerOfRestaurant() {
+    void saveAnEmployeeOfARestaurantButUserLoggedIsNotTheOwnerOfRestaurant() {
         User owner = RestaurantData.OWNER_002;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -201,7 +202,7 @@ class IRestaurantServicePortTest {
     }
 
     @Test
-    void badInsertEmployee() {
+    void saveAnEmployeeOfARestaurantWithBadData() {
         User owner = RestaurantData.OWNER_002;
         Restaurant restaurant = RestaurantData.RESTAURANT_001;
         User employee = RestaurantData.EMPLOYEE;
@@ -218,6 +219,28 @@ class IRestaurantServicePortTest {
 
         assertThrows(
                 NotAllowedRestaurantException.class,
+                ()->restaurantServicePort.saveAnEmployeeOfARestaurant(employee, restaurant.getId())
+        );
+    }
+
+    @Test
+    void saveAnEmployeeOfARestaurantButRestaurantDoesNotExist() {
+        User owner = RestaurantData.OWNER_001;
+        Restaurant restaurant = RestaurantData.RESTAURANT_001;
+        User employee = RestaurantData.EMPLOYEE;
+        when(persistentLoggedUser.getLoggedUser())
+                .thenReturn(owner);
+        when(restaurantValidator.validateOwner(owner))
+                .thenReturn(true);
+        when(restaurantPersistencePort.getRestaurant(restaurant.getId()))
+                .thenThrow(RestaurantNotFoundException.class);
+        doNothing().when(userMicroServiceClientPort)
+                .saveAnEmployee(employee);
+        when(userMicroServiceClientPort.getUserByPersonalId(employee.getPersonalId()))
+                .thenReturn(employee);
+
+        assertThrows(
+                RestaurantNotFoundException.class,
                 ()->restaurantServicePort.saveAnEmployeeOfARestaurant(employee, restaurant.getId())
         );
     }

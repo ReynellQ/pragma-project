@@ -2,7 +2,7 @@ package com.pragma.foodcourtservice.infrastructure.configuration;
 
 import com.pragma.foodcourtservice.application.mapper.FoodPlateDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.RestaurantDtoMapper;
-import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
+import com.pragma.foodcourtservice.application.mapper.RolesDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.api.*;
 import com.pragma.foodcourtservice.domain.spi.*;
@@ -37,7 +37,7 @@ public class BeanConfiguration {
     private final FoodPlateDtoMapper foodPlateDTOMapper;
 
     private final RestaurantDtoMapper restaurantDTOMapper;
-    private final RolesDTOMapper rolesDTOMapper;
+    private final RolesDtoMapper rolesDTOMapper;
     private final IRestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantEntityMapper restaurantEntityMapper;
     private final FoodPlateEntityMapper foodPlateEntityMapper;

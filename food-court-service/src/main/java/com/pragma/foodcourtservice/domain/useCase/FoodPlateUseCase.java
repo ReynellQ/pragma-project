@@ -18,6 +18,7 @@ import com.pragma.foodcourtservice.domain.spi.IUserMicroServiceClientPort;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class FoodPlateUseCase that implements the interface IFoodPlateServicePort, and defines the business logic that be
@@ -110,13 +111,13 @@ public class FoodPlateUseCase implements IFoodPlateServicePort {
     private void verifyingOwnersAuthenticity(Long idRestaurant){
         User user = persistentLoggedUser.getLoggedUser();
         //Verifies if is an owner
-        if(user.getIdRole() != ROLES.OWNER){
+        if(!Objects.equals(user.getIdRole(), ROLES.OWNER)){
             throw new NotAnOwnerException();
         }
         Restaurant r = restaurantPersistencePort.getRestaurant(
                 idRestaurant   //Search the restaurant and throws an exception if it doesn't exist
         );
-        if(r.getIdOwner() != user.getId()){ //The current user isn't the owner of this restaurant
+        if(!Objects.equals(r.getIdOwner(), user.getId())){ //The current user isn't the owner of this restaurant
             throw new NotAllowedRestaurantException();
         }
     }

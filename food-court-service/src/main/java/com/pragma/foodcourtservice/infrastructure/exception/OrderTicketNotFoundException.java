@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.infrastructure.output.jpa.adapter;
+package com.pragma.foodcourtservice.infrastructure.exception;
 
 public class OrderTicketNotFoundException extends RuntimeException {
 }

@@ -1,4 +1,4 @@
-package com.pragma.foodcourtservice.infrastructure.driven_adapter;
+package com.pragma.foodcourtservice.infrastructure.microservices.feign_client;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

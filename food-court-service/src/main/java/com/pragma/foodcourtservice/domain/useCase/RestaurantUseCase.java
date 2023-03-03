@@ -17,6 +17,7 @@ import com.pragma.foodcourtservice.infrastructure.output.jpa.repository.IRestaur
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class RestaurantUseCase that implements the interface IRestaurantServicePort, and defines the business logic that be
@@ -85,7 +86,7 @@ public class RestaurantUseCase implements IRestaurantServicePort {
             throw new NotAnOwnerException();
         }
         Restaurant r = restaurantPersistencePort.getRestaurant(idRestaurant);
-        if(r.getIdOwner() != owner.getId()){
+        if(!Objects.equals(r.getIdOwner(), owner.getId())){
             throw new NotAllowedRestaurantException();
         }
         userClientPort.saveAnEmployee(employee);

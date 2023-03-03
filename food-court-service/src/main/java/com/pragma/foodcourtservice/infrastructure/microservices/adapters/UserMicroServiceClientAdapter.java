@@ -1,7 +1,7 @@
 package com.pragma.foodcourtservice.infrastructure.microservices.adapters;
 
 import com.pragma.foodcourtservice.application.dto.users.UserDto;
-import com.pragma.foodcourtservice.application.mapper.RolesDTOMapper;
+import com.pragma.foodcourtservice.application.mapper.RolesDtoMapper;
 import com.pragma.foodcourtservice.application.mapper.UserDtoMapper;
 import com.pragma.foodcourtservice.domain.model.Role;
 import com.pragma.foodcourtservice.domain.model.User;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPort {
     private final UserFeignClientRest userServiceConnection;
     private final UserDtoMapper userDtoMapper;
-    private final RolesDTOMapper rolesDTOMapper;
+    private final RolesDtoMapper rolesDTOMapper;
 
     /**
      * Gets a user with the provided id.
@@ -83,7 +83,7 @@ public class UserMicroServiceClientAdapter implements IUserMicroServiceClientPor
     public Role getRolesUser(Long id) {
         Role response;
         try{
-            UserDto userDto = userServiceConnection.getUserById(id);
+            UserDto userDto = userServiceConnection.getUserByPersonalId(id);
             response = rolesDTOMapper.toRole(userDto.getRole());
         }catch(Exception ex){
             throw new UserNotFoundException();

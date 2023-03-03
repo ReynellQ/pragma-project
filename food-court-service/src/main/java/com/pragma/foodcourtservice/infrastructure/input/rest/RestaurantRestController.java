@@ -37,7 +37,6 @@ public class RestaurantRestController {
 
     @ApiOperation(value = "List all restaurants of your food court. Only for clients.")
     @GetMapping("/list/{page}/{number}")
-    @RolesAllowed("ROLE_CLIENT")
     public ResponseEntity<List<RestaurantClientResponse>> listRestaurantsToClient(@Valid @PathVariable Integer page,
                                                                                   @Valid @PathVariable Integer number){
         return ResponseEntity

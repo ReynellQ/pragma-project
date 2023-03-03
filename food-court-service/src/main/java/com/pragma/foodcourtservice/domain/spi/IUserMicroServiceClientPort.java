@@ -30,10 +30,10 @@ public interface IUserMicroServiceClientPort {
 
     /**
      * Gets the user's role with the provided personal id.
-     * @param personalId the id of the user.
+     * @param id the id of the user.
      * @return the role of the User with that personal id.
      */
-    Role getRolesUser(Long personalId);
+    Role getRolesUser(Long id);
 
     /**
      * Saves an employee in the user microservice.
